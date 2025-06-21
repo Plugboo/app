@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-text-50: #eae9fc;
+  --color-text-100: #d4d2f9;
+  --color-text-200: #a9a5f3;
+  --color-text-300: #7e78ed;
+  --color-text-400: #534be7;
+  --color-text-500: #281fe0;
+  --color-text-600: #2018b4;
+  --color-text-700: #181287;
+  --color-text-800: #100c5a;
+  --color-text-900: #08062d;
+  --color-text-950: #040316;
+
+  --color-background-50: #f1f1f3;
+  --color-background-100: #e4e4e7;
+  --color-background-200: #c9c9cf;
+  --color-background-300: #aeaeb7;
+  --color-background-400: #93939f;
+  --color-background-500: #787887;
+  --color-background-600: #60606c;
+  --color-background-700: #484851;
+  --color-background-800: #303036;
+  --color-background-900: #18181b;
+  --color-background-950: #0c0c0e;
+
+  --color-primary-50: #fffbe5;
+  --color-primary-100: #fff6cc;
+  --color-primary-200: #ffee99;
+  --color-primary-300: #ffe666;
+  --color-primary-400: #ffdd33;
+  --color-primary-500: #ffd500;
+  --color-primary-600: #ccaa00;
+  --color-primary-700: #998000;
+  --color-primary-800: #665500;
+  --color-primary-900: #332b00;
+  --color-primary-950: #1a1500;
+
+  --color-secondary-50: #f8f5ed;
+  --color-secondary-100: #f0ebdb;
+  --color-secondary-200: #e2d8b6;
+  --color-secondary-300: #d3c492;
+  --color-secondary-400: #c5b06d;
+  --color-secondary-500: #b69d49;
+  --color-secondary-600: #927d3a;
+  --color-secondary-700: #6d5e2c;
+  --color-secondary-800: #493f1d;
+  --color-secondary-900: #241f0f;
+  --color-secondary-950: #121007;
+
+  --color-accent-50: #fffbe5;
+  --color-accent-100: #fff6cc;
+  --color-accent-200: #ffee99;
+  --color-accent-300: #ffe666;
+  --color-accent-400: #ffdd33;
+  --color-accent-500: #ffd500;
+  --color-accent-600: #ccaa00;
+  --color-accent-700: #998000;
+  --color-accent-800: #665500;
+  --color-accent-900: #332b00;
+  --color-accent-950: #1a1500;
+}
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .app-region-drag {
+    app-region: drag;
+  }
+
+  .app-region-nodrag {
+    app-region: no-drag;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  background: var(--color-background-900);
+}
+
+* {
+  color-scheme: dark;
+}
