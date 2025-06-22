@@ -4,7 +4,7 @@ import Modal from '../components/Modal'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import { setupGame, listGames, selectGame } from '../api/game'
-import { GameInformation } from '../../common/game'
+import { GameInformation } from '../../common/games'
 import { useNavigate } from 'react-router'
 
 export default function HomePage() {

@@ -1,21 +1,15 @@
 ﻿import fs from 'node:fs'
 import pathlib from 'node:path'
-import { GameInformation } from '../common/game'
 
 interface Config {
-  titleBar: "custom" | "native"
-  games: GameConfig[]
+  titleBar: 'custom' | 'native'
 }
 
-interface GameConfig {
-  id: string
-  installPath: string | null
-}
-
+// TODO: Change to non-singleton class.
 export default class ConfigManager {
   public static config: Config
 
-  public static loadConfig(path: string, games: GameInformation[]) {
+  public static loadConfig(path: string) {
     try {
       const filePath = pathlib.join(path, 'config.json')
 
@@ -24,18 +18,12 @@ export default class ConfigManager {
       }
 
       if (!fs.existsSync(filePath)) {
-        const empty: Config = {
-          titleBar: 'custom',
-          games: games.map((game) => (
-            {
-              id: game.id,
-              installPath: null
-            }
-          ))
+        const defaultConfig: Config = {
+          titleBar: 'custom'
         }
 
         console.log('ConfigManager::loadConfig(): Creating config file..')
-        fs.writeFileSync(filePath, JSON.stringify(empty, null, 2), {
+        fs.writeFileSync(filePath, JSON.stringify(defaultConfig, null, 2), {
           encoding: 'utf8'
         })
       }
@@ -45,12 +33,6 @@ export default class ConfigManager {
       })
       const json = JSON.parse(data)
       ConfigManager.config = this.serializeConfig(json)
-
-      for (const game of games) {
-        if (!ConfigManager.config.games.find(g => g.id === game.id)) {
-          ConfigManager.config.games.push({ id: game.id, installPath: null })
-        }
-      }
 
       this.saveConfig(path)
       return true
@@ -72,8 +54,7 @@ export default class ConfigManager {
 
   private static serializeConfig(data: any): Config {
     const config: Config = {
-      titleBar: 'custom',
-      games: []
+      titleBar: 'custom'
     }
 
     if (typeof data.titleBar === 'string') {
@@ -82,17 +63,6 @@ export default class ConfigManager {
       } else {
         config.titleBar = 'custom'
       }
-    }
-
-    if (Array.isArray(data.games)) {
-      data.games.forEach((entry: any) => {
-        if ((typeof entry.installPath === 'string' || entry.installPath === null) && typeof entry.id === 'string') {
-          config.games.push({
-            id: entry.id,
-            installPath: entry.installPath
-          })
-        }
-      })
     }
 
     return config
