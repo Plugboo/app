@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager, { Game } from './games'
@@ -38,6 +38,25 @@ class Application {
         await this.createWindow()
       }
     })
+
+    /*
+     * Disable site reloading when not in development mode.
+     */
+    if (!MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+      app.on('browser-window-focus', function() {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        globalShortcut.register('CommandOrControl+R', () => {
+        })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        globalShortcut.register('F5', () => {
+        })
+      })
+
+      app.on('browser-window-blur', function() {
+        globalShortcut.unregister('CommandOrControl+R')
+        globalShortcut.unregister('F5')
+      })
+    }
   }
 
   public async init() {
