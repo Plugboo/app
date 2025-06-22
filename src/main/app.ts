@@ -8,6 +8,8 @@ import HoyoPlay from './hoyoplay'
 class Application {
   private readonly _games: GameInformation[]
 
+  private _dataPath: string
+
   private _window: BrowserWindow | null
 
   private _currentGame: GameInformation | null
@@ -42,7 +44,8 @@ class Application {
       //   developer: 'Kuro Games'
       // }
     ]
-    app.setPath('appData', path.join(app.getPath('appData'), 'GachaForge'))
+
+    this._dataPath = path.join(app.getPath('appData'), 'GachaForge')
     this._window = null
     this._currentGame = null
 
@@ -69,7 +72,7 @@ class Application {
   }
 
   public async init() {
-    if (!ConfigManager.loadConfig(app.getPath('appData'), this._games)) {
+    if (!ConfigManager.loadConfig(this._dataPath, this._games)) {
       console.log('Application::init(): ConfigManager failed to load config.. quitting.')
       app.quit()
       return
@@ -250,7 +253,7 @@ class Application {
       }
 
       config.installPath = path
-      ConfigManager.saveConfig(app.getPath('appData'))
+      ConfigManager.saveConfig(this._dataPath)
       return {
         success: true
       }

@@ -48,7 +48,7 @@ export default class HoyoPlay {
     /*
      * Not sure if the "1_0" part is going to be changed...
      */
-    const dataPath = path.join(app.getPath('appData'), '..', 'Cognosphere', 'HYP', '1_0', 'data', 'gamedata.dat')
+    const dataPath = path.join(app.getPath('appData'), 'Cognosphere', 'HYP', '1_0', 'data', 'gamedata.dat')
 
     if (!fs.existsSync(dataPath)) {
       console.error("HoyoPlay::getInstallations(): Failed to get installations. File could not be found:", dataPath)
