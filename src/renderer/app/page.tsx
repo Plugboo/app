@@ -1,11 +1,9 @@
 import { Transition } from '@tailwindui/react'
 import { useEffect, useRef, useState } from 'react'
-import Modal from '../components/Modal'
-import Button from '../components/Button'
-import Input from '../components/Input'
-import { setupGame, listGames, selectGame } from '../api/game'
+import { listGames, selectGame } from '../api/game'
 import { GameInformation } from '../../common/games'
 import { useNavigate } from 'react-router'
+import SetupGameModal from '../components/SetupGameModal'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -39,23 +37,6 @@ export default function HomePage() {
     })
   }
 
-  const onClickSetupConfirm = () => {
-    if (setupInputRef.current === null) {
-      console.log('Input Reference is null. This should not happen!')
-      return
-    }
-
-    setupGame(context.id, setupInputRef.current.value).then((result: any) => {
-      if (result.success) {
-        setSetupModalOpen(false)
-        onClickGame(context)
-      } else {
-        console.log(result)
-        console.log('Initialize failed.')
-      }
-    })
-  }
-
   useEffect(() => {
     selectGame('').then(() => {
       listGames().then((result: GameInformation[]) => {
@@ -67,34 +48,16 @@ export default function HomePage() {
 
   return (
     <main className="relative w-full min-h-screen overflow-hidden flex">
-      <Modal
+      <SetupGameModal
         open={setupModalOpen}
-        classNames={{
-          childrenWrapper: 'w-128'
+        game={context}
+        inputRef={setupInputRef}
+        onClickCancel={() => setSetupModalOpen(false)}
+        onSetupSuccess={() => {
+          setSetupModalOpen(false)
+          onClickGame(context)
         }}
-      >
-        <div className="flex flex-col gap-8 w-full h-full">
-          <h1 className="text-lg select-none">Select game installation</h1>
-          <Input
-            classNames={{
-              wrapper: 'flex'
-            }}
-            ref={setupInputRef}
-            placeholder="C:\Program Files"
-          >
-            {/*<div className="absolute top-0 right-4 h-full flex items-center select-none">*/}
-            {/*  <p*/}
-            {/*    className="text-sm text-primary-600 hover:brightness-[115%] transition-color duration-200 ease-in-out cursor-pointer">Change</p>*/}
-            {/*</div>*/}
-          </Input>
-          <div className="mt-auto flex ml-auto gap-4 select-none">
-            <Button type="secondary" onClick={() => setSetupModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={() => onClickSetupConfirm()}>Confirm</Button>
-          </div>
-        </div>
-      </Modal>
+      />
       <div className="mt-auto w-full overflow-hidden overflow-x-auto scrollbar-none">
         <Transition
           show={!loading}
@@ -113,21 +76,16 @@ export default function HomePage() {
                 onClick={() => onClickGame(game)}
               >
                 <div className="relative w-full aspect-15/7 pointer-events-none select-none">
-                  <div
-                    className="absolute group-hover:opacity-100 opacity-0 transition-opacity duration-300 top-0 left-0 w-full h-full bg-linear-to-t from-background-900 via-background-900/35 to-background-900/0 z-2" />
+                  <div className="absolute group-hover:opacity-100 opacity-0 transition-opacity duration-300 top-0 left-0 w-full h-full bg-linear-to-t from-background-900 via-background-900/35 to-background-900/0 z-2" />
                   <img
                     className="w-full h-full group-hover:scale-105 transition-translate duration-300"
                     src={game.banner}
                     alt={`${game.name}'s banner`}
                   />
                 </div>
-                <div
-                  className="absolute -bottom-8 left-0 opacity-0 group-hover:bottom-0 group-hover:opacity-100 select-none z-4 p-2 transition-translate duration-300 pointer-events-none">
+                <div className="absolute -bottom-8 left-0 opacity-0 group-hover:bottom-0 group-hover:opacity-100 select-none z-4 p-2 transition-translate duration-300 pointer-events-none">
                   <div className="flex items-center gap-2">
-                    <img
-                      className="w-12 h-12 rounded-xl"
-                      src={game.icon}
-                      alt={`${game.name}'s icon`} />
+                    <img className="w-12 h-12 rounded-xl" src={game.icon} alt={`${game.name}'s icon`} />
                     <div className="flex flex-col">
                       <p className="font-semibold">{game.name}</p>
                       <p className="-mt-1 text-gray-300">{game.developer}</p>

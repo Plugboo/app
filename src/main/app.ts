@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, globalShortcut } from 'electron'
+import { app, BrowserWindow, ipcMain, globalShortcut, dialog, OpenDialogOptions } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager, { Game } from './games'
@@ -43,16 +43,14 @@ class Application {
      * Disable site reloading when not in development mode.
      */
     if (!MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      app.on('browser-window-focus', function() {
+      app.on('browser-window-focus', function () {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        globalShortcut.register('CommandOrControl+R', () => {
-        })
+        globalShortcut.register('CommandOrControl+R', () => {})
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        globalShortcut.register('F5', () => {
-        })
+        globalShortcut.register('F5', () => {})
       })
 
-      app.on('browser-window-blur', function() {
+      app.on('browser-window-blur', function () {
         globalShortcut.unregister('CommandOrControl+R')
         globalShortcut.unregister('F5')
       })
@@ -112,6 +110,10 @@ class Application {
   private initIpcs() {
     ipcMain.handle('app::titleBar', () => {
       return ConfigManager.config.titleBar
+    })
+
+    ipcMain.handle('app:pickFile', async (_, options: OpenDialogOptions) => {
+      return await dialog.showOpenDialog(options)
     })
 
     ipcMain.handle('game::list', () => {
