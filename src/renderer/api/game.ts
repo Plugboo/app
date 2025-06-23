@@ -3,7 +3,11 @@
 }
 
 export async function selectGame(gameId: string) {
-  return await window.electron.ipc.invoke('game::select', gameId)
+  return (await window.electron.ipc.invoke('game::select', gameId)) as {
+    success: boolean
+    reason?: string
+    path?: string
+  }
 }
 
 export async function setupGame(gameId: string, path: string) {
