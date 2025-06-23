@@ -15,7 +15,7 @@ export default function HomePage() {
 
   const onClickGame = (game: GameInformation) => {
     setContext(game)
-    selectGame(game.id).then((result: any) => {
+    selectGame(game.id).then((result) => {
       if (result.success) {
         setLoading(true)
         setTimeout(() => {
