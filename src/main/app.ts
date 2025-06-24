@@ -86,7 +86,7 @@ class Application {
     }
 
     this._window = new BrowserWindow({
-      width: 1300,
+      width: 1340,
       height: 700,
       minWidth: 800,
       minHeight: 500,
@@ -101,7 +101,6 @@ class Application {
 
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
       await this._window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
-      this._window.webContents.openDevTools()
     } else {
       await this._window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
     }
@@ -118,6 +117,17 @@ class Application {
 
     ipcMain.handle('game::list', () => {
       return this._games.entries.map((v) => v.info)
+    })
+
+    ipcMain.handle('game::profiles', () => {
+      if (this._currentGame === null) {
+        return
+      }
+
+      return this._currentGame.profiles.map((v) => ({
+        id: v.id,
+        name: v.name
+      }))
     })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

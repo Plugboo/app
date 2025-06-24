@@ -13,3 +13,7 @@ export async function selectGame(gameId: string) {
 export async function setupGame(gameId: string, path: string) {
   return await window.electron.ipc.invoke('game::setup', gameId, path)
 }
+
+export async function getProfiles() {
+  return await window.electron.ipc.invoke('game::profiles')
+}
