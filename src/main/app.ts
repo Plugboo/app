@@ -2,9 +2,13 @@ import { app, BrowserWindow, ipcMain, globalShortcut, dialog, OpenDialogOptions 
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager, { Game } from './games'
+import { GameProfile } from '@common/games'
+import ProfileManager from '@main/profiles'
 
 class Application {
   private readonly _games: GamesManager
+
+  private readonly _profiles: ProfileManager
 
   private readonly _dataPath: string
 
@@ -12,11 +16,15 @@ class Application {
 
   private _currentGame: Game | null
 
+  private _currentProfile: GameProfile | null
+
   constructor() {
     this._dataPath = path.join(app.getPath('appData'), 'GachaForge', 'data')
     this._games = new GamesManager(this._dataPath)
+    this._profiles = new ProfileManager(path.resolve(this._dataPath, 'profiles'))
     this._window = null
     this._currentGame = null
+    this._currentProfile = null
 
     /*
      * Quit when all windows are closed, except on macOS. There, it's common
@@ -43,14 +51,16 @@ class Application {
      * Disable site reloading when not in development mode.
      */
     if (!MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-      app.on('browser-window-focus', function () {
+      app.on('browser-window-focus', function() {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        globalShortcut.register('CommandOrControl+R', () => {})
+        globalShortcut.register('CommandOrControl+R', () => {
+        })
         // eslint-disable-next-line @typescript-eslint/no-empty-function
-        globalShortcut.register('F5', () => {})
+        globalShortcut.register('F5', () => {
+        })
       })
 
-      app.on('browser-window-blur', function () {
+      app.on('browser-window-blur', function() {
         globalShortcut.unregister('CommandOrControl+R')
         globalShortcut.unregister('F5')
       })
@@ -70,10 +80,14 @@ class Application {
       return
     }
 
-    if (!this._games.loadProfiles()) {
-      console.log('Application::init(): GamesManager failed to load profiles.. quitting.')
-      app.quit()
-      return
+    // if (!this._games.loadProfiles()) {
+    //   console.log('Application::init(): GamesManager failed to load profiles.. quitting.')
+    //   app.quit()
+    //   return
+    // }
+
+    if (!this._profiles.loadProfiles()) {
+
     }
 
     this.initIpcs()
@@ -124,10 +138,32 @@ class Application {
         return
       }
 
-      return this._currentGame.profiles.map((v) => ({
-        id: v.id,
-        name: v.name
-      }))
+      return JSON.stringify(
+        this._profiles.entries
+          .entries()
+          .filter(([_, profile]) => profile.gameId === this._currentGame.info.id)
+          .map(([_, profile]) => profile)
+          .toArray())
+    })
+
+    ipcMain.handle('game::selectProfile', (_, id: string) => {
+      if (id.length === 0) {
+        if (this._currentProfile !== null) {
+          console.log('Application ipc (game::selectProfile): Reset selected profile')
+        }
+
+        this._currentProfile = null
+        return true
+      }
+
+      const profile = this._profiles.entries.get(id)
+      this._currentProfile = profile ?? null
+      console.log('Application ipc (game::selectProfile): Selected profile: ' + id)
+      return this._currentProfile !== null
+    })
+
+    ipcMain.handle('game::currentProfile', () => {
+      return JSON.stringify(this._currentProfile)
     })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

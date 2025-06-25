@@ -1,4 +1,4 @@
-import { GameInformation } from '../common/games'
+import { GameInformation } from '@common/games'
 import fs from 'node:fs'
 import path from 'node:path'
 import HoyoPlay from './hoyoplay'
@@ -6,36 +6,18 @@ import { multiExists } from './filesystem'
 
 export interface Game {
   info: GameInformation
-  profiles: GameProfile[]
   installPath: string | null
   validatePath: (installPath: string) => boolean
   searchInstallation: () => string
 }
 
-export class GameProfile {
-  public readonly id: string
-
-  public readonly gameId: string
-
-  public name: string
-
-  constructor(id?: string, gameId?: string, name?: string) {
-    this.id = id ?? ''
-    this.gameId = gameId ?? ''
-    this.name = name ?? ''
-  }
-}
-
 export default class GamesManager {
   private readonly _pathsPath
-
-  private readonly _profilesPath
 
   public entries: Game[]
 
   constructor(basePath: string) {
     this._pathsPath = path.join(basePath, 'paths.json')
-    this._profilesPath = path.join(basePath, 'profiles.json')
     this.entries = [
       {
         info: {
@@ -46,7 +28,6 @@ export default class GamesManager {
           developer: 'miHoYo'
         },
         installPath: null,
-        profiles: [],
         validatePath: (installPath: string) => {
           return GamesManager.validateGenshinImpactPath(installPath)
         },
@@ -63,7 +44,6 @@ export default class GamesManager {
           developer: 'miHoYo'
         },
         installPath: null,
-        profiles: [],
         validatePath: (installPath: string) => {
           return GamesManager.validateHonkaiStarRailPath(installPath)
         },
@@ -80,7 +60,6 @@ export default class GamesManager {
           developer: 'miHoYo'
         },
         installPath: null,
-        profiles: [],
         validatePath: (installPath: string) => {
           return GamesManager.validateZenlessZoneZeroPath(installPath)
         },
@@ -143,57 +122,6 @@ export default class GamesManager {
     }
   }
 
-  public loadProfiles() {
-    try {
-      const directoryPath = path.join(this._profilesPath, '..')
-
-      if (!fs.existsSync(directoryPath)) {
-        fs.mkdirSync(directoryPath, { recursive: true })
-      }
-
-      if (!fs.existsSync(this._profilesPath)) {
-        console.log('GamesManager::loadProfiles(): Creating profiles file..')
-        fs.writeFileSync(this._profilesPath, JSON.stringify([], null, 2), {
-          encoding: 'utf8'
-        })
-      }
-
-      const data = fs.readFileSync(this._profilesPath, {
-        encoding: 'utf8'
-      })
-      const profiles = this.serializeProfiles(JSON.parse(data))
-
-      for (const profile of profiles) {
-        const game = this.entries.find((v) => v.info.id === profile.gameId)
-        if (game !== undefined) {
-          game.profiles.push(profile)
-        }
-      }
-
-      return true
-    } catch (error) {
-      console.error('GamesManager::loadProfiles(): Exception occurred while loading profiles: ', error)
-      return false
-    }
-  }
-
-  public saveProfiles() {
-    try {
-      const profiles: GameProfile[] = []
-
-      for (const game of this.entries) {
-        profiles.push(...game.profiles)
-      }
-
-      fs.writeFileSync(this._profilesPath, JSON.stringify(profiles, null, 2), {
-        encoding: 'utf8'
-      })
-    } catch (error) {
-      console.error('GamesManager::saveProfiles(): Exception occurred while saving profiles: ', error)
-      return false
-    }
-  }
-
   private serializePaths(data: any): Map<string, string> {
     if (Array.isArray(data)) {
       return new Map()
@@ -210,49 +138,6 @@ export default class GamesManager {
     }
 
     return paths
-  }
-
-  private serializeProfiles(data: any): GameProfile[] {
-    if (!Array.isArray(data)) {
-      return []
-    }
-
-    const profiles: GameProfile[] = []
-    const emptyProfile = new GameProfile()
-    const keys = Object.keys(emptyProfile)
-
-    /*
-     * Loop through all array entries.
-     */
-    data.forEach((entry: any) => {
-      /*
-       * Check if the JSON entry contains all variables from the class and if they are the same type.
-       */
-      for (const key of keys) {
-        /*
-         * Check if the type of the JSON value is the same as in the class.
-         */
-        if (typeof entry[key] !== typeof (emptyProfile as never)[key]) {
-          console.log('Found profile with invalid structure.')
-          return
-        }
-      }
-
-      const game = this.entries.find((v) => v.info.id === entry.gameId)
-      if (game === undefined) {
-        console.log('Found profile with invalid gameId.')
-        return
-      }
-
-      if (profiles.find((v) => v.id === entry.id) !== undefined) {
-        console.log('Found profile with an identical id to another.')
-        return
-      }
-
-      profiles.push(entry as GameProfile)
-    })
-
-    return profiles
   }
 
   private static searchHoyoPlayInstallation(exeName: string): string {
@@ -276,12 +161,7 @@ export default class GamesManager {
   }
 
   private static validateGenshinImpactPath(installPath: string): boolean {
-    return multiExists(installPath, [
-      'GenshinImpact.exe',
-      'HoYoKProtect.sys',
-      'mhypbase.dll',
-      'GenshinImpact_Data/'
-    ])
+    return multiExists(installPath, ['GenshinImpact.exe', 'HoYoKProtect.sys', 'mhypbase.dll', 'GenshinImpact_Data/'])
   }
 
   private static validateHonkaiStarRailPath(installPath: string): boolean {

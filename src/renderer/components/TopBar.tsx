@@ -1,4 +1,4 @@
-import { Maximize, Minus, X } from 'lucide-react'
+import { Anvil, Maximize, Minus, X } from 'lucide-react'
 import { minimizeWindow, maximizeWindow, closeWindow } from '../api/window'
 
 export default function TopBar() {
@@ -15,8 +15,12 @@ export default function TopBar() {
   }
 
   return (
-    <div className="fixed z-100 w-screen h-12 app-region-drag">
-      <div className="flex m-3 mr-3 gap-1">
+    <div className="z-100 w-screen h-12 app-region-drag shrink-0 flex items-center justify-between px-2">
+      <div className="flex gap-1.5 items-center ml-2">
+        <Anvil className="text-primary-300" />
+        <h1 className="font-semibold text-xl flex">Gacha<h1 className="text-primary-300">Forge</h1></h1>
+      </div>
+      <div className="flex gap-1 justify-center bg-background-900/20 rounded-xl overflow-hidden">
         <button
           className="flex items-center justify-center p-1 w-8 h-8 rounded-lg transition-colors duration-100 hover:bg-background-600/40 ml-auto cursor-pointer app-region-nodrag"
           onClick={() => onClickMinimize()}
