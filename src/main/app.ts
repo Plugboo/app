@@ -2,7 +2,6 @@ import { app, BrowserWindow, ipcMain, globalShortcut, dialog, OpenDialogOptions 
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager, { Game } from './games'
-import { GameProfile } from '@common/games'
 import ProfileManager from '@main/profiles'
 
 class Application {
@@ -14,17 +13,11 @@ class Application {
 
   private _window: BrowserWindow | null
 
-  private _currentGame: Game | null
-
-  private _currentProfile: GameProfile | null
-
   constructor() {
     this._dataPath = path.join(app.getPath('appData'), 'GachaForge', 'data')
     this._games = new GamesManager(this._dataPath)
     this._profiles = new ProfileManager(path.resolve(this._dataPath, 'profiles'))
     this._window = null
-    this._currentGame = null
-    this._currentProfile = null
 
     /*
      * Quit when all windows are closed, except on macOS. There, it's common
@@ -133,52 +126,23 @@ class Application {
       return this._games.entries.map((v) => v.info)
     })
 
-    ipcMain.handle('game::profiles', () => {
-      if (this._currentGame === null) {
-        return
-      }
-
+    ipcMain.handle('game::profiles', (_event, gameId: string) => {
       return JSON.stringify(
         this._profiles.entries
           .entries()
-          .filter(([_, profile]) => profile.gameId === this._currentGame.info.id)
+          .filter(([_, profile]) => profile.gameId === gameId)
           .map(([_, profile]) => profile)
           .toArray())
     })
 
-    ipcMain.handle('game::selectProfile', (_, id: string) => {
-      if (id.length === 0) {
-        if (this._currentProfile !== null) {
-          console.log('Application ipc (game::selectProfile): Reset selected profile')
-        }
-
-        this._currentProfile = null
-        return true
-      }
-
-      const profile = this._profiles.entries.get(id)
-      this._currentProfile = profile ?? null
-      console.log('Application ipc (game::selectProfile): Selected profile: ' + id)
-      return this._currentProfile !== null
+    ipcMain.handle('game::profile', (_event, profileId: string) => {
+      return JSON.stringify(
+        this._profiles.entries
+          .entries()
+          .find(([_, profile]) => profile.id === profileId)[1])
     })
 
-    ipcMain.handle('game::currentProfile', () => {
-      return JSON.stringify(this._currentProfile)
-    })
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ipcMain.handle('game::select', (_, gameId) => {
-      if (gameId.length === 0) {
-        if (this._currentGame !== null) {
-          console.log('Application ipc (game::select): Reset selected game')
-        }
-
-        this._currentGame = null
-        return {
-          success: true
-        }
-      }
-
+    ipcMain.handle('game::verifyGame', (_, gameId: string) => {
       const game = this._games.entries.find((conf) => conf.info.id === gameId)
       if (game === undefined) {
         return {
@@ -195,8 +159,6 @@ class Application {
         }
       }
 
-      console.log('Application ipc (game::select): Selected game: ' + gameId)
-      this._currentGame = game
       return {
         success: true
       }

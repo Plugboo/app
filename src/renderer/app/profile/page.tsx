@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
 import { GameProfile } from '@common/games'
-import { getCurrentProfile } from '@renderer/api/game'
 import { Transition } from '@tailwindui/react'
 import { FileQuestionMark } from 'lucide-react'
+import { useParams } from 'react-router'
+import { getProfile } from '@renderer/api/game'
 
 export default function ProfilePage() {
+  const { id } = useParams()
   const [profile, setProfile] = useState<GameProfile | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getCurrentProfile().then((result) => {
+    getProfile(id).then((result) => {
       setProfile(result)
       setLoading(false)
     })
-  }, [])
+  }, [id])
 
   /*
    * Render nothing when no current profile is set.
@@ -22,7 +24,7 @@ export default function ProfilePage() {
     return null
   }
 
-  return <main className="w-full min-h-screen m-8 overflow-hidden">
+  return <main className="w-full px-4 pt-12 overflow-hidden">
     <Transition
       show={!loading}
       enter="transition-opacity duration-500 ease-in-out"

@@ -1,32 +1,41 @@
 ﻿import { Transition } from '@tailwindui/react'
 import { useEffect, useState } from 'react'
-import { getProfiles, selectProfile } from '../../api/game'
-import { useNavigate } from 'react-router'
+import { getProfiles } from '../../api/game'
+import { useNavigate, useParams } from 'react-router'
 import { GameProfile } from '@common/games'
 
 export default function GamePage() {
+  const { id } = useParams()
   const navigate = useNavigate()
+
   const [profiles, setProfiles] = useState<GameProfile[]>([])
   const [loading, setLoading] = useState(true)
 
   const onClickProfile = (id: string) => {
-    selectProfile(id).then((result) => {
-      if (result) {
-        setLoading(true)
-        navigate('/profile')
-      }
-    })
+    setLoading(true)
+    navigate(`/profile/${id}`)
   }
 
   useEffect(() => {
-    getProfiles().then((result) => {
-      setProfiles(result)
-      setLoading(false)
-    })
-  }, [])
+    const loadProfiles = () => {
+      getProfiles(id).then((result) => {
+        setProfiles(result)
+        setLoading(false)
+      })
+    }
+
+    if (!loading) {
+      setLoading(true)
+      setTimeout(() => {
+        loadProfiles()
+      }, 100)
+    } else {
+      loadProfiles()
+    }
+  }, [id])
 
   return (
-    <main className="w-full min-h-screen mx-8 overflow-hidden">
+    <main className="w-full px-4 pt-12 overflow-hidden">
       <Transition
         show={!loading}
         enter="transition-opacity duration-500 ease-in-out"
@@ -34,7 +43,7 @@ export default function GamePage() {
         enterTo="opacity-100 pointer-events-none"
       >
         <div className="flex flex-col gap-8">
-          <div className="relative w-full h-64 mt-[26px]">
+          <div className="relative w-full h-64">
             <div
               className="absolute bottom-0 left-0 w-full h-64 bg-linear-to-t z-1 from-background-900 via-background-900/70 to-background-900/0" />
             <img

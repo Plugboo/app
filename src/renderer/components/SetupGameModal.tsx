@@ -2,7 +2,7 @@ import { RefObject, useEffect, useState } from 'react'
 import Button from './Button'
 import Input from './Input'
 import Modal from './Modal'
-import { GameInformation } from '../../common/games'
+import { GameInformation } from '@common/games'
 import { setupGame } from '../api/game'
 import { ERROR_MESSAGES } from '../util/error'
 import { pickFileDialog } from '../api/app'
@@ -10,6 +10,7 @@ import { OpenDialogReturnValue } from 'electron'
 
 type Props = {
   open: boolean
+  onChangeOpen: (open: boolean) => void
   game: GameInformation | null
   inputRef: RefObject<HTMLInputElement>
   onClickCancel?: () => void
@@ -63,6 +64,7 @@ export default function SetupGameModal(props: Props) {
   return (
     <Modal
       open={props.open}
+      onChangeOpen={props.onChangeOpen}
       classNames={{
         childrenWrapper: 'w-128'
       }}

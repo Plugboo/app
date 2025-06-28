@@ -4,7 +4,7 @@ type Type = 'primary' | 'secondary'
 
 type Props = {
   className?: string
-  rounded?: "lg" | "xl" | "2xl" | "3xl"
+  rounded?: 'lg' | 'xl' | '2xl' | '3xl'
   children?: ReactNode | ReactNode[] | undefined
   type?: Type
   onClick?: () => void
@@ -26,9 +26,9 @@ export default function Button(props: Props) {
 
   return (
     <button
-      className={`font-semibold ease-in-out duration-250 transition-all cursor-pointer px-5 py-2 rounded-${props.rounded ?? "lg"} ${getClassesForType(
+      className={`${className ?? ''} font-semibold ease-in-out duration-250 transition-all cursor-pointer px-5 py-2 rounded-${props.rounded ?? 'lg'} ${getClassesForType(
         props.type ?? 'primary'
-      )} ${className ?? ''}`}
+      )}`}
       onClick={onClick}
     >
       {children}

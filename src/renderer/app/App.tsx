@@ -25,8 +25,8 @@ export default function App() {
           <div className="bg-background-900 border-background-700/75 w-full h-full scrollbar-none">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/game" element={<GamePage />} />
-              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/game/:id" element={<GamePage />} />
+              <Route path="/profile/:id" element={<ProfilePage />} />
             </Routes>
           </div>
         </div>
