@@ -73,12 +73,6 @@ class Application {
       return
     }
 
-    // if (!this._games.loadProfiles()) {
-    //   console.log('Application::init(): GamesManager failed to load profiles.. quitting.')
-    //   app.quit()
-    //   return
-    // }
-
     if (!this._profiles.loadProfiles()) {
 
     }
@@ -95,8 +89,8 @@ class Application {
     this._window = new BrowserWindow({
       width: 1340,
       height: 700,
-      minWidth: 800,
-      minHeight: 500,
+      minWidth: 1050,
+      minHeight: 620,
       darkTheme: true,
       autoHideMenuBar: true,
       enableLargerThanScreen: true,
