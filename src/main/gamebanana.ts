@@ -2,7 +2,7 @@
 
 const BASE_URL: string = 'https://gamebanana.com/apiv11'
 
-namespace GameBanana {
+export namespace GameBanana {
   export interface Mod {
     _idRow: number
     _nStatus: string
