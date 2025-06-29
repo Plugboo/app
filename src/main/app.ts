@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, globalShortcut, dialog, OpenDialogOptions } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
-import GamesManager, { Game } from './games'
+import GamesManager from './games'
 import ProfileManager from '@main/profiles'
 
 class Application {
