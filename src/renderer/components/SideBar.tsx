@@ -1,4 +1,4 @@
-﻿import { Home, Settings, X } from 'lucide-react'
+﻿import { Home, Settings } from 'lucide-react'
 import { ReactNode, useEffect, useState } from 'react'
 import { GameInformation } from '@common/games'
 import { listGames } from '@renderer/api/game'
