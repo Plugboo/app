@@ -15,8 +15,8 @@ export default function TopBar() {
   }
 
   return (
-    <div className="z-99 fixed w-screen pl-18 h-10.5 shrink-0 pr-1.5">
-      <div className="w-full h-full flex justify-end items-center  app-region-drag">
+    <div className="z-99 fixed w-screen pl-18 h-10.5 shrink-0 pr-1.5 pointer-events-none">
+      <div className="w-full h-full flex justify-end items-center app-region-drag pointer-events-auto">
         <div className="flex gap-1 justify-center bg-background-800/40 rounded-lg overflow-hidden">
           <button
             className="flex items-center justify-center p-1 w-8 h-8 rounded-lg transition-colors duration-100 hover:bg-background-600/40 ml-auto cursor-pointer app-region-nodrag"

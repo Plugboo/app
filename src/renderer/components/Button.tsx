@@ -4,10 +4,11 @@ type Type = 'primary' | 'secondary'
 
 type Props = {
   className?: string
-  rounded?: 'lg' | 'xl' | '2xl' | '3xl'
+  rounded?: 'lg' | 'xl' | '2xl' | '3xl' | 'full'
   children?: ReactNode | ReactNode[] | undefined
   type?: Type
   onClick?: () => void
+  disabled?: boolean
 }
 
 function getClassesForType(type: Type): string {
@@ -15,7 +16,7 @@ function getClassesForType(type: Type): string {
     case 'primary':
       return 'bg-primary-400 hover:brightness-[90%] text-black'
     case 'secondary':
-      return 'bg-secondary-700 brightness-[110%] hover:brightness-[100%]'
+      return 'bg-secondary-700 brightness-[110%] hover:brightness-[100%] text-black'
     default:
       return ''
   }
@@ -30,6 +31,7 @@ export default function Button(props: Props) {
         props.type ?? 'primary'
       )}`}
       onClick={onClick}
+      disabled={props.disabled}
     >
       {children}
     </button>

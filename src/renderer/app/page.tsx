@@ -86,7 +86,7 @@ export default function HomePage() {
                       <img className="w-12 h-12 rounded-xl" src={game.icon} alt={`${game.name}'s icon`} />
                       <div className="flex flex-col">
                         <p className="font-semibold">{game.name}</p>
-                        <p className="-mt-1 text-gray-300">{game.developer}</p>
+                        <p className="-mt-1 font-semibold text-text-400">{game.developer}</p>
                       </div>
                     </div>
                   </div>

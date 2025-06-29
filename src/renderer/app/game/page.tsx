@@ -5,20 +5,20 @@ import { useNavigate, useParams } from 'react-router'
 import { GameProfile } from '@common/games'
 
 export default function GamePage() {
-  const { id } = useParams()
+  const { gameId } = useParams()
   const navigate = useNavigate()
 
   const [profiles, setProfiles] = useState<GameProfile[]>([])
   const [loading, setLoading] = useState(true)
 
-  const onClickProfile = (id: string) => {
+  const onClickProfile = (profileId: string) => {
     setLoading(true)
-    navigate(`/profile/${id}`)
+    navigate(`/game/${gameId}/profile/${profileId}`)
   }
 
   useEffect(() => {
     const loadProfiles = () => {
-      getProfiles(id).then((result) => {
+      getProfiles(gameId).then((result) => {
         setProfiles(result)
         setLoading(false)
       })
@@ -32,7 +32,7 @@ export default function GamePage() {
     } else {
       loadProfiles()
     }
-  }, [id])
+  }, [gameId])
 
   return (
     <main className="w-full px-4 pt-12 overflow-hidden">

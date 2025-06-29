@@ -3,8 +3,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { GameInformation } from '@common/games'
 import { listGames } from '@renderer/api/game'
 import { Link, useLocation } from 'react-router'
-import Modal from '@renderer/components/Modal'
-import Button from '@renderer/components/Button'
+import SettingsModal from '@renderer/components/SettingsModal'
 
 interface Route {
   key: string
@@ -32,29 +31,8 @@ export default function SideBar() {
   }, [])
 
   return (
-    <div className="fixed left-0 top-0 z-100 w-16 h-full shrink-0 grow-0">
-      <Modal classNames={{
-        childrenWrapper: 'min-w-208 min-h-102 relative overflow-hidden'
-      }} open={settingsMenuOpen} onChangeOpen={setSettingsMenuOpen}>
-        <div className="absolute top-0 left-0 w-full h-full flex flex-col">
-          <div className="w-full p-4 flex items-center justify-between">
-            <h1 className="font-semibold text-xl">Settings</h1>
-            <Button className="ml-auto !rounded-full flex items-center justify-center w-8 !p-0 h-8" type={'primary'}
-                    onClick={() => setSettingsMenuOpen(false)}>
-              <X />
-            </Button>
-          </div>
-          <div className="h-0.5 bg-background-700/30 mx-4 rounded-full" />
-          <div className="flex flex-row h-full w-full">
-            <div className="w-64 h-full p-4 shrink-0 rounded-tr-lg">
-
-            </div>
-            <div className="w-full h-full p-4">
-
-            </div>
-          </div>
-        </div>
-      </Modal>
+    <div className="fixed left-0 top-0 z-40 w-16 h-full shrink-0 grow-0 border-r-2 border-background-700/30">
+      <SettingsModal open={settingsMenuOpen} onChangeOpen={setSettingsMenuOpen} />
       <div className="flex flex-col justify-between items-center h-full p-2 py-3 text-background-300">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center p-2 py-0 gap-4">

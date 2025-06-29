@@ -4,7 +4,7 @@ import HomePage from './page'
 import GamePage from './game/page'
 import { useEffect, useState } from 'react'
 import { getAppTitleBar } from '../api/app'
-import ProfilePage from './profile/page'
+import ProfilePage from './game/profile/page'
 import SideBar from '@renderer/components/SideBar'
 
 export default function App() {
@@ -18,15 +18,15 @@ export default function App() {
 
   return (
     <MemoryRouter>
-      <div className="bg-background-800 text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
+      <div className="dark bg-background-800 text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
         <SideBar />
         {topBarEnabled && <TopBar />}
         <div className="w-full h-full flex pl-16">
           <div className="bg-background-900 border-background-700/75 w-full h-full scrollbar-none">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/game/:id" element={<GamePage />} />
-              <Route path="/profile/:id" element={<ProfilePage />} />
+              <Route path="/game/:gameId" element={<GamePage />} />
+              <Route path="/game/:gameId/profile/:profileId" element={<ProfilePage />} />
             </Routes>
           </div>
         </div>
