@@ -1,0 +1,44 @@
+﻿export type Id = string | number
+
+export interface Mod {
+  id: Id,
+  name: string,
+  version: string,
+  media: Media[]
+  createdAt: Date
+  updatedAt: Date
+  likes: number
+  comments: number
+  views: number
+  author: Author
+  tags: string[]
+  content?: string
+}
+
+export interface Author {
+  id: Id,
+  name: string,
+  avatarUrl: string,
+}
+
+export interface Media {
+  url: string
+}
+
+export interface Comment {
+  id: Id,
+  createdAt: Date,
+  updatedAt: Date,
+  replyCount: number,
+  content: string
+  author: Author
+}
+
+export interface SearchModsOptions {
+  page?: number,
+  query?: string
+}
+
+export interface GetCommentsOptions {
+  page?: number,
+}

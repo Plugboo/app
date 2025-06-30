@@ -3,7 +3,6 @@ import { ReactNode, useEffect, useState } from 'react'
 import { GameInformation } from '@common/games'
 import { listGames } from '@renderer/api/game'
 import { Link, useLocation } from 'react-router'
-import SettingsModal from '@renderer/components/SettingsModal'
 
 interface Route {
   key: string
@@ -19,10 +18,13 @@ const routes: Route[] = [
   }
 ]
 
-export default function SideBar() {
+type Props = {
+  onClickSettings: () => void
+}
+
+export default function SideBar(props: Props) {
   const [games, setGames] = useState<GameInformation[]>([])
   const location = useLocation()
-  const [settingsMenuOpen, setSettingsMenuOpen] = useState(false)
 
   useEffect(() => {
     listGames().then((result: GameInformation[]) => {
@@ -31,8 +33,7 @@ export default function SideBar() {
   }, [])
 
   return (
-    <div className="fixed left-0 top-0 z-40 w-16 h-full shrink-0 grow-0 border-r-2 border-background-700/30">
-      <SettingsModal open={settingsMenuOpen} onChangeOpen={setSettingsMenuOpen} />
+    <div className="fixed left-0 top-0 z-30 w-16 h-full shrink-0 grow-0 border-r-2 border-background-700/30">
       <div className="flex flex-col justify-between items-center h-full p-2 py-3 text-background-300">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center p-2 py-0 gap-4">
@@ -65,7 +66,7 @@ export default function SideBar() {
         </div>
         <div
           className="rounded-xl transition-colors duration-150 ease-in-out hover:bg-background-600/65 p-1.5 w-10 h-10 flex items-center justify-center cursor-pointer"
-          onClick={() => setSettingsMenuOpen(true)}>
+          onClick={() => props.onClickSettings()}>
           <Settings className="w-full h-full" />
         </div>
       </div>

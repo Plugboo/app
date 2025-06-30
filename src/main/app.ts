@@ -1,8 +1,9 @@
-import { app, BrowserWindow, ipcMain, globalShortcut, dialog, OpenDialogOptions } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, ipcMain, OpenDialogOptions, shell } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager from './games'
 import ProfileManager from '@main/profiles'
+import { GetCommentsOptions, Mod } from '@common/service'
 
 class Application {
   private readonly _games: GamesManager
@@ -74,7 +75,9 @@ class Application {
     }
 
     if (!this._profiles.loadProfiles()) {
-
+      console.log('Application::init(): ProfileManager failed to load profiles.. quitting.')
+      app.quit()
+      return
     }
 
     this.initIpcs()
@@ -100,6 +103,12 @@ class Application {
       }
     })
 
+    this._window.webContents.setWindowOpenHandler((details) => {
+      console.log('Link opening: ' + details.url)
+      shell.openExternal(details.url)
+      return { action: 'deny' }
+    })
+
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
       await this._window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
     } else {
@@ -114,6 +123,41 @@ class Application {
 
     ipcMain.handle('app:pickFile', async (_, options: OpenDialogOptions) => {
       return await dialog.showOpenDialog(options)
+    })
+
+    ipcMain.handle('mods::comments', async (_event, gameId: string, modId: string, options: GetCommentsOptions) => {
+      const game = this._games.entries.find((v) => v.info.id === gameId)
+      if (game === undefined) {
+        return []
+      }
+
+      return await game.services[0].getModComments(modId, options)
+    })
+
+    ipcMain.handle('mods::get', async (_event, gameId: string, modId: string) => {
+      const game = this._games.entries.find((v) => v.info.id === gameId)
+      if (game === undefined) {
+        return []
+      }
+
+      return await game.services[0].getMod(modId)
+    })
+
+    ipcMain.handle('mods::search', async (_event, gameId: string, query?: string) => {
+      const game = this._games.entries.find((v) => v.info.id === gameId)
+      if (game === undefined) {
+        return []
+      }
+
+      const records: Mod[] = []
+
+      for (const service of game.services) {
+        records.push(...(await service.searchMods({
+          query
+        })))
+      }
+
+      return records
     })
 
     ipcMain.handle('game::list', () => {

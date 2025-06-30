@@ -3,12 +3,15 @@ import fs from 'node:fs'
 import path from 'node:path'
 import HoyoPlay from './hoyoplay'
 import { multiExists } from './filesystem'
+import GameBananaService from '@main/services/gamebanana'
+import { BaseService } from '@main/services/service'
 
 export interface Game {
   info: GameInformation
   installPath: string | null
   validatePath: (installPath: string) => boolean
   searchInstallation: () => string
+  services: BaseService[]
 }
 
 export default class GamesManager {
@@ -33,7 +36,10 @@ export default class GamesManager {
         },
         searchInstallation: () => {
           return GamesManager.searchHoyoPlayInstallation('GenshinImpact.exe')
-        }
+        },
+        services: [
+          new GameBananaService('8552')
+        ]
       },
       {
         info: {
@@ -49,7 +55,10 @@ export default class GamesManager {
         },
         searchInstallation: () => {
           return GamesManager.searchHoyoPlayInstallation('StarRail.exe')
-        }
+        },
+        services: [
+          new GameBananaService('18366')
+        ]
       },
       {
         info: {
@@ -65,7 +74,10 @@ export default class GamesManager {
         },
         searchInstallation: () => {
           return GamesManager.searchHoyoPlayInstallation('ZenlessZoneZero.exe')
-        }
+        },
+        services: [
+          new GameBananaService('19567')
+        ]
       }
     ]
   }

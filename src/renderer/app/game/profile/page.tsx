@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { GameProfile } from '@common/games'
 import { Transition } from '@tailwindui/react'
-import { FileQuestionMark, Hammer, LoaderCircle, Play, Settings } from 'lucide-react'
-import { useParams } from 'react-router'
+import { FileQuestionMark, Hammer, LoaderCircle, Play, Plus, Settings } from 'lucide-react'
+import { useNavigate, useParams } from 'react-router'
 import { getProfile } from '@renderer/api/game'
 import Button from '@renderer/components/Button'
 import ProfileSettingsModal from '@renderer/app/game/profile/ProfileSettingsModal'
+import Input from '@renderer/components/Input'
 
 enum Status {
   UNKNOWN,
@@ -16,7 +17,9 @@ enum Status {
 }
 
 export default function ProfilePage() {
-  const { profileId } = useParams()
+  const { gameId, profileId } = useParams()
+  const navigate = useNavigate()
+
   const [profile, setProfile] = useState<GameProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [settingsModalOpen, setSettingsModalOpen] = useState(false)
@@ -85,6 +88,17 @@ export default function ProfilePage() {
           </div>
           <div className="w-full bg-background-800 h-[2px]" />
 
+          <div className="w-full flex gap-4">
+            <Input placeholder="Search mods..." classNames={{
+              wrapper: 'w-full'
+            }} />
+            <Button className="ml-auto w-40 shrink-0 flex gap-1 justify-center items-center" type="secondary"
+                    onClick={() => navigate(`/game/${gameId}/profile/${profileId}/mods`)}>
+              <Plus />
+              Install Mods
+            </Button>
+          </div>
+
           <div className="w-full rounded-2xl bg-background-800 min-h-16 border-2 border-background-700/80">
             {profile.mods.length === 0 && (
               <div className="flex flex-col gap-4 items-center justify-center h-32">
@@ -98,7 +112,9 @@ export default function ProfilePage() {
             )}
 
             {profile.mods.map((mod, index) => (
-              <div className={`w-full h-16 p-4 ${index < profile.mods.length - 1 ? "border-b-1 border-background-700" : ""}`} key={mod.id}>
+              <div
+                className={`w-full h-16 p-4 ${index < profile.mods.length - 1 ? 'border-b-1 border-background-700' : ''}`}
+                key={mod.id}>
                 <p>{mod.name}</p>
               </div>
             ))}
