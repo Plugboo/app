@@ -20,6 +20,10 @@ export default class ProfileManager {
 
   public loadProfiles(): boolean {
     try {
+      if (!fs.existsSync(this._path)) {
+        fs.mkdirSync(this._path, { recursive: true })
+      }
+
       const directories = fs.readdirSync(this._path, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name)
