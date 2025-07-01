@@ -13,6 +13,7 @@ export interface Mod {
   author: Author
   tags: string[]
   content?: string
+  nsfw: boolean
 }
 
 export interface Author {
@@ -37,6 +38,7 @@ export interface Comment {
 export interface SearchModsOptions {
   page?: number,
   query?: string
+  sort?: 'new' | 'default' | 'updated'
 }
 
 export interface GetCommentsOptions {

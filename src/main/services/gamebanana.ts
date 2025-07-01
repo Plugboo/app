@@ -247,9 +247,10 @@ export default class GameBananaService extends BaseService {
   public async searchMods(options: SearchModsOptions): Promise<Mod[]> {
     const page = options.page ?? 1
     const query = options.query ?? ''
+    const sort = options.sort ?? 'default'
 
     try {
-      const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=default&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
+      const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=${sort}&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
       const response = await fetch(url)
       if (!response.ok) {
         return []
@@ -283,7 +284,8 @@ export default class GameBananaService extends BaseService {
             id: String(record._aSubmitter._idRow),
             name: record._aSubmitter._sName,
             avatarUrl: record._aSubmitter._sAvatarUrl
-          }
+          },
+          nsfw: record._bHasContentRatings
         }
       ))
     } catch (exception) {
@@ -324,7 +326,8 @@ export default class GameBananaService extends BaseService {
           name: mod._aSubmitter._sName,
           avatarUrl: mod._aSubmitter._sAvatarUrl
         },
-        content: mod._sText
+        content: mod._sText,
+        nsfw: mod._aContentRatings.sa === 'NSFW'
       }
     } catch (exception) {
       console.error('GameBananaService::getMod(): Exception occurred while trying to get a mod:', exception)

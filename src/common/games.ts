@@ -25,11 +25,11 @@ export class GameProfile {
     this.mods = []
 
     try {
-      if (!fs.existsSync(this.path)) {
-        return
+      const modsPath = path.join(this.path, 'mods')
+      if (!fs.existsSync(modsPath)) {
+        fs.mkdirSync(modsPath, { recursive: true })
       }
 
-      const modsPath = path.join(this.path, 'mods')
       const directories = fs.readdirSync(modsPath, { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name)

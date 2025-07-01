@@ -3,7 +3,7 @@ import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager from './games'
 import ProfileManager from '@main/profiles'
-import { GetCommentsOptions, Mod } from '@common/service'
+import { GetCommentsOptions, Mod, SearchModsOptions } from '@common/service'
 
 class Application {
   private readonly _games: GamesManager
@@ -143,7 +143,7 @@ class Application {
       return await game.services[0].getMod(modId)
     })
 
-    ipcMain.handle('mods::search', async (_event, gameId: string, query?: string) => {
+    ipcMain.handle('mods::search', async (_event, gameId: string, options: SearchModsOptions) => {
       const game = this._games.entries.find((v) => v.info.id === gameId)
       if (game === undefined) {
         return []
@@ -152,9 +152,7 @@ class Application {
       const records: Mod[] = []
 
       for (const service of game.services) {
-        records.push(...(await service.searchMods({
-          query
-        })))
+        records.push(...(await service.searchMods(options)))
       }
 
       return records
