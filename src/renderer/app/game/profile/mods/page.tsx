@@ -103,7 +103,7 @@ export default function ModsPage() {
                     key={record.id}
                     to={`/game/${gameId}/profile/${profileId}/mods/${record.id}`}>
                     <div className="w-32 h-full overflow-hidden rounded-lg shrink-0">
-                      <img className={`w-full h-full object-cover opacity-0 ${record.nsfw ? 'blur-sm' : ''}`}
+                      <img className={`w-full h-full object-cover ${record.nsfw ? 'blur-sm' : ''}`}
                            src={record.media[0].url}
                            alt={`${record.name}'s screenshot`} />
                     </div>
