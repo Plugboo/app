@@ -1,7 +1,7 @@
 ﻿import { useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { Comment, Mod } from '@common/service'
+import { Mod } from '@common/service'
 import { getMod, getModComments } from '@renderer/api/mods'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle } from 'lucide-react'
 import Button from '@renderer/components/Button'
@@ -10,7 +10,7 @@ export default function ModPage() {
   const { gameId, modId } = useParams()
   const [loading, setLoading] = useState(true)
   const [mod, setMod] = useState<Mod | null>(null)
-  const [comments, setComments] = useState<Comment[]>([])
+  // const [comments, setComments] = useState<Comment[]>([])
 
   useEffect(() => {
     setLoading(true)
@@ -37,7 +37,7 @@ export default function ModPage() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="flex flex-col gap-4 w-full">
             <div className="flex gap-3 h-22">
-              <div className="h-full overflow-hidden rounded-lg shrink-0">
+              <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
                 <img className="w-full h-full object-cover" src={mod.media[0].url}
                      alt={`${mod.name}'s screenshot`} />
               </div>

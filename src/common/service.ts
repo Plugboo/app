@@ -35,6 +35,13 @@ export interface Comment {
   author: Author
 }
 
+export interface Category {
+  id: Id
+  name: string
+  itemCount: number
+  iconUrl: string
+}
+
 export interface SearchModsOptions {
   page?: number,
   query?: string

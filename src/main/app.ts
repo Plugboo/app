@@ -158,6 +158,15 @@ class Application {
       return records
     })
 
+    ipcMain.handle('mods::categories', async (_event, gameId: string) => {
+      const game = this._games.entries.find((v) => v.info.id === gameId)
+      if (game === undefined) {
+        return []
+      }
+
+      return await game.services[0].getCategories()
+    })
+
     ipcMain.handle('game::list', () => {
       return this._games.entries.map((v) => v.info)
     })

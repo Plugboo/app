@@ -1,4 +1,4 @@
-﻿import { Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/service'
+﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/service'
 import { BaseService } from '@main/services/service'
 
 interface ModInfo {
@@ -40,7 +40,7 @@ interface ModInfo {
   _bShowRipePromo: boolean
   _aSubmitter: Submitter
   _bFollowLinks: boolean
-  _aCategory: Category
+  _aCategory: ModCategory
   _aSuperCategory: SuperCategory
   _aCredits: Credit[]
 }
@@ -148,7 +148,7 @@ interface File {
   _bHasContents: boolean
 }
 
-interface Category {
+interface ModCategory {
   _idRow: number
   _sName: string
   _sModelName: string
@@ -232,6 +232,17 @@ interface Stamp {
 interface ModCommentsRoot {
   _aMetadata: Metadata
   _aRecords: CommentInfo[]
+}
+
+interface ProfilePageRoot {
+  _aModRootCategories: ModRootCategory[]
+}
+
+interface ModRootCategory {
+  _idRow: number
+  _sName: string
+  _nItemCount: number
+  _sIconUrl: string
 }
 
 const BASE_URL: string = 'https://gamebanana.com/apiv11'
@@ -327,7 +338,7 @@ export default class GameBananaService extends BaseService {
           avatarUrl: mod._aSubmitter._sAvatarUrl
         },
         content: mod._sText,
-        nsfw: mod._aContentRatings.sa === 'NSFW'
+        nsfw: false
       }
     } catch (exception) {
       console.error('GameBananaService::getMod(): Exception occurred while trying to get a mod:', exception)
@@ -367,6 +378,34 @@ export default class GameBananaService extends BaseService {
       ))
     } catch (exception) {
       console.error('GameBananaService::getModComments(): Exception occurred while trying to get mod comments:', exception)
+      return []
+    }
+  }
+
+  public async getCategories(): Promise<Category[]> {
+    try {
+      const url = `${BASE_URL}/Game/${this._gameId}/ProfilePage`
+      const response = await fetch(url)
+      if (!response.ok) {
+        return []
+      }
+
+      const data = await response.json()
+      if (data._sErrorCode !== undefined) {
+        return []
+      }
+
+      const root = data as ProfilePageRoot
+      return root._aModRootCategories.map((category) => (
+        {
+          id: category._idRow,
+          name: category._sName,
+          iconUrl: category._sIconUrl,
+          itemCount: category._nItemCount
+        }
+      ))
+    } catch (exception) {
+      console.error('GameBananaService::getCategories(): Exception occurred while trying to get categories:', exception)
       return []
     }
   }

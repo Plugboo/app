@@ -1,7 +1,7 @@
 ﻿import { Link, useParams } from 'react-router'
-import React, { useEffect, useState } from 'react'
-import { searchMods } from '@renderer/api/mods'
-import { Mod } from '@common/service'
+import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
+import { getCategories, searchMods } from '@renderer/api/mods'
+import { Category, Mod } from '@common/service'
 import Input from '@renderer/components/Input'
 import Button from '@renderer/components/Button'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle, RefreshCcw } from 'lucide-react'
@@ -11,14 +11,16 @@ import Dropdown from '@renderer/components/Dropdown'
 export default function ModsPage() {
   const { gameId, profileId } = useParams()
 
-  const [records, setRecords] = useState<Mod[]>([])
+  const [mods, setMods] = useState<Mod[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
   const [lastInput, setLastInput] = useState('')
   const [input, setInput] = useState('')
   const [sort, setSort] = useState<'new' | 'default' | 'updated'>('default')
+  const [, setView] = useState(15)
 
-  const search = (force: boolean) => {
+  const search = (force: boolean, sortOption?: string) => {
     if ((loading && !force) || (!force && input === lastInput)) {
       return
     }
@@ -27,21 +29,28 @@ export default function ModsPage() {
     setLastInput(input)
     searchMods(gameId, {
       query: input,
-      sort: sort
+      sort: (sortOption as any) ?? sort
     }).then((result) => {
-      setRecords(result)
+      setMods(result)
       setLoading(false)
     })
   }
 
-  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       search(false)
     }
   }
 
+  const onClickInstall = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+  }
+
   useEffect(() => {
-    search(true)
+    getCategories(gameId).then((result) => {
+      setCategories(result)
+      search(true)
+    })
   }, [gameId])
 
   return <main className="w-full h-full px-4 pt-12 overflow-hidden overflow-y-auto pb-4">
@@ -56,27 +65,76 @@ export default function ModsPage() {
         </Button>
       </div>
 
-      <div className="flex gap-4 w-full overflow-hidden">
-        <div className="p-4 bg-background-800 w-48 shrink-0 rounded-2xl grow-0 flex-none h-[0%]">
-          <Dropdown values={[
-            {
-              value: 'default',
-              label: 'Default'
-            },
-            {
-              value: 'new',
-              label: 'Newest'
-            },
-            {
-              value: 'updated',
-              label: 'Updated'
-            }
-          ]} onSelect={(value) => {
-            setSort(value as any)
-            search(true)
-          }} />
+      <div className="flex gap-3">
+        <div className="flex flex-col gap-3 flex-none h-[0%] w-60">
+          <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
+            <h1 className="font-semibold text-xl">Options</h1>
+            <Dropdown classNames={{
+              wrapper: 'bg-background-900/30',
+              option: 'bg-background-900/30 hover:!bg-background-800'
+            }} prefix="Sort by: " values={[
+              {
+                value: 'default',
+                label: 'Ripe'
+              },
+              {
+                value: 'new',
+                label: 'Newest'
+              },
+              {
+                value: 'updated',
+                label: 'Updated'
+              }
+            ]} onSelect={(value) => {
+              setSort(value as any)
+              search(true, value)
+            }} />
+            <Dropdown classNames={{
+              wrapper: 'bg-background-900/30',
+              option: 'bg-background-900/30 hover:!bg-background-800'
+            }} prefix="View: " values={[
+              {
+                value: '5',
+                label: '5'
+              },
+              {
+                value: '10',
+                label: '10'
+              },
+              {
+                value: '15',
+                label: '15'
+              },
+              {
+                value: '20',
+                label: '20'
+              }
+            ]} defaultValue="15" onSelect={(value) => {
+              setView(Number(value))
+              search(true)
+            }} />
+          </div>
+          <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
+            <h1 className="font-semibold text-xl">Categories</h1>
+            <div className="flex flex-col">
+              {categories.map((category: Category) => (
+                <div
+                  className="flex gap-2 rounded-2xl cursor-pointer transition-colors duration-150 ease-in-out hover:bg-background-700 p-2"
+                  key={category.id}>
+                  <div className="w-12 h-12 p-1.5 bg-background-900/35 rounded-xl">
+                    <img className="w-full h-full object-contain" src={category.iconUrl}
+                         alt={`${category.name}'s icon`} />
+                  </div>
+                  <div className="flex flex-col justify-center">
+                    <p className="text-text-300 font-semibold">{category.name}</p>
+                    <p className="text-text-400 font-medium">{category.itemCount}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="w-full">
+        <div className="flex flex-col gap-3 flex-auto overflow-hidden">
           {loading && (
             <div className="flex gap-1.5 justify-center items-center p-4 bg-background-800/20 rounded-2xl w-full h-32">
               <LoaderCircle className="animate-spin" />
@@ -84,48 +142,42 @@ export default function ModsPage() {
             </div>
           )}
 
-          {!loading && records.length === 0 && (
+          {!loading && mods.length === 0 && (
             <div className="flex gap-1.5 justify-center items-center p-4 bg-background-800/20 rounded-2xl w-full h-32">
               <h1>No results found for your query!</h1>
             </div>
           )}
 
-          {!loading && records.length > 0 && (
-            <div className="w-full flex flex-col gap-4 h-full">
-              {records.map((record: Mod, index) => (
+          {!loading && mods.length > 0 && (
+            <div className="w-full flex flex-col gap-3 h-full">
+              {mods.map((record: Mod, index) => (
                 <motion.div
-                  className="w-full h-30 bg-background-800 p-4 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-90 transition-all duration-100 cursor-pointer"
+                  className="w-full h-27 bg-background-800/50 p-4 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{
-                  delay: 0.085 * index
+                  delay: 0.065 * index
                 }}>
                   <Link
                     className="w-full h-full flex gap-4 overflow-hidden"
                     key={record.id}
                     to={`/game/${gameId}/profile/${profileId}/mods/${record.id}`}>
-                    <div className="w-32 h-full overflow-hidden rounded-lg shrink-0">
+                    <div
+                      className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
                       <img className={`w-full h-full object-cover ${record.nsfw ? 'blur-sm' : ''}`}
                            src={record.media[0].url}
                            alt={`${record.name}'s screenshot`} />
                     </div>
-                    <div className="flex flex-col justify-between min-w-0 overflow-hidden">
-                      <div className="flex flex-row gap-1.5">
-                        <p className="font-bold text-xl text-nowrap">{record.name}</p>
-                        <p className="font-medium text-lg text-text-500 text-nowrap">{`by ${record.author.name}`}</p>
-                      </div>
-                      <div className="flex gap-1.5 flex-none">
-                        {record.nsfw && (
-                          <p
-                            className="px-2 py-0.5 text-sm rounded-lg text-red-400 min-w-0 bg-red-600/30 grow-0 flex-none flex flex-row gap-4">
-                            NSFW
-                          </p>
-                        )}
-                        {record.tags.map((tag: string) => (
-                          <p
-                            className="px-2 py-0.5 text-sm rounded-lg text-secondary-300 min-w-0 bg-secondary-600/30 grow-0 flex-none flex flex-row gap-4"
-                            key={tag}>
-                            {tag}
-                          </p>
-                        ))}
+                    <div className="flex flex-col justify-between overflow-hidden grow-0">
+                      <div className="flex flex-col">
+                        <div className="flex gap-2 items-center">
+                          <p className="font-semibold text-xl text-nowrap">{record.name}</p>
+                          {record.nsfw && (
+                            <p
+                              className="px-1.5 py-0.5 text-sm rounded-lg text-red-400 min-w-0 bg-red-600/30 grow-0 flex-none flex flex-row gap-4 h-6">
+                              NSFW
+                            </p>
+                          )}
+                        </div>
+                        <p className="font-medium text-base text-text-400 text-nowrap -mt-1">{record.author.name}</p>
                       </div>
                       <div className="flex gap-4">
                         <div className="flex gap-1 items-center">
@@ -143,7 +195,7 @@ export default function ModsPage() {
                       </div>
                     </div>
                     <div className="ml-auto h-full flex flex-col gap-2 shrink-0">
-                      <Button className="mt-auto flex gap-2">
+                      <Button className="mt-auto flex gap-2" onClick={onClickInstall}>
                         <Download />
                         Install
                       </Button>

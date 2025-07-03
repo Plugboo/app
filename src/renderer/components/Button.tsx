@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 
 type Type = 'primary' | 'secondary'
 
@@ -7,7 +7,7 @@ type Props = {
   rounded?: 'lg' | 'xl' | '2xl' | '3xl' | 'full'
   children?: ReactNode | ReactNode[] | undefined
   type?: Type
-  onClick?: () => void
+  onClick?: MouseEventHandler<HTMLButtonElement>
   disabled?: boolean
 }
 
