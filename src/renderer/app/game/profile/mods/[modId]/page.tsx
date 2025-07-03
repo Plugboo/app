@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { Mod } from '@common/service'
-import { getMod, getModComments } from '@renderer/api/mods'
+import { getMod } from '@renderer/api/mods'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle } from 'lucide-react'
 import Button from '@renderer/components/Button'
 
@@ -18,9 +18,9 @@ export default function ModPage() {
       setMod(result)
       setLoading(false)
 
-      getModComments(gameId, modId, {}).then((result2) => {
-        setComments(result2)
-      })
+      // getModComments(gameId, modId, {}).then((result2) => {
+      //   setComments(result2)
+      // })
     })
   }, [gameId, modId])
 
