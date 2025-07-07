@@ -1,9 +1,17 @@
-import { app, BrowserWindow, dialog, globalShortcut, ipcMain, OpenDialogOptions, shell } from 'electron'
+import {
+    app,
+    BrowserWindow,
+    globalShortcut,
+    ipcMain,
+    shell
+} from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
 import GamesManager from './games'
 import ProfileManager from '@main/profiles'
 import { GetCommentsOptions, Mod, SearchModsOptions } from '@common/service'
+import IpcManager from '@main/ipcs/ipc'
+import AppIpc from '@main/ipcs/appIpc'
 
 class Application {
     private readonly _games: GamesManager
@@ -117,13 +125,8 @@ class Application {
     }
 
     private initIpcs() {
-        ipcMain.handle('app::titleBar', () => {
-            return ConfigManager.config.titleBar
-        })
-
-        ipcMain.handle('app:pickFile', async (_, options: OpenDialogOptions) => {
-            return await dialog.showOpenDialog(options)
-        })
+        IpcManager.registerHandler("app::titleBar", AppIpc.getTitleBarConfig)
+        IpcManager.registerHandler("app:pickFile", AppIpc.showFileDialog)
 
         ipcMain.handle('mods::comments', async (_event, gameId: string, modId: string, options: GetCommentsOptions) => {
             const game = this._games.entries.find((v) => v.info.id === gameId)

@@ -1,11 +1,11 @@
 import { GameInformation } from '@common/games'
 import fs from 'node:fs'
 import path from 'node:path'
-import HoyoPlay from './hoyoplay'
-import { multiExists } from './filesystem'
+import HoyoPlay from './utils/hoyoplay'
+import { multiExists } from './utils/filesystem'
 import GameBananaService from '@main/services/gamebanana'
 import { BaseService } from '@main/services/service'
-import { Loader } from '@common/loader'
+import { Loader } from '@main/loader'
 
 export interface Game {
     info: GameInformation
