@@ -2,17 +2,17 @@
 import { IpcChannel } from '@common/ipc'
 
 export async function getModComments(gameId: string, modId: string, options: GetCommentsOptions): Promise<Comment[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetComments, gameId, modId, options) as Comment[]
+    return await window.electron.ipc.invoke(IpcChannel.Mods_GetComments, gameId, modId, "gamebanana", options) as Comment[]
 }
 
 export async function getMod(gameId: string, modId: string): Promise<Mod> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetMod, gameId, modId) as Mod
+    return await window.electron.ipc.invoke(IpcChannel.Mods_GetMod, gameId, modId, "gamebanana") as Mod
 }
 
 export async function searchMods(gameId: string, options: SearchModsOptions): Promise<Mod[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_Search, gameId, options) as Mod[]
+    return await window.electron.ipc.invoke(IpcChannel.Mods_Search, gameId, "gamebanana", options) as Mod[]
 }
 
 export async function getCategories(gameId: string): Promise<Category[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetCategories, gameId) as Category[]
+    return await window.electron.ipc.invoke(IpcChannel.Mods_GetCategories, gameId, "gamebanana") as Category[]
 }
