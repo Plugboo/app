@@ -9,15 +9,15 @@ export default class GameIpc {
 
     public static getProfiles(event: IpcEvent) {
         if (event.args.length !== 1) {
-            return []
+            return "[]"
         }
 
         const gameId: Id = event.args[0]
-        return application.profiles.entries
+        return JSON.stringify(application.profiles.entries
             .entries()
             .filter(([_, profile]) => profile.gameId === gameId)
             .map(([_, profile]) => profile)
-            .toArray()
+            .toArray())
     }
 
     public static getProfile(event: IpcEvent) {
@@ -26,9 +26,9 @@ export default class GameIpc {
         }
 
         const profileId: Id = event.args[0]
-        return application.profiles.entries
+        return JSON.stringify(application.profiles.entries
             .entries()
-            .find(([_, profile]) => profile.id === profileId)[1]
+            .find(([_, profile]) => profile.id === profileId)[1])
     }
 
     public static verify(event: IpcEvent) {
@@ -126,5 +126,6 @@ export default class GameIpc {
         return application.profiles.createProfile(gameId as string, name, loader, loaderVersion)
     }
 
-    public static deleteProfile() {}
+    public static deleteProfile() {
+    }
 }
