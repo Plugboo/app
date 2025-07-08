@@ -11,6 +11,12 @@ export interface IpcEvent {
 export default class IpcManager {
     private static _handlers: Map<string, IpcHandler> = new Map()
 
+    /**
+     * Registers a handler for a specific IPC channel. Throws an error if the channel is already registered.
+     *
+     * @param channel - The IPC channel to associate with the handler.
+     * @param handler - The function that will be invoked when the specified channel receives a request.
+     */
     public static registerHandler(channel: IpcChannel, handler: IpcHandler) {
         if (IpcManager._handlers.has(channel)) {
             throw new Error(`Channel already registered: ${channel}`)
@@ -26,6 +32,11 @@ export default class IpcManager {
         })
     }
 
+    /**
+     * Removes the handler for the specified IPC channel. Throws an error if the channel is not registered.
+     *
+     * @param channel - The IPC channel whose handler should be removed.
+     */
     public static removeHandler(channel: IpcChannel) {
         if (!IpcManager._handlers.has(channel)) {
             throw new Error(`Channel already removed: ${channel}`)
