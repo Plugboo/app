@@ -409,4 +409,8 @@ export default class GameBananaService extends BaseService {
             return []
         }
     }
+
+    public getId(): string {
+        return "gamebanana"
+    }
 }

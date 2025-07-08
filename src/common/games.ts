@@ -31,7 +31,7 @@ export class GameProfile {
     constructor(id: string = '', gameId: string = '') {
         this.id = id
         this.gameId = gameId
-        this.path = path
+        this.path = ""
         this.name = ''
         this.mods = []
         this.loader = null

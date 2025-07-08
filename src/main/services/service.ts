@@ -1,19 +1,23 @@
-﻿import { Mod, Id, SearchModsOptions, GetCommentsOptions, Comment, Category } from '@common/service'
+﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/service'
 
 export class BaseService {
     public async searchMods(options: SearchModsOptions): Promise<Mod[]> {
-        return []
+        throw new Error('Not implemented')
     }
 
     public async getMod(modId: Id): Promise<Mod | null> {
-        return null
+        throw new Error('Not implemented')
     }
 
     public async getModComments(modId: Id, options: GetCommentsOptions): Promise<Comment[]> {
-        return []
+        throw new Error('Not implemented')
     }
 
     public async getCategories(): Promise<Category[]> {
-        return []
+        throw new Error('Not implemented')
+    }
+
+    public getId(): string {
+        throw new Error('Not implemented')
     }
 }
