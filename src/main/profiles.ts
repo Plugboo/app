@@ -11,27 +11,22 @@ const REQUIRED_JSON_OBJECTS: string[] = [
 ]
 
 export default class ProfileManager {
-    private readonly _path: string
+    public static path: string
 
-    public entries: Map<string, GameProfile>
+    public static entries: Map<string, GameProfile> = new Map()
 
-    constructor(path: string) {
-        this._path = path
-        this.entries = new Map()
-    }
-
-    public loadProfiles(): boolean {
+    public static loadProfiles(): boolean {
         try {
-            if (!fs.existsSync(this._path)) {
-                fs.mkdirSync(this._path, { recursive: true })
+            if (!fs.existsSync(ProfileManager.path)) {
+                fs.mkdirSync(ProfileManager.path, { recursive: true })
             }
 
-            const directories = fs.readdirSync(this._path, { withFileTypes: true })
+            const directories = fs.readdirSync(ProfileManager.path, { withFileTypes: true })
                 .filter(dirent => dirent.isDirectory())
                 .map(dirent => dirent.name)
 
             directoryLoop: for (const directory of directories) {
-                const absolutePath = path.join(this._path, directory)
+                const absolutePath = path.join(ProfileManager.path, directory)
 
                 if (!fs.existsSync(path.join(absolutePath, 'profile.json'))) {
                     continue
@@ -52,7 +47,7 @@ export default class ProfileManager {
                     const profile: GameProfile = Object.assign(new GameProfile(), json)
                     profile.path = absolutePath
 
-                    if (this.entries.has(profile.id)) {
+                    if (ProfileManager.entries.has(profile.id)) {
                         console.log('ProfileManager::loadProfiles(): Found profile with an already used id.')
                         continue
                     }
@@ -60,7 +55,7 @@ export default class ProfileManager {
                     profile.getMods()
 
                     console.log('ProfileManager::loadProfiles(): Loaded profile with name:', profile.name)
-                    this.entries.set(profile.id, profile)
+                    ProfileManager.entries.set(profile.id, profile)
                 } catch (error) {
                     console.error('ProfileManager::loadProfiles(): Exception occurred while trying to load a profile:', error)
                 }
@@ -72,13 +67,13 @@ export default class ProfileManager {
         }
     }
 
-    public createProfile(gameId: string, name: string, loader: Loader, loaderVersion: string) {
+    public static createProfile(gameId: string, name: string, loader: Loader, loaderVersion: string) {
         try {
-            if (!fs.existsSync(this._path)) {
-                fs.mkdirSync(this._path, { recursive: true })
+            if (!fs.existsSync(ProfileManager.path)) {
+                fs.mkdirSync(ProfileManager.path, { recursive: true })
             }
 
-            const absolutePath = path.join(this._path, name)
+            const absolutePath = path.join(ProfileManager.path, name)
             if (fs.existsSync(absolutePath)) {
                 return false
             }
@@ -93,7 +88,7 @@ export default class ProfileManager {
 
             fs.mkdirSync(absolutePath)
             fs.writeFileSync(path.join(absolutePath, 'profile.json'), JSON.stringify(profile.toProfilesJson()))
-            this.entries.set(profile.id, profile)
+            ProfileManager.entries.set(profile.id, profile)
 
             return true
         } catch (error) {

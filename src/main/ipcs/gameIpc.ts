@@ -1,10 +1,11 @@
-import { application } from '@main/app'
 import { IpcEvent } from './ipc'
 import { Id } from '@common/service'
+import GameManager from '@main/games'
+import ProfileManager from '@main/profiles'
 
 export default class GameIpc {
     public static listGames() {
-        return application.games.entries.map((v) => v.info)
+        return GameManager.entries.map((v) => v.info)
     }
 
     public static getProfiles(event: IpcEvent) {
@@ -13,7 +14,7 @@ export default class GameIpc {
         }
 
         const gameId: Id = event.args[0]
-        return JSON.stringify(application.profiles.entries
+        return JSON.stringify(ProfileManager.entries
             .entries()
             .filter(([_, profile]) => profile.gameId === gameId)
             .map(([_, profile]) => profile)
@@ -26,7 +27,7 @@ export default class GameIpc {
         }
 
         const profileId: Id = event.args[0]
-        return JSON.stringify(application.profiles.entries
+        return JSON.stringify(ProfileManager.entries
             .entries()
             .find(([_, profile]) => profile.id === profileId)[1])
     }
@@ -41,7 +42,7 @@ export default class GameIpc {
 
         const gameId: Id = event.args[0]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return {
                 success: false,
@@ -73,7 +74,7 @@ export default class GameIpc {
         const gameId: Id = event.args[0]
         const path: string = event.args[1]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return {
                 success: false,
@@ -96,7 +97,7 @@ export default class GameIpc {
         }
 
         game.installPath = path
-        application.games.savePaths()
+        GameManager.savePaths()
 
         return {
             success: true
@@ -113,7 +114,7 @@ export default class GameIpc {
         const loaderId: string = event.args[2]
         const loaderVersion: string = event.args[3]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return false
         }
@@ -123,7 +124,7 @@ export default class GameIpc {
             return false
         }
 
-        return application.profiles.createProfile(gameId as string, name, loader, loaderVersion)
+        return ProfileManager.createProfile(gameId as string, name, loader, loaderVersion)
     }
 
     public static deleteProfile() {

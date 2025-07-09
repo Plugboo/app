@@ -1,6 +1,6 @@
 import { IpcEvent } from '@main/ipcs/ipc'
-import { application } from '@main/app'
 import { GetCommentsOptions, Id, SearchModsOptions } from '@common/service'
+import GameManager from '@main/games'
 
 export default class ModIpc {
     public static async getMod(event: IpcEvent) {
@@ -12,7 +12,7 @@ export default class ModIpc {
         const modId: Id = event.args[1]
         const serviceId: Id = event.args[2]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return null
         }
@@ -34,7 +34,7 @@ export default class ModIpc {
         const serviceId: Id = event.args[1]
         const options: SearchModsOptions = event.args[2]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return []
         }
@@ -57,7 +57,7 @@ export default class ModIpc {
         const serviceId: Id = event.args[2]
         const options: GetCommentsOptions = event.args[3]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return []
         }
@@ -78,7 +78,7 @@ export default class ModIpc {
         const gameId: Id = event.args[0]
         const serviceId: Id = event.args[1]
 
-        const game = application.games.entries.find((v) => v.info.id === gameId)
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
             return []
         }

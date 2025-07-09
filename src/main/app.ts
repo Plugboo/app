@@ -1,7 +1,7 @@
 import { app, BrowserWindow, globalShortcut, shell } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
-import GamesManager from './games'
+import GameManager from './games'
 import ProfileManager from '@main/profiles'
 import IpcManager from '@main/ipcs/ipc'
 import AppIpc from '@main/ipcs/appIpc'
@@ -11,19 +11,16 @@ import WindowIpc from '@main/ipcs/windowIpc'
 import GameIpc from '@main/ipcs/gameIpc'
 
 class Application {
-    public readonly games: GamesManager
-
-    public readonly profiles: ProfileManager
-
     private readonly _dataPath: string
 
     public window: BrowserWindow | null
 
     constructor() {
         this._dataPath = path.join(app.getPath('appData'), 'GachaForge', 'data')
-        this.games = new GamesManager(this._dataPath)
-        this.profiles = new ProfileManager(path.resolve(this._dataPath, 'profiles'))
         this.window = null
+
+        GameManager.pathsFile = path.join(this._dataPath, 'paths.json')
+        ProfileManager.path = path.join(this._dataPath, 'profiles')
 
         /*
          * Quit when all windows are closed, except on macOS. There, it's common
@@ -46,8 +43,8 @@ class Application {
             }
         })
 
-        app.on("before-quit", async () => {
-            console.log("[Application] Before quitting...")
+        app.on('before-quit', async () => {
+            console.log('[Application] Before quitting...')
             {
                 const values = Object.values(IpcChannel)
                 for (const channel in Object.keys(IpcChannel)) {
@@ -83,13 +80,13 @@ class Application {
             return
         }
 
-        if (!this.games.loadPaths()) {
+        if (!GameManager.loadPaths()) {
             console.log('Application::init(): GamesManager failed to load paths.. quitting.')
             app.quit()
             return
         }
 
-        if (!this.profiles.loadProfiles()) {
+        if (!ProfileManager.loadProfiles()) {
             console.log('Application::init(): ProfileManager failed to load profiles.. quitting.')
             app.quit()
             return

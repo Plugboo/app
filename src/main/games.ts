@@ -16,97 +16,92 @@ export interface Game {
     loaders: Loader[]
 }
 
-export default class GamesManager {
-    private readonly _pathsPath
+export default class GameManager {
+    public static pathsFile: string
 
-    public entries: Game[]
-
-    constructor(basePath: string) {
-        this._pathsPath = path.join(basePath, 'paths.json')
-        this.entries = [
-            {
-                info: {
-                    id: 'genshin_impact',
-                    name: 'Genshin Impact',
-                    banner: 'https://images.gamebanana.com/img/banners/games/63388a097a525.jpg?opt=w300',
-                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/54795ec619ebda94c86d00184861c96f.png',
-                    developer: 'miHoYo'
-                },
-                installPath: null,
-                validatePath: (installPath: string) => {
-                    return GamesManager.validateGenshinImpactPath(installPath)
-                },
-                searchInstallation: () => {
-                    return GamesManager.searchHoyoPlayInstallation('GenshinImpact.exe')
-                },
-                services: [
-                    new GameBananaService('8552')
-                ],
-                loaders: []
+    public static entries: Game[] = [
+        {
+            info: {
+                id: 'genshin_impact',
+                name: 'Genshin Impact',
+                banner: 'https://images.gamebanana.com/img/banners/games/63388a097a525.jpg?opt=w300',
+                icon: 'https://cdn2.steamgriddb.com/icon_thumb/54795ec619ebda94c86d00184861c96f.png',
+                developer: 'miHoYo'
             },
-            {
-                info: {
-                    id: 'honkai_star_rail',
-                    name: 'Honkai: Star Rail',
-                    banner: 'https://images.gamebanana.com/img/banners/games/64ccf63a5ceb7.png?opt=w300',
-                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/e52da5a31de788599378924f0e639557.png',
-                    developer: 'miHoYo'
-                },
-                installPath: null,
-                validatePath: (installPath: string) => {
-                    return GamesManager.validateHonkaiStarRailPath(installPath)
-                },
-                searchInstallation: () => {
-                    return GamesManager.searchHoyoPlayInstallation('StarRail.exe')
-                },
-                services: [
-                    new GameBananaService('18366')
-                ],
-                loaders: []
+            installPath: null,
+            validatePath: (installPath: string) => {
+                return GameManager.validateGenshinImpactPath(installPath)
             },
-            {
-                info: {
-                    id: 'zenless_zone_zero',
-                    name: 'Zenless Zone Zero',
-                    banner: 'https://optimg.gamebanana.com/img/banners/games/66868cbc731d2.jpg?opt=w300',
-                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/7029a498c4f596f73b35504df9bab02a.png',
-                    developer: 'miHoYo'
-                },
-                installPath: null,
-                validatePath: (installPath: string) => {
-                    return GamesManager.validateZenlessZoneZeroPath(installPath)
-                },
-                searchInstallation: () => {
-                    return GamesManager.searchHoyoPlayInstallation('ZenlessZoneZero.exe')
-                },
-                services: [
-                    new GameBananaService('19567')
-                ],
-                loaders: []
-            }
-        ]
-    }
+            searchInstallation: () => {
+                return GameManager.searchHoyoPlayInstallation('GenshinImpact.exe')
+            },
+            services: [
+                new GameBananaService('8552')
+            ],
+            loaders: []
+        },
+        {
+            info: {
+                id: 'honkai_star_rail',
+                name: 'Honkai: Star Rail',
+                banner: 'https://images.gamebanana.com/img/banners/games/64ccf63a5ceb7.png?opt=w300',
+                icon: 'https://cdn2.steamgriddb.com/icon_thumb/e52da5a31de788599378924f0e639557.png',
+                developer: 'miHoYo'
+            },
+            installPath: null,
+            validatePath: (installPath: string) => {
+                return GameManager.validateHonkaiStarRailPath(installPath)
+            },
+            searchInstallation: () => {
+                return GameManager.searchHoyoPlayInstallation('StarRail.exe')
+            },
+            services: [
+                new GameBananaService('18366')
+            ],
+            loaders: []
+        },
+        {
+            info: {
+                id: 'zenless_zone_zero',
+                name: 'Zenless Zone Zero',
+                banner: 'https://optimg.gamebanana.com/img/banners/games/66868cbc731d2.jpg?opt=w300',
+                icon: 'https://cdn2.steamgriddb.com/icon_thumb/7029a498c4f596f73b35504df9bab02a.png',
+                developer: 'miHoYo'
+            },
+            installPath: null,
+            validatePath: (installPath: string) => {
+                return GameManager.validateZenlessZoneZeroPath(installPath)
+            },
+            searchInstallation: () => {
+                return GameManager.searchHoyoPlayInstallation('ZenlessZoneZero.exe')
+            },
+            services: [
+                new GameBananaService('19567')
+            ],
+            loaders: []
+        }
+    ]
 
-    public loadPaths() {
+    public static loadPaths() {
         try {
-            const directoryPath = path.join(this._pathsPath, '..')
+            const directoryPath = path.join(GameManager.pathsFile, '..')
 
             if (!fs.existsSync(directoryPath)) {
                 fs.mkdirSync(directoryPath, { recursive: true })
             }
 
-            if (!fs.existsSync(this._pathsPath)) {
+            if (!fs.existsSync(GameManager.pathsFile)) {
                 console.log('GamesManager::loadPaths(): Creating paths file..')
-                this.savePaths()
+                GameManager.savePaths()
             }
 
-            const data = fs.readFileSync(this._pathsPath, {
+            const data = fs.readFileSync(GameManager.pathsFile, {
                 encoding: 'utf8'
             })
-            const paths = this.serializePaths(JSON.parse(data))
+            const paths = GameManager.serializePaths(JSON.parse(data))
 
             for (const pair of paths) {
-                const game = this.entries.find((v) => v.info.id === pair[0])
+                const game = GameManager.entries.find((v) => v.info.id === pair[0])
                 if (game !== undefined) {
                     if (game.validatePath(pair[1])) {
                         game.installPath = pair[1]
@@ -123,14 +118,14 @@ export default class GamesManager {
         }
     }
 
-    public savePaths() {
+    public static savePaths() {
         try {
             const data: any = {}
-            for (const game of this.entries) {
+            for (const game of GameManager.entries) {
                 data[game.info.id] = game.installPath
             }
 
-            fs.writeFileSync(this._pathsPath, JSON.stringify(data, null, 2), {
+            fs.writeFileSync(GameManager.pathsFile, JSON.stringify(data, null, 2), {
                 encoding: 'utf8'
             })
         } catch (error) {
@@ -139,14 +134,14 @@ export default class GamesManager {
         }
     }
 
-    private serializePaths(data: any): Map<string, string> {
+    private static serializePaths(data: any): Map<string, string> {
         if (Array.isArray(data)) {
             return new Map()
         }
 
         const paths = new Map<string, string>()
 
-        for (const game of this.entries) {
+        for (const game of GameManager.entries) {
             const gameId = game.info.id
 
             if (typeof data[game.info.id] === 'string') {

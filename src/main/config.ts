@@ -5,7 +5,6 @@ interface Config {
     titleBar: 'custom' | 'native'
 }
 
-// TODO: Change to non-singleton class.
 export default class ConfigManager {
     public static config: Config
 
