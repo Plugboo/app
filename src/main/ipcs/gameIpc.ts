@@ -2,8 +2,19 @@ import { IpcEvent } from './ipc'
 import { Id } from '@common/service'
 import GameManager from '@main/games'
 import ProfileManager from '@main/profiles'
+import { NewsArticle } from '@common/news'
 
 export default class GameIpc {
+    public static async getNewsOfAll() {
+        const articles: NewsArticle[] = []
+
+        for (const game of GameManager.entries) {
+            articles.push(...(await game.getNews()));
+        }
+
+        return articles.sort((a, b) => b.createdAt - a.createdAt)
+    }
+
     public static listGames() {
         return GameManager.entries.map((v) => v.info)
     }

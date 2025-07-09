@@ -103,7 +103,7 @@ class Application {
 
         this.window = new BrowserWindow({
             width: 1340,
-            height: 700,
+            height: 850,
             minWidth: 1050,
             minHeight: 620,
             darkTheme: true,
@@ -138,6 +138,7 @@ class Application {
         IpcManager.registerHandler(IpcChannel.Window_Minimize, WindowIpc.minimize)
         IpcManager.registerHandler(IpcChannel.Window_Maximize, WindowIpc.maximize)
         IpcManager.registerHandler(IpcChannel.Window_Close, WindowIpc.close)
+        IpcManager.registerHandler(IpcChannel.Game_NewsAll, GameIpc.getNewsOfAll)
         IpcManager.registerHandler(IpcChannel.Game_List, GameIpc.listGames)
         IpcManager.registerHandler(IpcChannel.Game_GetProfiles, GameIpc.getProfiles)
         IpcManager.registerHandler(IpcChannel.Game_GetProfile, GameIpc.getProfile)

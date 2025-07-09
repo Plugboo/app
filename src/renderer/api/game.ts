@@ -1,5 +1,11 @@
 ﻿import { GameProfile } from '@common/games'
 import { IpcChannel } from '@common/ipc'
+import { NewsArticle } from '@common/news'
+
+export async function getNewsFromAll(): Promise<NewsArticle[]> {
+    return await window.electron.ipc.invoke(IpcChannel.Game_NewsAll) as NewsArticle[]
+}
+
 
 export async function listGames() {
     return await window.electron.ipc.invoke(IpcChannel.Game_List)

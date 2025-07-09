@@ -20,6 +20,7 @@ GachaForge is heavily under active development. All features may not be stable a
 - Installing and managing of mods inside the manager
 - Automatic installation and configuration of modloaders for games
 - Export profiles for easy sharing
+- View news from all supported games
 - And more to come!
 
 ---

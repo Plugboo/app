@@ -6,14 +6,34 @@ import { multiExists } from './utils/filesystem'
 import GameBananaService from '@main/services/gamebanana'
 import { BaseService } from '@main/services/service'
 import { Loader } from '@main/loader'
+import { NewsArticle } from '@common/news'
 
 export interface Game {
     info: GameInformation
     installPath: string | null
     validatePath: (installPath: string) => boolean
     searchInstallation: () => string
+    getNews: () => Promise<NewsArticle[]>,
     services: BaseService[]
     loaders: Loader[]
+}
+
+interface HoYoLabArticle {
+    post: {
+        post_id: string
+        subject: string
+        content: string
+        created_at: number
+    },
+    user: {
+        uid: string
+        nickname: string
+    },
+    cover_list: {
+        url: string
+        width: number
+        height: number
+    }[]
 }
 
 export default class GameManager {
@@ -24,7 +44,7 @@ export default class GameManager {
             info: {
                 id: 'genshin_impact',
                 name: 'Genshin Impact',
-                banner: 'https://images.gamebanana.com/img/banners/games/63388a097a525.jpg?opt=w300',
+                banner: 'https://cdn2.steamgriddb.com/thumb/2d273973a88b3ab45f0d0763300b0695.jpg',
                 icon: 'https://cdn2.steamgriddb.com/icon_thumb/54795ec619ebda94c86d00184861c96f.png',
                 developer: 'miHoYo'
             },
@@ -35,6 +55,9 @@ export default class GameManager {
             searchInstallation: () => {
                 return GameManager.searchHoyoPlayInstallation('GenshinImpact.exe')
             },
+            getNews: async () => {
+                return GameManager.getHoYoLabArticles(2, "1015537")
+            },
             services: [
                 new GameBananaService('8552')
             ],
@@ -44,7 +67,7 @@ export default class GameManager {
             info: {
                 id: 'honkai_star_rail',
                 name: 'Honkai: Star Rail',
-                banner: 'https://images.gamebanana.com/img/banners/games/64ccf63a5ceb7.png?opt=w300',
+                banner: 'https://cdn2.steamgriddb.com/thumb/7de88187918ddefb552555ae0a7fc9b6.jpg',
                 icon: 'https://cdn2.steamgriddb.com/icon_thumb/e52da5a31de788599378924f0e639557.png',
                 developer: 'miHoYo'
             },
@@ -55,6 +78,9 @@ export default class GameManager {
             searchInstallation: () => {
                 return GameManager.searchHoyoPlayInstallation('StarRail.exe')
             },
+            getNews: async () => {
+                return GameManager.getHoYoLabArticles(6, "172534910")
+            },
             services: [
                 new GameBananaService('18366')
             ],
@@ -64,7 +90,7 @@ export default class GameManager {
             info: {
                 id: 'zenless_zone_zero',
                 name: 'Zenless Zone Zero',
-                banner: 'https://optimg.gamebanana.com/img/banners/games/66868cbc731d2.jpg?opt=w300',
+                banner: 'https://cdn2.steamgriddb.com/thumb/97657e12f1b8cbf71b6837f02b23d423.jpg',
                 icon: 'https://cdn2.steamgriddb.com/icon_thumb/7029a498c4f596f73b35504df9bab02a.png',
                 developer: 'miHoYo'
             },
@@ -74,6 +100,9 @@ export default class GameManager {
             },
             searchInstallation: () => {
                 return GameManager.searchHoyoPlayInstallation('ZenlessZoneZero.exe')
+            },
+            getNews: async () => {
+                return GameManager.getHoYoLabArticles(8, "219270333")
             },
             services: [
                 new GameBananaService('19567')
@@ -150,6 +179,42 @@ export default class GameManager {
         }
 
         return paths
+    }
+
+    private static _cachedHoYoLabArticles: Map<number, NewsArticle[]> = new Map()
+
+    private static async getHoYoLabArticles(id: number, officialAccId: string): Promise<NewsArticle[]> {
+        if (GameManager._cachedHoYoLabArticles.has(id)) {
+            return GameManager._cachedHoYoLabArticles.get(id)
+        }
+
+        const url = `https://bbs-api-os.hoyolab.com/community/post/wapi/getNewsList?gids=${id}&last_id=0&page_size=15&type=3`
+
+        try {
+            const response = await fetch(url)
+            const json = await response.json()
+            const articles: NewsArticle[] = []
+
+            for (const hoyoArticle of (json.data.list as HoYoLabArticle[])) {
+                if (hoyoArticle.user.uid !== officialAccId) {
+                    continue
+                }
+
+                articles.push({
+                    id: hoyoArticle.post.post_id,
+                    title: hoyoArticle.post.subject,
+                    createdAt: hoyoArticle.post.created_at,
+                    coverUrl: hoyoArticle.cover_list.length > 0 ? hoyoArticle.cover_list[0].url : '',
+                    content: hoyoArticle.post.content
+                })
+            }
+
+            GameManager._cachedHoYoLabArticles.set(id, articles)
+            return articles
+        } catch (exception) {
+            console.error('GamesManager::getHoYoLabArticles(): Exception occurred while trying to get HoYoLab articles: ', exception)
+            return []
+        }
     }
 
     private static searchHoyoPlayInstallation(exeName: string): string {

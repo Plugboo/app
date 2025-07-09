@@ -5,6 +5,7 @@ export enum IpcChannel {
     Mods_GetMod = 'mods_mod',
     Mods_Search = 'mods_search',
     Mods_GetCategories = 'mods_categories',
+    Game_NewsAll = 'game_news_all',
     Game_List = 'game_list',
     Game_Verify = 'game_verify',
     Game_Setup = 'game_setup',
