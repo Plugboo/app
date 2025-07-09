@@ -38,7 +38,7 @@ export default function GamePage() {
     }, [gameId])
 
     return (
-        <main className="w-full px-4 pt-12 overflow-hidden">
+        <main className="w-full p-4 overflow-hidden">
             <CreateProfileModal open={createProfileOpen} onChangeOpen={setProfileOpen} />
             <Transition
                 show={!loading}

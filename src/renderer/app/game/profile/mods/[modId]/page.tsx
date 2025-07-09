@@ -24,7 +24,7 @@ export default function ModPage() {
         })
     }, [gameId, modId])
 
-    return <main className="w-full h-full px-4 pt-12 overflow-hidden overflow-y-auto pb-4">
+    return <main className="w-full h-full p-4 overflow-hidden overflow-y-auto pb-4">
         <motion.div className="flex flex-col gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             {loading && (
                 <div

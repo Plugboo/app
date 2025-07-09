@@ -27,7 +27,7 @@ export default function App() {
                 <SideBar onClickSettings={() => setSettingsModalOpen(true)} />
                 {topBarEnabled && <TopBar />}
                 <SettingsModal open={settingsModalOpen} onChangeOpen={setSettingsModalOpen} />
-                <div className="w-full h-full flex pl-16 pt-2.5">
+                <div className={`w-full h-full flex pl-16 ${topBarEnabled ? 'pt-9.5' : ''}`}>
                     <div className="bg-background-900 border-background-700/75 w-full h-full scrollbar-none">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
