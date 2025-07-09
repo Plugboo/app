@@ -45,4 +45,4 @@ We use plugins / extensions for code consistency. Please use them when developin
 
 ## 🧾 License
 
-Copyright (c) 2025-present [ZickZenni](https://github.com/zickzenni). `GachaForge` is free and open-source software licensed under the [MIT License](https://github.com/zickzenni/gachaforge/blob/main/LICENSE). 
+Copyright (c) 2025-present [ZickZenni](https://github.com/zickzenni). `GachaForge` is free and open-source software licensed under the [MIT License](https://github.com/zickzenni/gachaforge/blob/master/LICENSE). 
