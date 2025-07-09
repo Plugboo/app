@@ -25,6 +25,16 @@ GachaForge is heavily under active development. All features may not be stable a
 
 ---
 
+## 📽️ Screenshots
+
+![](https://i.imgur.com/Ozr34Ih.png)
+
+![](https://i.imgur.com/Ug9Rg2j.png)
+
+![](https://i.imgur.com/5t6HzRc.png)
+
+---
+
 ## 💻 Development
 
 ### Requirements
