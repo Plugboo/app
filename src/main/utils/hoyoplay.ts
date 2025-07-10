@@ -44,6 +44,16 @@ export interface PlayStatus {
 }
 
 export default class HoYoPlay {
+    /**
+     * Retrieves the list of installations stored in the game data file.
+     *
+     * This method reads the `gamedata.dat` file from the installed HoYoPlay launcher files,
+     * parses its content, and extracts installation information using a regular expression.
+     * If the file does not exist or an error occurs during reading or parsing, an empty list is returned.
+     *
+     * @return An array of `HoYoPlayInstallation` objects representing the installations.
+     *                                  Returns an empty array if the file cannot be found or parsed.
+     */
     public static getInstallations(): HoYoPlayInstallation[] {
         /*
          * Not sure if the "1_0" part is going to be changed...
