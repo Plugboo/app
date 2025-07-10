@@ -1,7 +1,6 @@
-import { app, BrowserWindow, globalShortcut, shell } from 'electron'
+import { app, BrowserWindow, BrowserWindowConstructorOptions, globalShortcut, shell } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
-import GameManager from './games'
 import ProfileManager from '@main/profiles'
 import IpcManager from '@main/ipcs/ipc'
 import AppIpc from '@main/ipcs/appIpc'
@@ -9,6 +8,7 @@ import { IpcChannel } from '@common/ipc'
 import ModIpc from '@main/ipcs/modIpc'
 import WindowIpc from '@main/ipcs/windowIpc'
 import GameIpc from '@main/ipcs/gameIpc'
+import GameManager from '@main/games/manager'
 
 class Application {
     private readonly _dataPath: string
@@ -75,19 +75,19 @@ class Application {
 
     public async init() {
         if (!ConfigManager.loadConfig(this._dataPath)) {
-            console.log('Application::init(): ConfigManager failed to load config.. quitting.')
+            console.log('[Application] ConfigManager failed to load config.. quitting.')
             app.quit()
             return
         }
 
         if (!GameManager.loadPaths()) {
-            console.log('Application::init(): GamesManager failed to load paths.. quitting.')
+            console.log('[Application] GameManager failed to load paths.. quitting.')
             app.quit()
             return
         }
 
         if (!ProfileManager.loadProfiles()) {
-            console.log('Application::init(): ProfileManager failed to load profiles.. quitting.')
+            console.log('[Application] ProfileManager failed to load profiles.. quitting.')
             app.quit()
             return
         }
@@ -105,7 +105,7 @@ class Application {
             return
         }
 
-        this.window = new BrowserWindow({
+        const options: BrowserWindowConstructorOptions = {
             width: 1340,
             height: 850,
             minWidth: 1050,
@@ -117,10 +117,13 @@ class Application {
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js')
             }
-        })
+        }
+
+        console.log('[Application] Creating window with options:\n', options)
+        this.window = new BrowserWindow(options)
 
         this.window.webContents.setWindowOpenHandler((details) => {
-            console.log('Link opening: ' + details.url)
+            console.log('[Application] Opening link: ' + details.url)
             shell.openExternal(details.url)
             return { action: 'deny' }
         })
@@ -133,6 +136,7 @@ class Application {
     }
 
     private initIpcs() {
+        console.log('[Application] Initializing IPCs..')
         IpcManager.registerHandler(IpcChannel.App_TitleBar, AppIpc.getTitleBarConfig)
         IpcManager.registerHandler(IpcChannel.App_PickFile, AppIpc.showFileDialog)
         IpcManager.registerHandler(IpcChannel.Mods_GetMod, ModIpc.getMod)

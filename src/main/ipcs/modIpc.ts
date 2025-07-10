@@ -1,6 +1,6 @@
 import { IpcEvent } from '@main/ipcs/ipc'
 import { GetCommentsOptions, Id, SearchModsOptions } from '@common/service'
-import GameManager from '@main/games'
+import GameManager from '@main/games/manager'
 
 export default class ModIpc {
     public static async getMod(event: IpcEvent) {

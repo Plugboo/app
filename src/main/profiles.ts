@@ -16,6 +16,9 @@ export default class ProfileManager {
     public static entries: Map<string, GameProfile> = new Map()
 
     public static loadProfiles(): boolean {
+        console.log("[ProfileManager] Loading profiles..")
+        ProfileManager.entries.clear()
+
         try {
             if (!fs.existsSync(ProfileManager.path)) {
                 fs.mkdirSync(ProfileManager.path, { recursive: true })
@@ -39,7 +42,7 @@ export default class ProfileManager {
                     const json = JSON.parse(content)
                     for (const key of REQUIRED_JSON_OBJECTS) {
                         if (typeof json[key] === 'undefined') {
-                            console.log(`ProfileManager::loadProfiles(): Found profile with invalid structure: Missing key in profile.json '${key}'`)
+                            console.log(`[ProfileManager] Found profile with invalid structure: Missing key in profile.json '${key}'`)
                             continue directoryLoop
                         }
                     }
@@ -48,16 +51,16 @@ export default class ProfileManager {
                     profile.path = absolutePath
 
                     if (ProfileManager.entries.has(profile.id)) {
-                        console.log('ProfileManager::loadProfiles(): Found profile with an already used id.')
+                        console.log('[ProfileManager] Found profile with an already used id.')
                         continue
                     }
 
                     profile.getMods()
 
-                    console.log('ProfileManager::loadProfiles(): Loaded profile with name:', profile.name)
+                    console.log('[ProfileManager] Loaded profile with name:', profile.name)
                     ProfileManager.entries.set(profile.id, profile)
                 } catch (error) {
-                    console.error('ProfileManager::loadProfiles(): Exception occurred while trying to load a profile:', error)
+                    console.error('[ProfileManager] Exception occurred while trying to load a profile:', error)
                 }
             }
             return true
