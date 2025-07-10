@@ -3,7 +3,7 @@ import { GameInformation } from '@common/games'
 import { BaseService } from '@main/services/service'
 import { Loader } from '@main/loader'
 import { NewsArticle } from '@common/news'
-import HoyoPlay from '@main/utils/hoyoplay'
+import HoYoPlay from '@main/utils/hoyoplay'
 import { multiExists } from '@main/utils/filesystem'
 
 interface HoYoLabArticle {
@@ -180,7 +180,7 @@ export default class HoYoverseGame extends Game {
      * @return The installation path of the HoyoPlay game if found and valid, or an empty string otherwise.
      */
     private static searchHoyoPlayInstallation(exeName: string): string {
-        const hoyoInstallation = HoyoPlay.getInstallations().find(
+        const hoyoInstallation = HoYoPlay.getInstallations().find(
             (install) => install.gameInstallStatus.gameExeName === exeName
         )
 

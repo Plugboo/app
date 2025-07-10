@@ -2,7 +2,7 @@ import { app } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
 
-export interface HoyoPlayInstallation {
+export interface HoYoPlayInstallation {
     download_transaction_no: string
     downloading: boolean
     enablePcdn: boolean
@@ -43,15 +43,15 @@ export interface PlayStatus {
     lastPlayTime: string
 }
 
-export default class HoyoPlay {
-    public static getInstallations(): HoyoPlayInstallation[] {
+export default class HoYoPlay {
+    public static getInstallations(): HoYoPlayInstallation[] {
         /*
          * Not sure if the "1_0" part is going to be changed...
          */
         const dataPath = path.join(app.getPath('appData'), 'Cognosphere', 'HYP', '1_0', 'data', 'gamedata.dat')
 
         if (!fs.existsSync(dataPath)) {
-            console.error('HoyoPlay::getInstallations(): Failed to get installations. File could not be found:', dataPath)
+            console.error('[HoYoPlay] Failed to get installations. File could not be found:', dataPath)
             return []
         }
 
@@ -61,7 +61,7 @@ export default class HoyoPlay {
             })
 
             const regex = /(?<={"download_transaction_no)(.*?)(?=,"version")/gm
-            const result: HoyoPlayInstallation[] = []
+            const result: HoYoPlayInstallation[] = []
 
             let regexResult
             while ((regexResult = regex.exec(data)) !== null) {
@@ -77,7 +77,7 @@ export default class HoyoPlay {
 
             return result
         } catch (error) {
-            console.error('HoyoPlay::getInstallations(): Exception occurred while reading installations file: ', error)
+            console.error('[HoYoPlay] Exception occurred while reading installations file: ', error)
             return []
         }
     }
