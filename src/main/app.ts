@@ -11,16 +11,16 @@ import GameIpc from '@main/ipcs/gameIpc'
 import GameManager from '@main/games/manager'
 
 class Application {
-    private readonly _dataPath: string
+    public readonly dataPath: string
 
     public window: BrowserWindow | null
 
     constructor() {
-        this._dataPath = path.join(app.getPath('appData'), 'GachaForge', 'data')
+        this.dataPath = path.join(app.getPath('appData'), 'GachaForge', 'data')
         this.window = null
 
-        GameManager.pathsFile = path.join(this._dataPath, 'paths.json')
-        ProfileManager.path = path.join(this._dataPath, 'profiles')
+        GameManager.pathsFile = path.join(this.dataPath, 'paths.json')
+        ProfileManager.path = path.join(this.dataPath, 'profiles')
 
         /*
          * Quit when all windows are closed, except on macOS. There, it's common
@@ -74,7 +74,7 @@ class Application {
     }
 
     public async init() {
-        if (!ConfigManager.loadConfig(this._dataPath)) {
+        if (!ConfigManager.loadConfig(this.dataPath)) {
             console.log('[Application] ConfigManager failed to load config.. quitting.')
             app.quit()
             return
@@ -90,6 +90,15 @@ class Application {
             console.log('[Application] ProfileManager failed to load profiles.. quitting.')
             app.quit()
             return
+        }
+
+        /*
+         * Fetch all versions of all loaders from all games.
+         */
+        for (const game of GameManager.entries) {
+            for (const loader of game.loaders) {
+                loader.fetchVersions().then()
+            }
         }
 
         this.initIpcs()
@@ -150,6 +159,7 @@ class Application {
         IpcManager.registerHandler(IpcChannel.Game_Setup, GameIpc.setup)
         IpcManager.registerHandler(IpcChannel.Game_CreateProfile, GameIpc.createProfile)
         IpcManager.registerHandler(IpcChannel.Game_DeleteProfile, GameIpc.deleteProfile)
+        IpcManager.registerHandler(IpcChannel.Game_Loaders, GameIpc.getLoaders)
     }
 }
 

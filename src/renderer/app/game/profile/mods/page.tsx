@@ -6,7 +6,7 @@ import Input from '@renderer/components/Input'
 import Button from '@renderer/components/Button'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle, RefreshCcw } from 'lucide-react'
 import { motion } from 'framer-motion'
-import Dropdown from '@renderer/components/Dropdown'
+import Select from '@renderer/components/Select'
 
 export default function ModsPage() {
     const { gameId, profileId } = useParams()
@@ -69,7 +69,7 @@ export default function ModsPage() {
                 <div className="flex flex-col gap-3 flex-none h-[0%] w-60">
                     <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
                         <h1 className="font-semibold text-xl">Options</h1>
-                        <Dropdown classNames={{
+                        <Select classNames={{
                             wrapper: 'bg-background-900/30',
                             option: 'bg-background-900/30 hover:!bg-background-800'
                         }} prefix="Sort by: " values={[
@@ -89,7 +89,7 @@ export default function ModsPage() {
                             setSort(value as any)
                             search(true, value)
                         }} />
-                        <Dropdown classNames={{
+                        <Select classNames={{
                             wrapper: 'bg-background-900/30',
                             option: 'bg-background-900/30 hover:!bg-background-800'
                         }} prefix="View: " values={[

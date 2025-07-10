@@ -1,6 +1,7 @@
 ﻿import { GameProfile } from '@common/games'
 import { IpcChannel } from '@common/ipc'
 import { NewsArticle } from '@common/news'
+import { Loader } from '@common/loader'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
     return await window.electron.ipc.invoke(IpcChannel.Game_NewsAll) as NewsArticle[]
@@ -29,4 +30,12 @@ export async function getProfiles(gameId: string): Promise<GameProfile[]> {
 
 export async function getProfile(gameId: string): Promise<GameProfile | null> {
     return JSON.parse((await window.electron.ipc.invoke(IpcChannel.Game_GetProfile, gameId)) as string) as GameProfile | null
+}
+
+export async function createProfile(gameId: string, name: string, loaderId: string, loaderVersion: string): Promise<boolean> {
+    return await window.electron.ipc.invoke(IpcChannel.Game_CreateProfile, gameId, name, loaderId, loaderVersion) as boolean
+}
+
+export async function getLoaders(gameId: string): Promise<Loader[]> {
+    return JSON.parse((await window.electron.ipc.invoke(IpcChannel.Game_Loaders, gameId)) as string) as Loader[]
 }

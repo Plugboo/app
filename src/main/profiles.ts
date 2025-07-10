@@ -1,8 +1,9 @@
 ﻿import fs from 'node:fs'
+import fetch from 'node-fetch'
 import path from 'node:path'
 import { GameProfile } from '@common/games'
 import { v4 } from 'uuid'
-import { Loader } from '@main/loader'
+import { Loader, LoaderVersion } from '@common/loader'
 
 const REQUIRED_JSON_OBJECTS: string[] = [
     'id',
@@ -16,7 +17,7 @@ export default class ProfileManager {
     public static entries: Map<string, GameProfile> = new Map()
 
     public static loadProfiles(): boolean {
-        console.log("[ProfileManager] Loading profiles..")
+        console.log('[ProfileManager] Loading profiles..')
         ProfileManager.entries.clear()
 
         try {
@@ -70,7 +71,7 @@ export default class ProfileManager {
         }
     }
 
-    public static createProfile(gameId: string, name: string, loader: Loader, loaderVersion: string) {
+    public static createProfile(gameId: string, name: string, _loader: Loader, _loaderVersion: LoaderVersion) {
         try {
             if (!fs.existsSync(ProfileManager.path)) {
                 fs.mkdirSync(ProfileManager.path, { recursive: true })
@@ -84,14 +85,36 @@ export default class ProfileManager {
             const profile = new GameProfile(v4(), gameId)
             profile.path = absolutePath
             profile.name = name
-            profile.loader = {
-                id: loader.id,
-                version: loaderVersion
-            }
 
             fs.mkdirSync(absolutePath)
+            fs.mkdirSync(path.join(absolutePath, 'mods'))
             fs.writeFileSync(path.join(absolutePath, 'profile.json'), JSON.stringify(profile.toProfilesJson()))
             ProfileManager.entries.set(profile.id, profile)
+
+            // const loaderPath = path.join(application.dataPath, 'loaders', gameId)
+            // if (!fs.existsSync(loaderPath)) {
+            //     fs.mkdirSync(loaderPath, { recursive: true })
+            // }
+            //
+            // const versionPath = path.join(loaderPath, loaderVersion.playFile.name)
+            // if (!fs.existsSync(versionPath)) {
+            //     console.log('[ProfileManager] Loader version is not downloaded. Downloading..')
+            //     ProfileManager.downloadLoaderVersion(loaderPath, loaderVersion)
+            // } else {
+            //     console.log('[ProfileManager] Loader version is already downloaded. Extracting..')
+            //     const bytes = fs.readFileSync(versionPath)
+            //     for (const entry of iter(bytes)) {
+            //         console.log('[ProfileManager] Extracting file from loader version:', entry.filename)
+            //         Promise.resolve(entry.read()).then((buffer) => {
+            //             const dirPath = absolutePath + entry.filename.endsWith("/") ? entry.filename : path.resolve(entry.filename, "..")
+            //             console.log(dirPath)
+            //             if (!fs.existsSync(dirPath)) {
+            //                 fs.mkdirSync(dirPath, { recursive: true })
+            //             }
+            //             fs.writeFileSync(path.join(absolutePath, entry.filename), buffer)
+            //         })
+            //     }
+            // }
 
             return true
         } catch (error) {
@@ -99,4 +122,18 @@ export default class ProfileManager {
             return false
         }
     }
+
+    // private static downloadLoaderVersion(filePath: string, version: LoaderVersion) {
+    //     fetch(version.playFile.url).then((response) => {
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`)
+    //         }
+    //
+    //         const stream = fs.createWriteStream(path.join(filePath, version.playFile.name))
+    //         response.body.pipe(stream)
+    //         response.body.on('error', (error) => {
+    //             console.error('[ProfileManager] Exception occurred while downloading loader version:', error)
+    //         })
+    //     })
+    // }
 }

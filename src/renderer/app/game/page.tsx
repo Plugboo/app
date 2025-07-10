@@ -19,14 +19,14 @@ export default function GamePage() {
         navigate(`/game/${gameId}/profile/${profileId}`)
     }
 
-    useEffect(() => {
-        const loadProfiles = () => {
-            getProfiles(gameId).then((result) => {
-                setProfiles(result)
-                setLoading(false)
-            })
-        }
+    const loadProfiles = () => {
+        getProfiles(gameId).then((result) => {
+            setProfiles(result)
+            setLoading(false)
+        })
+    }
 
+    useEffect(() => {
         if (!loading) {
             setLoading(true)
             setTimeout(() => {
@@ -39,7 +39,9 @@ export default function GamePage() {
 
     return (
         <main className="w-full p-4 overflow-hidden">
-            <CreateProfileModal open={createProfileOpen} onChangeOpen={setProfileOpen} />
+            <CreateProfileModal gameId={gameId} open={createProfileOpen} onChangeOpen={setProfileOpen} onCreate={() => {
+                loadProfiles()
+            }} />
             <Transition
                 show={!loading}
                 enter="transition-opacity duration-500 ease-in-out"
@@ -56,11 +58,11 @@ export default function GamePage() {
                             alt={'Banner Test'} />
                         <h1 className="absolute bottom-12 left-12 font-semibold text-4xl z-2">Select profile</h1>
                     </div>
-                    <div className="flex justify-between">
-                        <div className="flex flex-col gap-2">
+                    <div className="flex justify-between gap-4">
+                        <div className="flex flex-col gap-2 w-full">
                             {profiles.map((profile) => (
                                 <div
-                                    className="p-5 bg-background-800/40 border-background-700 hover:border-primary-500 transition-color border-2 transition-colors rounded-lg duration-200 ease-in-out cursor-pointer"
+                                    className="w-full p-5 bg-background-800/40 border-background-700 hover:border-primary-500 transition-color border-2 transition-colors rounded-lg duration-200 ease-in-out cursor-pointer"
                                     key={profile.id}
                                     onClick={() => onClickProfile(profile.id)}
                                 >

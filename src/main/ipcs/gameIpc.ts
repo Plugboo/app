@@ -135,9 +135,29 @@ export default class GameIpc {
             return false
         }
 
-        return ProfileManager.createProfile(gameId as string, name, loader, loaderVersion)
+        const version = loader.versions.find((v) => v.version === loaderVersion)
+        if (version === undefined) {
+            return false
+        }
+
+        return ProfileManager.createProfile(gameId as string, name, loader, version)
     }
 
     public static deleteProfile() {
+    }
+
+    public static getLoaders(event: IpcEvent) {
+        if (event.args.length !== 1) {
+            return "[]"
+        }
+
+        const gameId: Id = event.args[0]
+
+        const game = GameManager.entries.find((v) => v.info.id === gameId)
+        if (game === undefined) {
+            return "[]"
+        }
+
+        return JSON.stringify(game.loaders)
     }
 }

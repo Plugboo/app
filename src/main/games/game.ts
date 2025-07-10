@@ -1,7 +1,7 @@
 import { GameInformation } from '@common/games'
 import { BaseService } from '@main/services/service'
-import { Loader } from '@main/loader'
 import { NewsArticle } from '@common/news'
+import { Loader } from '@common/loader'
 
 export class Game {
     public readonly info: GameInformation

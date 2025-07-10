@@ -2,17 +2,68 @@
 import Modal from '@renderer/components/Modal'
 import Button from '@renderer/components/Button'
 import Input from '@renderer/components/Input'
-import Dropdown from '@renderer/components/Dropdown'
+import { useEffect, useState } from 'react'
+import { Loader, LoaderVersion } from '@common/loader'
+import { createProfile, getLoaders } from '@renderer/api/game'
+import Select from '@renderer/components/Select'
 
 type Props = {
+    gameId: string | null
     open: boolean
     onChangeOpen: (open: boolean) => void
+    onCreate?: () => void
 }
 
 export default function CreateProfileModal(props: Props) {
+    const [loaders, setLoaders] = useState<Loader[]>([])
+    const [selectedLoader, setSelectedLoader] = useState<Loader | null>(null)
+    const [selectedVersion, setSelectedVersion] = useState<LoaderVersion | null>(null)
+    const [name, setName] = useState('')
+
+    const onClickCreate = () => {
+        if (props.gameId === null || selectedLoader === null || selectedVersion === null || name.trim().length === 0) {
+            return
+        }
+
+        createProfile(props.gameId, name, selectedLoader.id, selectedVersion.version).then((result) => {
+            if (result) {
+                props.onChangeOpen(false)
+
+                if (props.onCreate) {
+                    props.onCreate()
+                }
+            }
+        })
+    }
+
+    const onSelectVersion = (value: string) => {
+        if (selectedLoader === null) {
+            return
+        }
+
+        setSelectedVersion(selectedLoader.versions.find((v) => v.version === value) ?? null)
+    }
+
+    useEffect(() => {
+        if (props.gameId === null) {
+            return
+        }
+
+        getLoaders(props.gameId).then((result) => {
+            setLoaders(result)
+            console.log(result)
+        })
+    }, [props.gameId])
+
+    useEffect(() => {
+        if (props.open) {
+            setSelectedLoader(null)
+        }
+    }, [props.open])
+
     return (
         <Modal classNames={{
-            childrenWrapper: 'min-w-140 min-h-90 relative'
+            childrenWrapper: 'min-w-140 min-h-100 relative'
         }} open={props.open} onChangeOpen={props.onChangeOpen}>
             <div className="absolute top-0 left-0 w-full h-full flex flex-col">
                 <div className="w-full p-6 flex items-center justify-between">
@@ -31,34 +82,38 @@ export default function CreateProfileModal(props: Props) {
                     <div className="w-full h-full p-6 flex flex-col gap-4">
                         <div className="space-y-1">
                             <h2>Name</h2>
-                            <Input />
+                            <Input onChange={(e) => setName(e.target.value)} />
                         </div>
                         <div className="space-y-1">
                             <h2>Loader</h2>
-                            <Dropdown values={[
-                                {
-                                    value: '3.3.0',
-                                    label: 'v3.3.0'
-                                },
-                                {
-                                    value: '3.2.0',
-                                    label: 'v3.2.0'
-                                },
-                                {
-                                    value: '3.1.0',
-                                    label: 'v3.1.0'
-                                },
-                                {
-                                    value: '3.0.0',
-                                    label: 'v3.0.0'
-                                }
-                            ]} />
+                            <div className="space-y-2">
+                                <Select
+                                    placeholder="Select a loader.."
+                                    onSelect={(value) => setSelectedLoader(loaders.find((v) => v.id === value) ?? null)}
+                                    values={loaders.map((loader) => (
+                                        {
+                                            value: loader.id,
+                                            label: loader.name
+                                        }
+                                    ))} />
+                                {selectedLoader !== null && (
+                                    <Select
+                                        placeholder="Select a version.."
+                                        onSelect={(value) => onSelectVersion(value)}
+                                        values={selectedLoader.versions.map((version) => (
+                                            {
+                                                value: version.version,
+                                                label: version.version
+                                            }
+                                        ))} />
+                                )}
+                            </div>
                         </div>
                         <div className="mt-auto flex ml-auto gap-4 select-none">
                             <Button type="secondary" onClick={() => props.onChangeOpen(false)}>
                                 Cancel
                             </Button>
-                            <Button onClick={() => props.onChangeOpen(false)}>Create</Button>
+                            <Button onClick={onClickCreate}>Create</Button>
                         </div>
                     </div>
                 </div>

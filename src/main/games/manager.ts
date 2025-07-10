@@ -3,14 +3,15 @@ import GameBananaService from '@main/services/gamebanana'
 import path from 'node:path'
 import fs from 'node:fs'
 import { Game } from '@main/games/game'
+import ThreeDMigoto from '@main/loaders/3dmigoto'
 
 export default class GameManager {
     public static pathsFile: string
 
     public static entries: Game[] = [
-        new HoYoverseGame(HoYoverseGameId.GenshinImpact, [new GameBananaService('8552')], []),
-        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail, [new GameBananaService('18366')], []),
-        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero, [new GameBananaService('19567')], [])
+        new HoYoverseGame(HoYoverseGameId.GenshinImpact, [new GameBananaService('8552')], [new ThreeDMigoto('SilentNightSound', 'GI-Model-Importer')]),
+        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail, [new GameBananaService('18366')], [new ThreeDMigoto('SilentNightSound', 'SR-Model-Importer')]),
+        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero, [new GameBananaService('19567')], [new ThreeDMigoto('leotorrez', 'ZZ-Model-Importer')])
     ]
 
     public static loadPaths() {

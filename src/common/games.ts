@@ -1,6 +1,6 @@
 ﻿import fs from 'node:fs'
 import path from 'node:path'
-import { LoaderInstance } from '@common/loader'
+import { LoaderVersion } from '@common/loader'
 
 const REQUIRED_MODS_JSON_OBJECTS: string[] = [
     'id',
@@ -26,7 +26,7 @@ export class GameProfile {
 
     public mods: GameMod[]
 
-    public loader: LoaderInstance | null
+    public loader: LoaderVersion | null
 
     constructor(id: string = '', gameId: string = '') {
         this.id = id
@@ -91,10 +91,6 @@ export class GameProfile {
             id: this.id,
             gameId: this.gameId,
             name: this.name,
-            loader: this.loader ? {
-                id: this.loader.id,
-                version: this.loader.version
-            } : null
         }
     }
 }
