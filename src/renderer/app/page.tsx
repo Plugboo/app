@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
-import { getNewsFromAll, listGames, verifyGame } from '@renderer/api/game'
+import { listGames, verifyGame } from '@renderer/api/game'
 import { GameInformation } from '@common/games'
 import { useNavigate } from 'react-router'
 import SetupGameModal from '@renderer/components/SetupGameModal'
-import { NewsArticle } from '@common/news'
 import { motion } from 'framer-motion'
+import NewsSection from '@renderer/app/NewsSection'
 
 export default function HomePage() {
     const navigate = useNavigate()
     const [setupModalOpen, setSetupModalOpen] = useState(false)
     const [games, setGames] = useState<GameInformation[]>([])
     const [context, setContext] = useState<GameInformation | null>(null)
-    const [news, setNews] = useState<NewsArticle[]>([])
     const setupInputRef = useRef<HTMLInputElement>(null)
 
     const onClickGame = (game: GameInformation) => {
@@ -39,10 +38,6 @@ export default function HomePage() {
         listGames().then((result: GameInformation[]) => {
             setGames(result)
         })
-
-        getNewsFromAll().then((result) => {
-            setNews(result)
-        })
     }, [])
 
     return (
@@ -62,31 +57,7 @@ export default function HomePage() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col gap-6 w-full h-full">
                     <div className="flex flex-col gap-4 w-full">
                         <h1 className="font-semibold text-xl">News</h1>
-                        <div className="flex gap-3 w-full overflow-hidden overflow-x-auto scrollbar-none h-44">
-                            {news.map((article, index) => (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                            transition={{ delay: 0.04 * index }}
-                                            className="flex flex-col gap-0.5 w-60 shrink-0">
-                                    <div
-                                        className="w-full aspect-16/9 shrink-0 flex flex-col border-background-700 hover:border-primary-500 transition-color duration-300 border-2 rounded-lg overflow-hidden cursor-pointer group">
-                                        {article.coverUrl.length > 0 && (
-                                            <img src={article.coverUrl} alt={`${article.title}'s cover`}
-                                                 className="w-full h-full object-cover group-hover:scale-103 transition-translate duration-300" />
-                                        )}
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-normal text-text-200 line-clamp-2">{article.title}</p>
-                                    </div>
-                                </motion.div>
-                            ))}
-
-                            {news.length === 0 && (
-                                <div
-                                    className="w-full px-4 py-3 bg-background-800/40 rounded-xl h-full flex items-center justify-center text-text-200">
-                                    <p>No news available. Check back later!</p>
-                                </div>
-                            )}
-                        </div>
+                        <NewsSection />
                     </div>
 
                     <div className="flex flex-col gap-4">
