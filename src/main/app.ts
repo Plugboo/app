@@ -92,10 +92,6 @@ class Application {
             return
         }
 
-        for (const games of GameManager.entries) {
-            await games.getNews()
-        }
-
         this.initIpcs()
         await this.createWindow()
     }
