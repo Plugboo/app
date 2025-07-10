@@ -1,7 +1,7 @@
 ﻿import { ipcMain, IpcMainInvokeEvent } from 'electron'
 import { IpcChannel } from '@common/ipc'
 
-type IpcHandler = (event: IpcEvent) => void
+type IpcHandler = (event: IpcEvent) => Promise<unknown>
 
 export interface IpcEvent {
     event: IpcMainInvokeEvent
@@ -24,11 +24,15 @@ export default class IpcManager {
 
         console.log(`[IpcManager] Registering handler for channel: ${channel}`)
         IpcManager._handlers.set(channel, handler)
-        ipcMain.handle(channel, (event: IpcMainInvokeEvent, ...args: any) => {
-            return handler({
+        ipcMain.handle(channel, async (event: IpcMainInvokeEvent, ...args: any) => {
+            console.log(`[IpcManager] Received invoke in channel: ${channel}`)
+            const start = performance.now()
+            const result = await handler({
                 event,
                 args: [...args]
             })
+            console.log("[IpcManager] Handled invoke in channel:", channel, "in", (performance.now() - start).toFixed(2), "ms!")
+            return result
         })
     }
 
