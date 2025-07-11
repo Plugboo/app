@@ -40,6 +40,7 @@ interface ModInfo {
     _bShowRipePromo: boolean
     _aSubmitter: Submitter
     _bFollowLinks: boolean
+    _aGame?: Game
     _aCategory: ModCategory
     _aSuperCategory: SuperCategory
     _aCredits: Credit[]
@@ -130,6 +131,10 @@ interface Submitter {
 
 interface ContentRatings {
     sa: string
+}
+
+interface Game {
+    _idRow: number
 }
 
 interface File {
@@ -260,6 +265,17 @@ export default class GameBananaService extends BaseService {
         const query = options.query ?? ''
         const sort = options.sort ?? 'default'
 
+        /*
+         * Allow searching for a specific mod by its id
+         */
+        {
+            const directModNumber = parseInt(query, 10)
+            if (!isNaN(directModNumber) && directModNumber >= 0) {
+                const response = await this.getMod(query)
+                return response ? [response] : []
+            }
+        }
+
         try {
             const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=${sort}&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
             const response = await fetch(url)
@@ -315,6 +331,14 @@ export default class GameBananaService extends BaseService {
 
             const data = await response.json()
             const mod = data as ModInfo
+
+            /*
+             * Prevent getting mods from other games or no game.
+             */
+            if (mod._aGame === undefined || mod._aGame._idRow !== parseInt(this._gameId, 10)) {
+                return null
+            }
+
             return {
                 id: mod._idRow,
                 name: mod._sName,
@@ -411,6 +435,6 @@ export default class GameBananaService extends BaseService {
     }
 
     public getId(): string {
-        return "gamebanana"
+        return 'gamebanana'
     }
 }
