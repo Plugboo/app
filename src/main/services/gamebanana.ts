@@ -66,8 +66,8 @@ interface Record {
     _bHasContentRatings: boolean
     _nLikeCount?: number
     _nPostCount?: number
+    _nViewCount?: number
     _bWasFeatured: boolean
-    _nViewCount: number
     _bIsOwnedByAccessor: boolean
     _akDevelopmentState?: string
     _sDevelopmentState?: string
@@ -281,7 +281,7 @@ export default class GameBananaService extends BaseService {
                     updatedAt: new Date(record._tsDateModified),
                     comments: record._nPostCount ?? 0,
                     likes: record._nLikeCount ?? 0,
-                    views: record._nViewCount,
+                    views: record._nViewCount ?? 0,
                     version: record._sVersion ?? 'N/A',
                     media: record._aPreviewMedia._aImages.map((image) => (
                         {
@@ -322,7 +322,7 @@ export default class GameBananaService extends BaseService {
                 updatedAt: new Date(mod._tsDateModified),
                 comments: mod._nPostCount ?? 0,
                 likes: mod._nLikeCount ?? 0,
-                views: mod._nViewCount,
+                views: mod._nViewCount ?? 0,
                 version: mod._sVersion ?? 'N/A',
                 media: mod._aPreviewMedia._aImages.map((image) => (
                     {
