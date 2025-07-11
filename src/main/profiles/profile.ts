@@ -97,7 +97,7 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
         return {
             id: this.id,
             gameId: this.gameId,
-            path: this.path
+            name: this.name,
         }
     }
 
