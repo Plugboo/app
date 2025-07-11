@@ -14,9 +14,9 @@ type Props = {
 function getClassesForType(type: Type): string {
     switch (type) {
         case 'primary':
-            return 'bg-primary-400 hover:brightness-[90%] text-accent-800'
+            return 'bg-primary-400 hover:brightness-[90%] text-background-800'
         case 'secondary':
-            return 'bg-secondary-700 brightness-[110%] hover:brightness-[100%] text-accent-300'
+            return 'bg-secondary-600/30 hover:brightness-[115%] text-text-100'
         default:
             return ''
     }
@@ -27,7 +27,7 @@ export default function Button(props: Props) {
 
     return (
         <button
-            className={`${className ?? ''} ${disabled ? '!brightness-75 cursor-not-allowed' : 'cursor-pointer'} font-semibold ease-in-out duration-250 transition-all px-5 py-2 rounded-${props.rounded ?? 'lg'} ${getClassesForType(
+            className={`${className ?? ''} ${disabled ? '!brightness-75 cursor-not-allowed' : 'cursor-pointer'} font-medium ease-in-out duration-250 transition-all px-5 py-2 rounded-${props.rounded ?? 'lg'} ${getClassesForType(
                 props.type ?? 'primary'
             )}`}
             onClick={onClick}

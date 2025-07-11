@@ -86,7 +86,7 @@ export default function HomePage() {
                                                  alt={`${game.name}'s icon`} />
                                             <div className="flex flex-col text-sm">
                                                 <p className="font-semibold">{game.name}</p>
-                                                <p className="-mt-1 font-semibold text-text-400">{game.developer}</p>
+                                                <p className="-mt-1 font-semibold text-background-400">{game.developer}</p>
                                             </div>
                                         </div>
                                     </div>

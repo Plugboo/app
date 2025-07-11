@@ -31,6 +31,7 @@ export default function ModsPage() {
             query: input,
             sort: (sortOption as any) ?? sort
         }).then((result) => {
+            console.log("[ModsPage] Search result:", result)
             setMods(result)
             setLoading(false)
         })
@@ -69,10 +70,7 @@ export default function ModsPage() {
                 <div className="flex flex-col gap-3 flex-none h-[0%] w-60">
                     <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
                         <h1 className="font-semibold text-xl">Options</h1>
-                        <Select classNames={{
-                            wrapper: 'bg-background-900/30',
-                            option: 'bg-background-900/30 hover:!bg-background-800'
-                        }} prefix="Sort by: " values={[
+                        <Select prefix="Sort by: " values={[
                             {
                                 value: 'default',
                                 label: 'Ripe'
@@ -85,14 +83,11 @@ export default function ModsPage() {
                                 value: 'updated',
                                 label: 'Updated'
                             }
-                        ]} onSelect={(value) => {
+                        ]} defaultValue="default" onSelect={(value) => {
                             setSort(value as any)
                             search(true, value)
                         }} />
-                        <Select classNames={{
-                            wrapper: 'bg-background-900/30',
-                            option: 'bg-background-900/30 hover:!bg-background-800'
-                        }} prefix="View: " values={[
+                        <Select prefix="View: " values={[
                             {
                                 value: '5',
                                 label: '5'
@@ -126,8 +121,8 @@ export default function ModsPage() {
                                              alt={`${category.name}'s icon`} />
                                     </div>
                                     <div className="flex flex-col justify-center">
-                                        <p className="text-text-300 font-semibold">{category.name}</p>
-                                        <p className="text-text-400 font-medium">{category.itemCount}</p>
+                                        <p className="text-background-200 font-medium">{category.name}</p>
+                                        <p className="text-background-300 font-normal">{category.itemCount}</p>
                                     </div>
                                 </div>
                             ))}
@@ -155,9 +150,9 @@ export default function ModsPage() {
                             {mods.map((record: Mod, index) => (
                                 <motion.div
                                     className="w-full h-27 bg-background-800/50 p-4 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer"
-                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{
-                                    delay: 0.065 * index
-                                }}>
+                                    key={record.id}
+                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.065 * index }}>
                                     <Link
                                         className="w-full h-full flex gap-4 overflow-hidden"
                                         key={record.id}
@@ -180,20 +175,20 @@ export default function ModsPage() {
                                                         </p>
                                                     )}
                                                 </div>
-                                                <p className="font-medium text-base text-text-400 text-nowrap -mt-1">{record.author.name}</p>
+                                                <p className="font-medium text-base text-background-400 text-nowrap -mt-1">{record.author.name}</p>
                                             </div>
                                             <div className="flex gap-4">
                                                 <div className="flex gap-1 items-center">
                                                     <Heart className="w-4 h-4 text-red-400" />
-                                                    <p className="text-text-400 font-semibold">{record.likes}</p>
+                                                    <p className="text-background-500 font-medium">{record.likes}</p>
                                                 </div>
                                                 <div className="flex gap-1 items-center">
                                                     <MessageCircle className="w-4 h-4 text-primary-400" />
-                                                    <p className="text-text-400 font-semibold">{record.comments}</p>
+                                                    <p className="text-background-500 font-medium">{record.comments}</p>
                                                 </div>
                                                 <div className="flex gap-1 items-center">
-                                                    <Eye className="w-4 h-4 text-secondary-200 mt-0.5" />
-                                                    <p className="text-text-400 font-semibold">{record.views}</p>
+                                                    <Eye className="w-4 h-4 text-secondary-200 mb-0.25" />
+                                                    <p className="text-background-500 font-medium mt-0.25">{record.views}</p>
                                                 </div>
                                             </div>
                                         </div>

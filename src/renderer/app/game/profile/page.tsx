@@ -56,7 +56,7 @@ export default function ProfilePage() {
                             <h1 className="font-bold text-3xl">{profile.name}</h1>
                         </div>
                         <div className="flex gap-2">
-                            <Button className="flex gap-1" disabled={status === Status.PLAYING}>
+                            <Button className="flex gap-2" disabled={status === Status.PLAYING}>
                                 {status === Status.UNKNOWN && (
                                     <>
                                         <Hammer />
@@ -94,7 +94,7 @@ export default function ProfilePage() {
                         <Input placeholder="Search mods..." classNames={{
                             wrapper: 'w-full'
                         }} />
-                        <Button className="ml-auto w-40 shrink-0 flex gap-1 justify-center items-center"
+                        <Button className="ml-auto shrink-0 flex gap-1 justify-center items-center"
                                 type="secondary"
                                 onClick={() => navigate(`/game/${gameId}/profile/${profileId}/mods`)}>
                             <Plus />
