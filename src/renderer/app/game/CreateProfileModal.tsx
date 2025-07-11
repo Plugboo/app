@@ -3,7 +3,7 @@ import Modal from '@renderer/components/Modal'
 import Button from '@renderer/components/Button'
 import Input from '@renderer/components/Input'
 import { useEffect, useState } from 'react'
-import { Loader, LoaderVersion } from '@common/loader'
+import { LoaderRData, LoaderVersion } from '@common/loader'
 import { createProfile, getLoaders } from '@renderer/api/game'
 import Select from '@renderer/components/Select'
 
@@ -15,8 +15,8 @@ type Props = {
 }
 
 export default function CreateProfileModal(props: Props) {
-    const [loaders, setLoaders] = useState<Loader[]>([])
-    const [selectedLoader, setSelectedLoader] = useState<Loader | null>(null)
+    const [loaders, setLoaders] = useState<LoaderRData[]>([])
+    const [selectedLoader, setSelectedLoader] = useState<LoaderRData | null>(null)
     const [selectedVersion, setSelectedVersion] = useState<LoaderVersion | null>(null)
     const [name, setName] = useState('')
 

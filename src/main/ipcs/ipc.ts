@@ -31,7 +31,15 @@ export default class IpcManager {
                 event,
                 args: [...args]
             }))
-            console.log("[IpcManager] Handled invoke in channel:", channel, "in", (performance.now() - start).toFixed(2), "ms!")
+            console.log('[IpcManager] Handled invoke in channel:', channel, 'in', (performance.now() - start).toFixed(2), 'ms!')
+
+            if (typeof result === 'object' || Array.isArray(result)) {
+                return JSON.stringify({
+                    data: result,
+                    ___ipc_obj__yes_yes_yes: true
+                })
+            }
+
             return result
         })
     }

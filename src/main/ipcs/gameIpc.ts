@@ -1,6 +1,6 @@
 import { IpcEvent } from './ipc'
 import { Id } from '@common/service'
-import ProfileManager from '@main/profiles'
+import ProfileManager from '@main/profiles/manager'
 import { NewsArticle } from '@common/news'
 import GameManager from '@main/games/manager'
 
@@ -9,7 +9,7 @@ export default class GameIpc {
         const articles: NewsArticle[] = []
 
         for (const game of GameManager.entries) {
-            articles.push(...(await game.getNews()));
+            articles.push(...(await game.getNews()))
         }
 
         return articles.sort((a, b) => b.createdAt - a.createdAt)
@@ -21,15 +21,15 @@ export default class GameIpc {
 
     public static getProfiles(event: IpcEvent) {
         if (event.args.length !== 1) {
-            return "[]"
+            return []
         }
 
         const gameId: Id = event.args[0]
-        return JSON.stringify(ProfileManager.entries
+        return ProfileManager.entries
             .entries()
             .filter(([_, profile]) => profile.gameId === gameId)
             .map(([_, profile]) => profile)
-            .toArray())
+            .toArray().map((profile) => profile.serializeRendererData())
     }
 
     public static getProfile(event: IpcEvent) {
@@ -38,9 +38,9 @@ export default class GameIpc {
         }
 
         const profileId: Id = event.args[0]
-        return JSON.stringify(ProfileManager.entries
+        return ProfileManager.entries
             .entries()
-            .find(([_, profile]) => profile.id === profileId)[1])
+            .find(([_, profile]) => profile.id === profileId)[1].serializeRendererData()
     }
 
     public static verify(event: IpcEvent) {
@@ -148,16 +148,16 @@ export default class GameIpc {
 
     public static getLoaders(event: IpcEvent) {
         if (event.args.length !== 1) {
-            return "[]"
+            return []
         }
 
         const gameId: Id = event.args[0]
 
         const game = GameManager.entries.find((v) => v.info.id === gameId)
         if (game === undefined) {
-            return "[]"
+            return []
         }
 
-        return JSON.stringify(game.loaders)
+        return game.loaders.map((loader) => loader.serializeRendererData())
     }
 }

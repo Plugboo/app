@@ -1,20 +1,14 @@
 ﻿import fs from 'node:fs'
-import fetch from 'node-fetch'
 import path from 'node:path'
-import { GameProfile } from '@common/games'
 import { v4 } from 'uuid'
-import { Loader, LoaderVersion } from '@common/loader'
-
-const REQUIRED_JSON_OBJECTS: string[] = [
-    'id',
-    'gameId',
-    'name'
-]
+import { LoaderVersion } from '@common/loader'
+import { Profile } from '@main/profiles/profile'
+import { Loader } from '@main/loaders/loader'
 
 export default class ProfileManager {
     public static path: string
 
-    public static entries: Map<string, GameProfile> = new Map()
+    public static entries: Map<string, Profile> = new Map()
 
     public static loadProfiles(): boolean {
         console.log('[ProfileManager] Loading profiles..')
@@ -29,7 +23,7 @@ export default class ProfileManager {
                 .filter(dirent => dirent.isDirectory())
                 .map(dirent => dirent.name)
 
-            directoryLoop: for (const directory of directories) {
+            for (const directory of directories) {
                 const absolutePath = path.join(ProfileManager.path, directory)
 
                 if (!fs.existsSync(path.join(absolutePath, 'profile.json'))) {
@@ -41,14 +35,7 @@ export default class ProfileManager {
                         encoding: 'utf8'
                     })
                     const json = JSON.parse(content)
-                    for (const key of REQUIRED_JSON_OBJECTS) {
-                        if (typeof json[key] === 'undefined') {
-                            console.log(`[ProfileManager] Found profile with invalid structure: Missing key in profile.json '${key}'`)
-                            continue directoryLoop
-                        }
-                    }
-
-                    const profile: GameProfile = Object.assign(new GameProfile(), json)
+                    const profile = Profile.deserialize(json)
                     profile.path = absolutePath
 
                     if (ProfileManager.entries.has(profile.id)) {
@@ -56,7 +43,7 @@ export default class ProfileManager {
                         continue
                     }
 
-                    profile.getMods()
+                    profile.loadMods()
 
                     console.log('[ProfileManager] Loaded profile with name:', profile.name)
                     ProfileManager.entries.set(profile.id, profile)
@@ -82,13 +69,13 @@ export default class ProfileManager {
                 return false
             }
 
-            const profile = new GameProfile(v4(), gameId)
+            const profile = new Profile(v4(), gameId)
             profile.path = absolutePath
             profile.name = name
 
             fs.mkdirSync(absolutePath)
             fs.mkdirSync(path.join(absolutePath, 'mods'))
-            fs.writeFileSync(path.join(absolutePath, 'profile.json'), JSON.stringify(profile.toProfilesJson()))
+            fs.writeFileSync(path.join(absolutePath, 'profile.json'), JSON.stringify(profile.serialize()))
             ProfileManager.entries.set(profile.id, profile)
 
             // const loaderPath = path.join(application.dataPath, 'loaders', gameId)

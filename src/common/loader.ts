@@ -9,19 +9,13 @@ export interface LoaderFile {
     url: string
 }
 
-export class Loader {
-    public readonly id: string
+export interface LoaderInstance {
+    id: string
+    version: LoaderVersion
+}
 
-    public readonly name: string
-
-    public versions: LoaderVersion[]
-
-    constructor(id: string, name: string) {
-        this.id = id
-        this.name = name
-        this.versions = []
-    }
-
-    public async fetchVersions() {
-    }
+export interface LoaderRData {
+    id: string
+    name: string
+    versions: LoaderVersion[]
 }

@@ -1,7 +1,7 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, globalShortcut, shell } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
-import ProfileManager from '@main/profiles'
+import ProfileManager from '@main/profiles/manager'
 import IpcManager from '@main/ipcs/ipc'
 import AppIpc from '@main/ipcs/appIpc'
 import { IpcChannel } from '@common/ipc'

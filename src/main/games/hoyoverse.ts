@@ -1,5 +1,5 @@
 import { Game } from '@main/games/game'
-import { GameInformation } from '@common/games'
+import { GameInformation } from '@common/game'
 import { BaseService } from '@main/services/service'
 import { Loader } from '@common/loader'
 import { NewsArticle } from '@common/news'

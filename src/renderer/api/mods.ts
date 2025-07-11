@@ -1,18 +1,19 @@
 ﻿import { Category, Comment, GetCommentsOptions, Mod, SearchModsOptions } from '@common/service'
 import { IpcChannel } from '@common/ipc'
+import invokeIpc from '@renderer/api/ipc'
 
 export async function getModComments(gameId: string, modId: string, options: GetCommentsOptions): Promise<Comment[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetComments, gameId, modId, "gamebanana", options) as Comment[]
+    return invokeIpc<Comment[]>(IpcChannel.Mods_GetComments, gameId, modId, "gamebanana", options)
 }
 
-export async function getMod(gameId: string, modId: string): Promise<Mod> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetMod, gameId, modId, "gamebanana") as Mod
+export async function getMod(gameId: string, modId: string): Promise<Mod | null> {
+    return invokeIpc<Mod | null>(IpcChannel.Mods_GetMod, gameId, modId, "gamebanana")
 }
 
 export async function searchMods(gameId: string, options: SearchModsOptions): Promise<Mod[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_Search, gameId, "gamebanana", options) as Mod[]
+    return invokeIpc<Mod[]>(IpcChannel.Mods_Search, gameId, "gamebanana", options)
 }
 
 export async function getCategories(gameId: string): Promise<Category[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Mods_GetCategories, gameId, "gamebanana") as Category[]
+    return invokeIpc<Category[]>(IpcChannel.Mods_GetCategories, gameId, "gamebanana")
 }

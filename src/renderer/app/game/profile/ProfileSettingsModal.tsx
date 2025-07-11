@@ -1,5 +1,5 @@
 ﻿import { Settings, X } from 'lucide-react'
-import { GameProfile } from '@common/games'
+import { GameProfile } from '@common/game'
 import Modal from '@renderer/components/Modal'
 import Button from '@renderer/components/Button'
 

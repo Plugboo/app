@@ -2,15 +2,15 @@
 import { useEffect, useState } from 'react'
 import { getProfiles } from '../../api/game'
 import { useNavigate, useParams } from 'react-router'
-import { GameProfile } from '@common/games'
 import Button from '@renderer/components/Button'
 import CreateProfileModal from '@renderer/app/game/CreateProfileModal'
+import { ProfileRData } from '@common/profile'
 
 export default function GamePage() {
     const { gameId } = useParams()
     const navigate = useNavigate()
 
-    const [profiles, setProfiles] = useState<GameProfile[]>([])
+    const [profiles, setProfiles] = useState<ProfileRData[]>([])
     const [loading, setLoading] = useState(true)
     const [createProfileOpen, setProfileOpen] = useState(false)
 

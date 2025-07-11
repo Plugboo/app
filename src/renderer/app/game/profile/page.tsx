@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { GameProfile } from '@common/games'
 import { Transition } from '@tailwindui/react'
 import { FileQuestionMark, Hammer, LoaderCircle, Play, Plus, Settings } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router'
@@ -7,6 +6,7 @@ import { getProfile } from '@renderer/api/game'
 import Button from '@renderer/components/Button'
 import ProfileSettingsModal from '@renderer/app/game/profile/ProfileSettingsModal'
 import Input from '@renderer/components/Input'
+import { ProfileRData } from '@common/profile'
 
 enum Status {
     UNKNOWN,
@@ -20,7 +20,7 @@ export default function ProfilePage() {
     const { gameId, profileId } = useParams()
     const navigate = useNavigate()
 
-    const [profile, setProfile] = useState<GameProfile | null>(null)
+    const [profile, setProfile] = useState<ProfileRData | null>(null)
     const [loading, setLoading] = useState(true)
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
     const [status, setStatus] = useState<Status>(Status.UNKNOWN)

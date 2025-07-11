@@ -1,6 +1,6 @@
 ﻿import { Home, Settings } from 'lucide-react'
 import { ReactNode, useEffect, useState } from 'react'
-import { GameInformation } from '@common/games'
+import { GameInformation } from '@common/game'
 import { listGames } from '@renderer/api/game'
 import { Link, useLocation } from 'react-router'
 

@@ -1,41 +1,45 @@
-﻿import { GameProfile } from '@common/games'
-import { IpcChannel } from '@common/ipc'
+﻿import { IpcChannel } from '@common/ipc'
 import { NewsArticle } from '@common/news'
-import { Loader } from '@common/loader'
+import { LoaderRData } from '@common/loader'
+import invokeIpc from '@renderer/api/ipc'
+import { GameInformation } from '@common/game'
+import { ProfileRData } from '@common/profile'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
-    return await window.electron.ipc.invoke(IpcChannel.Game_NewsAll) as NewsArticle[]
+    return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)
 }
 
-
 export async function listGames() {
-    return await window.electron.ipc.invoke(IpcChannel.Game_List)
+    return invokeIpc<GameInformation[]>(IpcChannel.Game_List)
 }
 
 export async function verifyGame(gameId: string) {
-    return (await window.electron.ipc.invoke(IpcChannel.Game_Verify, gameId)) as {
+    return invokeIpc<{
         success: boolean
         reason?: string
         path?: string
-    }
+    }>(IpcChannel.Game_Verify, gameId)
 }
 
 export async function setupGame(gameId: string, path: string) {
-    return await window.electron.ipc.invoke(IpcChannel.Game_Setup, gameId, path)
+    return invokeIpc<{
+        success: boolean,
+        reason?: string
+    }>(IpcChannel.Game_Setup, gameId, path)
 }
 
-export async function getProfiles(gameId: string): Promise<GameProfile[]> {
-    return JSON.parse((await window.electron.ipc.invoke(IpcChannel.Game_GetProfiles, gameId)) as string) as GameProfile[]
+export async function getProfiles(gameId: string): Promise<ProfileRData[]> {
+    return invokeIpc<ProfileRData[]>(IpcChannel.Game_GetProfiles, gameId)
 }
 
-export async function getProfile(gameId: string): Promise<GameProfile | null> {
-    return JSON.parse((await window.electron.ipc.invoke(IpcChannel.Game_GetProfile, gameId)) as string) as GameProfile | null
+export async function getProfile(gameId: string): Promise<ProfileRData | null> {
+    return invokeIpc<ProfileRData | null>(IpcChannel.Game_GetProfile, gameId)
 }
 
 export async function createProfile(gameId: string, name: string, loaderId: string, loaderVersion: string): Promise<boolean> {
-    return await window.electron.ipc.invoke(IpcChannel.Game_CreateProfile, gameId, name, loaderId, loaderVersion) as boolean
+    return invokeIpc<boolean>(IpcChannel.Game_CreateProfile, gameId, name, loaderId, loaderVersion)
 }
 
-export async function getLoaders(gameId: string): Promise<Loader[]> {
-    return JSON.parse((await window.electron.ipc.invoke(IpcChannel.Game_Loaders, gameId)) as string) as Loader[]
+export async function getLoaders(gameId: string): Promise<LoaderRData[]> {
+    return invokeIpc<LoaderRData[]>(IpcChannel.Game_Loaders, gameId)
 }

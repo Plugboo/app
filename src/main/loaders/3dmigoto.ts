@@ -1,5 +1,6 @@
 import { Github } from '@main/utils/github'
-import { Loader, LoaderVersion } from '@common/loader'
+import { LoaderVersion } from '@common/loader'
+import { Loader } from '@main/loaders/loader'
 
 export default class ThreeDMigoto extends Loader {
     private readonly githubUser: string
