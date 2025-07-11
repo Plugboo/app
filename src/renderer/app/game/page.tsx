@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react'
 import { getProfiles } from '../../api/game'
 import { useNavigate, useParams } from 'react-router'
-import Button from '@renderer/components/Button'
-import CreateProfileModal from '@renderer/app/game/CreateProfileModal'
+import Button from '@renderer/components/ui/Button'
+import CreateProfileModal from '@renderer/components/modals/CreateProfileModal'
 import { ProfileRData } from '@common/profile'
 
 export default function GamePage() {

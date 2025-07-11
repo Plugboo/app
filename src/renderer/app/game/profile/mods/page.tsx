@@ -2,11 +2,11 @@
 import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import { getCategories, searchMods } from '@renderer/api/mods'
 import { Category, Mod } from '@common/service'
-import Input from '@renderer/components/Input'
-import Button from '@renderer/components/Button'
+import Input from '@renderer/components/ui/Input'
+import Button from '@renderer/components/ui/Button'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle, RefreshCcw } from 'lucide-react'
 import { motion } from 'framer-motion'
-import Select from '@renderer/components/Select'
+import Select from '@renderer/components/ui/Select'
 
 export default function ModsPage() {
     const { gameId, profileId } = useParams()

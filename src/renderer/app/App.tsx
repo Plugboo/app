@@ -8,7 +8,7 @@ import ProfilePage from './game/profile/page'
 import SideBar from '@renderer/components/SideBar'
 import ModsPage from '@renderer/app/game/profile/mods/page'
 import ModPage from '@renderer/app/game/profile/mods/[modId]/page'
-import SettingsModal from '@renderer/components/SettingsModal'
+import SettingsModal from '@renderer/components/modals/SettingsModal'
 
 export default function App() {
     const [topBarEnabled, setTopBarEnabled] = useState(true)

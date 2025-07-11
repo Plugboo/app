@@ -1,11 +1,11 @@
 import { RefObject, useEffect, useState } from 'react'
-import Button from './Button'
-import Input from './Input'
-import Modal from './Modal'
+import Button from '../ui/Button'
+import Input from '../ui/Input'
+import Modal from '../ui/Modal'
 import { GameInformation } from '@common/game'
-import { setupGame } from '../api/game'
-import { ERROR_MESSAGES } from '../util/error'
-import { pickFileDialog } from '../api/app'
+import { setupGame } from '../../api/game'
+import { ERROR_MESSAGES } from '../../util/error'
+import { pickFileDialog } from '../../api/app'
 import { OpenDialogReturnValue } from 'electron'
 
 type Props = {

@@ -1,15 +1,13 @@
-﻿import { Settings, X } from 'lucide-react'
-import { GameProfile } from '@common/game'
-import Modal from '@renderer/components/Modal'
-import Button from '@renderer/components/Button'
+﻿import Button from '../ui/Button'
+import Modal from '../ui/Modal'
+import { Settings, X } from 'lucide-react'
 
 type Props = {
     open: boolean
     onChangeOpen: (open: boolean) => void
-    profile: GameProfile
 }
 
-export default function ProfileSettingsModal(props: Props) {
+export default function SettingsModal(props: Props) {
     return (
         <Modal classNames={{
             childrenWrapper: 'min-w-208 min-h-102 relative overflow-hidden'
@@ -18,7 +16,7 @@ export default function ProfileSettingsModal(props: Props) {
                 <div className="w-full p-6 flex items-center justify-between">
                     <div className="flex gap-1.5 items-center">
                         <Settings className="w-4 h-4" />
-                        <h1 className="font-bold text-lg">Profile Settings</h1>
+                        <h1 className="font-bold text-lg">Settings</h1>
                     </div>
                     <Button className="ml-auto !rounded-full flex items-center justify-center w-8 !p-0 h-8"
                             type="secondary"

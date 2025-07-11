@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Mod } from '@common/service'
 import { getMod } from '@renderer/api/mods'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle } from 'lucide-react'
-import Button from '@renderer/components/Button'
+import Button from '@renderer/components/ui/Button'
 
 export default function ModPage() {
     const { gameId, modId } = useParams()

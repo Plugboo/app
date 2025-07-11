@@ -3,9 +3,9 @@ import { Transition } from '@tailwindui/react'
 import { FileQuestionMark, Hammer, LoaderCircle, Play, Plus, Settings } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router'
 import { getProfile } from '@renderer/api/game'
-import Button from '@renderer/components/Button'
-import ProfileSettingsModal from '@renderer/app/game/profile/ProfileSettingsModal'
-import Input from '@renderer/components/Input'
+import Button from '@renderer/components/ui/Button'
+import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
+import Input from '@renderer/components/ui/Input'
 import { ProfileRData } from '@common/profile'
 
 enum Status {

@@ -1,11 +1,11 @@
 ﻿import { Settings, X } from 'lucide-react'
-import Modal from '@renderer/components/Modal'
-import Button from '@renderer/components/Button'
-import Input from '@renderer/components/Input'
+import Modal from '@renderer/components/ui/Modal'
+import Button from '@renderer/components/ui/Button'
+import Input from '@renderer/components/ui/Input'
 import { useEffect, useState } from 'react'
 import { LoaderRData, LoaderVersion } from '@common/loader'
 import { createProfile, getLoaders } from '@renderer/api/game'
-import Select from '@renderer/components/Select'
+import Select from '@renderer/components/ui/Select'
 
 type Props = {
     gameId: string | null
