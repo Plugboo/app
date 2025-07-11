@@ -1,7 +1,7 @@
 ﻿import { Link, useParams } from 'react-router'
 import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import { getCategories, searchMods } from '@renderer/api/mods'
-import { Category, Mod } from '@common/service'
+import { Category, Mod } from '@common/types/service'
 import Input from '@renderer/components/ui/Input'
 import Button from '@renderer/components/ui/Button'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle, RefreshCcw } from 'lucide-react'

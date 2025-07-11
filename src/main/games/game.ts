@@ -1,6 +1,6 @@
-import { GameInformation } from '@common/game'
+import { GameInformation } from '@common/types/game'
 import { BaseService } from '@main/services/service'
-import { NewsArticle } from '@common/news'
+import { NewsArticle } from '@common/types/news'
 import { Loader } from '@main/loaders/loader'
 
 export class Game {

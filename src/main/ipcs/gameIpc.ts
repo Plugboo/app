@@ -1,7 +1,7 @@
 import { IpcEvent } from './ipc'
-import { Id } from '@common/service'
+import { Id } from '@common/types/service'
 import ProfileManager from '@main/profiles/manager'
-import { NewsArticle } from '@common/news'
+import { NewsArticle } from '@common/types/news'
 import GameManager from '@main/games/manager'
 
 export default class GameIpc {

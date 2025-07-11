@@ -4,7 +4,7 @@ import { getProfiles } from '../../api/game'
 import { useNavigate, useParams } from 'react-router'
 import Button from '@renderer/components/ui/Button'
 import CreateProfileModal from '@renderer/components/modals/CreateProfileModal'
-import { ProfileRData } from '@common/profile'
+import { ProfileRData } from '@common/types/profile'
 
 export default function GamePage() {
     const { gameId } = useParams()

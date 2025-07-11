@@ -1,9 +1,9 @@
-﻿import { IpcChannel } from '@common/ipc'
-import { NewsArticle } from '@common/news'
-import { LoaderRData } from '@common/loader'
+﻿import { IpcChannel } from '@common/types/ipc'
+import { NewsArticle } from '@common/types/news'
+import { LoaderRData } from '@common/types/loader'
 import invokeIpc from '@renderer/api/ipc'
-import { GameInformation } from '@common/game'
-import { ProfileRData } from '@common/profile'
+import { GameInformation } from '@common/types/game'
+import { ProfileRData } from '@common/types/profile'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
     return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)

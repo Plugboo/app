@@ -1,7 +1,7 @@
 ﻿import { useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { Mod } from '@common/service'
+import { Mod } from '@common/types/service'
 import { getMod } from '@renderer/api/mods'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle } from 'lucide-react'
 import Button from '@renderer/components/ui/Button'

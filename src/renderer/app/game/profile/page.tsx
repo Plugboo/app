@@ -6,7 +6,7 @@ import { getProfile } from '@renderer/api/game'
 import Button from '@renderer/components/ui/Button'
 import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
 import Input from '@renderer/components/ui/Input'
-import { ProfileRData } from '@common/profile'
+import { ProfileRData } from '@common/types/profile'
 
 enum Status {
     UNKNOWN,

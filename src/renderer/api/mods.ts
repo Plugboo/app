@@ -1,5 +1,5 @@
-﻿import { Category, Comment, GetCommentsOptions, Mod, SearchModsOptions } from '@common/service'
-import { IpcChannel } from '@common/ipc'
+﻿import { Category, Comment, GetCommentsOptions, Mod, SearchModsOptions } from '@common/types/service'
+import { IpcChannel } from '@common/types/ipc'
 import invokeIpc from '@renderer/api/ipc'
 
 export async function getModComments(gameId: string, modId: string, options: GetCommentsOptions): Promise<Comment[]> {

@@ -1,4 +1,4 @@
-import { IpcChannel } from '@common/ipc'
+import { IpcChannel } from '@common/types/ipc'
 
 export default async function invokeIpc<T>(channel: IpcChannel, ...args: any): Promise<T> {
     const response: any = await window.electron.ipc.invoke(channel, ...args)

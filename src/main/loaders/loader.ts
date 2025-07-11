@@ -1,5 +1,10 @@
-import { LoaderRData, LoaderVersion } from '@common/loader'
+import { LoaderRData, LoaderVersion } from '@common/types/loader'
 import RendererDataSerializer from '@main/utils/renderer'
+
+export interface LoaderVersionCache {
+    timestamp: number
+    versions: LoaderVersion[]
+}
 
 export class Loader extends RendererDataSerializer<LoaderRData> {
     public readonly id: string
@@ -18,7 +23,7 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
     public async fetchVersions() {
     }
 
-    serializeRendererData(): LoaderRData {
+    public serializeRendererData(): LoaderRData {
         return {
             id: this.id,
             name: this.name,

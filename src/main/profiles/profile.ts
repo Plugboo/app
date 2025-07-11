@@ -1,8 +1,8 @@
-import { LoaderInstance } from '@common/loader'
+import { LoaderInstance } from '@common/types/loader'
 import fs from 'node:fs'
 import { Mod } from '@main/mods/mod'
 import path from 'node:path'
-import { ProfileRData } from '@common/profile'
+import { ProfileRData } from '@common/types/profile'
 import RendererDataSerializer from '@main/utils/renderer'
 
 export class Profile extends RendererDataSerializer<ProfileRData> {

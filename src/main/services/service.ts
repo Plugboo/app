@@ -1,4 +1,4 @@
-﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/service'
+﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/types/service'
 
 export class BaseService {
     public async searchMods(options: SearchModsOptions): Promise<Mod[]> {

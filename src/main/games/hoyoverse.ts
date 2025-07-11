@@ -1,8 +1,8 @@
 import { Game } from '@main/games/game'
-import { GameInformation } from '@common/game'
+import { GameInformation } from '@common/types/game'
 import { BaseService } from '@main/services/service'
-import { Loader } from '@common/loader'
-import { NewsArticle } from '@common/news'
+import { Loader } from '@common/types/loader'
+import { NewsArticle } from '@common/types/news'
 import HoYoPlay from '@main/utils/hoyoplay'
 import { multiExists } from '@main/utils/filesystem'
 
