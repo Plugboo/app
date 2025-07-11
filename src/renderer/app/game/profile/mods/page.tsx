@@ -149,7 +149,7 @@ export default function ModsPage() {
                         <div className="w-full flex flex-col gap-3 h-full">
                             {mods.map((record: Mod, index) => (
                                 <motion.div
-                                    className="w-full h-27 bg-background-800/50 p-4 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer"
+                                    className="w-full h-27 bg-background-800/50 p-3 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer"
                                     key={record.id}
                                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                                     transition={{ delay: 0.065 * index }}>
