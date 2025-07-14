@@ -6,7 +6,5 @@ export type TabProps = {
 }
 
 export default function Tab(props: TabProps) {
-    return <div>
-        {props.children}
-    </div>
+    return props.children
 }
