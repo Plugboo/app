@@ -38,7 +38,7 @@ export default function GamePage() {
     }, [gameId])
 
     return (
-        <main className="w-full p-4 overflow-hidden">
+        <main className="w-full p-4 pr-1">
             <CreateProfileModal gameId={gameId} open={createProfileOpen} onChangeOpen={setProfileOpen} onCreate={() => {
                 loadProfiles()
             }} />

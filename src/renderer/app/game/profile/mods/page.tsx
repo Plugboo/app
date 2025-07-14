@@ -32,7 +32,7 @@ export default function ModsPage() {
             query: input,
             sort: (sortOption as any) ?? sort
         }).then((result) => {
-            console.log("[ModsPage] Search result:", result)
+            console.log('[ModsPage] Search result:', result)
             setMods(result)
             setLoading(false)
         })
@@ -55,7 +55,7 @@ export default function ModsPage() {
         })
     }, [gameId])
 
-    return <main className="w-full h-full p-4 overflow-hidden overflow-y-auto pb-4">
+    return <main className="w-full h-full p-4 pb-4 pr-1">
         <motion.div className="flex flex-col gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="flex gap-2.5">
                 <Input classNames={{
@@ -171,7 +171,7 @@ export default function ModsPage() {
                                                     <p className="font-semibold text-xl text-nowrap">{record.name}</p>
                                                     {record.nsfw && (
                                                         <p
-                                                            className="px-1.5 py-0.5 text-sm rounded-lg text-red-400 min-w-0 bg-red-600/30 grow-0 flex-none flex flex-row gap-4 h-6">
+                                                            className="font-bold px-1.5 py-0.5 text-sm rounded-lg text-red-400 min-w-0 bg-red-600/30 grow-0 flex-none flex flex-row gap-4 h-6">
                                                             NSFW
                                                         </p>
                                                     )}

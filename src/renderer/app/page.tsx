@@ -41,8 +41,8 @@ export default function HomePage() {
     }, [])
 
     return (
-        <main className="relative w-full h-full overflow-hidden overflow-y-auto scrollbar-none">
-            <div className="p-4">
+        <main className="relative w-full h-full">
+            <div className="p-4 pr-1">
                 <SetupGameModal
                     open={setupModalOpen}
                     onChangeOpen={setSetupModalOpen}

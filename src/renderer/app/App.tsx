@@ -28,7 +28,7 @@ export default function App() {
                 {topBarEnabled && <TopBar />}
                 <SettingsModal open={settingsModalOpen} onChangeOpen={setSettingsModalOpen} />
                 <div className={`w-full h-full flex pl-16 ${topBarEnabled ? 'pt-9.5' : ''}`}>
-                    <div className="bg-background-900 border-background-700/75 w-full h-full scrollbar-none">
+                    <div className="bg-background-900 border-background-700/75 w-full h-full overflow-hidden overflow-y-auto scrollbar-gutter-stable">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/game/:gameId" element={<GamePage />} />
