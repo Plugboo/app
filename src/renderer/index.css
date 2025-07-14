@@ -143,10 +143,14 @@
     .app-region-nodrag {
         app-region: no-drag;
     }
+
+    .scrollbar-gutter-stable {
+        scrollbar-gutter: stable;
+    }
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
 }
 
