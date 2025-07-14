@@ -8,6 +8,7 @@ import Button from '@renderer/components/ui/Button'
 import Divider from '@renderer/components/ui/Divider'
 import Tabs from '@renderer/components/ui/Tabs'
 import Tab from '@renderer/components/ui/Tab'
+import ModStats from '@renderer/components/ModStats'
 
 export default function ModPage() {
     const { gameId, modId } = useParams()
@@ -49,20 +50,7 @@ export default function ModPage() {
                             </div>
                             <div className="flex flex-col justify-between">
                                 <h1 className="text-2xl font-semibold">{mod.name}</h1>
-                                <div className="flex gap-4">
-                                    <div className="flex gap-1 items-center">
-                                        <Heart className="w-4 h-4 text-red-400" />
-                                        <p className="text-text-400 font-semibold">{mod.likes}</p>
-                                    </div>
-                                    <div className="flex gap-1 items-center">
-                                        <MessageCircle className="w-4 h-4 text-primary-400" />
-                                        <p className="text-text-400 font-semibold">{mod.comments}</p>
-                                    </div>
-                                    <div className="flex gap-1 items-center">
-                                        <Eye className="w-4 h-4 text-secondary-200 mt-0.5" />
-                                        <p className="text-text-400 font-semibold">{mod.views}</p>
-                                    </div>
-                                </div>
+                                <ModStats mod={mod} />
                             </div>
                             <div className="flex items-center ml-auto h-full">
                                 <Button className="flex gap-2">

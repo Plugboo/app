@@ -7,6 +7,7 @@ import Button from '@renderer/components/ui/Button'
 import { Download, Eye, Heart, LoaderCircle, MessageCircle, RefreshCcw } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Select from '@renderer/components/ui/Select'
+import ModStats from '@renderer/components/ModStats'
 
 export default function ModsPage() {
     const { gameId, profileId } = useParams()
@@ -177,20 +178,7 @@ export default function ModsPage() {
                                                 </div>
                                                 <p className="font-medium text-base text-background-400 text-nowrap -mt-1">{record.author.name}</p>
                                             </div>
-                                            <div className="flex gap-4">
-                                                <div className="flex gap-1 items-center">
-                                                    <Heart className="w-4 h-4 text-red-400" />
-                                                    <p className="text-background-500 font-medium">{record.likes}</p>
-                                                </div>
-                                                <div className="flex gap-1 items-center">
-                                                    <MessageCircle className="w-4 h-4 text-primary-400" />
-                                                    <p className="text-background-500 font-medium">{record.comments}</p>
-                                                </div>
-                                                <div className="flex gap-1 items-center">
-                                                    <Eye className="w-4 h-4 text-secondary-200 mb-0.25" />
-                                                    <p className="text-background-500 font-medium mt-0.25">{record.views}</p>
-                                                </div>
-                                            </div>
+                                            <ModStats mod={record} />
                                         </div>
                                         <div className="ml-auto h-full flex flex-col gap-2 shrink-0">
                                             <Button className="mt-auto flex gap-2" onClick={onClickInstall}>
