@@ -143,16 +143,6 @@
     .app-region-nodrag {
         app-region: no-drag;
     }
-
-    .flex-none-height {
-        flex: none;
-        height: 0%;
-    }
-
-    .flex-none-width {
-        flex: none;
-        min-width: 0%;
-    }
 }
 
 body {
