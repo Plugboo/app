@@ -42,7 +42,7 @@ export default function HomePage() {
 
     return (
         <main className="relative w-full h-full">
-            <div className="p-4 pr-1">
+            <div className="p-4">
                 <SetupGameModal
                     open={setupModalOpen}
                     onChangeOpen={setSetupModalOpen}

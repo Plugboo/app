@@ -55,7 +55,7 @@ export default function ModsPage() {
         })
     }, [gameId])
 
-    return <main className="w-full h-full p-4 pb-4 pr-1">
+    return <main className="w-full h-full p-4">
         <motion.div className="flex flex-col gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="flex gap-2.5">
                 <Input classNames={{

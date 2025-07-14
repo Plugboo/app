@@ -147,6 +147,12 @@
     .scrollbar-gutter-stable {
         scrollbar-gutter: stable;
     }
+
+    /*noinspection ALL*/
+    .flex-none-height {
+        flex: none;
+        height: 0%;
+    }
 }
 
 body {

@@ -3,18 +3,25 @@ import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
 import { Comment, Mod } from '@common/types/service'
 import { getMod, getModComments } from '@renderer/api/mods'
-import { Download, LoaderCircle } from 'lucide-react'
+import { Download, LoaderCircle, SquareArrowOutUpRight } from 'lucide-react'
 import Button from '@renderer/components/ui/Button'
 import Divider from '@renderer/components/ui/Divider'
 import Tabs from '@renderer/components/ui/Tabs'
 import Tab from '@renderer/components/ui/Tab'
 import ModStats from '@renderer/components/ModStats'
+import { Interweave, Node } from 'interweave'
 
 export default function ModPage() {
     const { gameId, modId } = useParams()
     const [loading, setLoading] = useState(true)
     const [mod, setMod] = useState<Mod | null>(null)
     const [comments, setComments] = useState<Comment[]>([])
+
+    const transformContent = (node: HTMLElement, _children: Node[]): any => {
+        if (node.tagName === 'HR') {
+            return <Divider />
+        }
+    }
 
     useEffect(() => {
         setLoading(true)
@@ -29,7 +36,7 @@ export default function ModPage() {
         })
     }, [gameId, modId])
 
-    return <main className="w-full h-full p-4 pb-4 pr-1">
+    return <main className="w-full h-full p-4 pb-4">
         <motion.div className="flex flex-col gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             {loading && (
                 <div
@@ -61,44 +68,77 @@ export default function ModPage() {
                         </div>
                         <Divider />
 
-                        <Tabs>
-                            <Tab title="Description">
-                                <div className="p-4 bg-background-800/50 rounded-2xl"
-                                     dangerouslySetInnerHTML={{ __html: mod.content }} />
-                            </Tab>
-                            <Tab title="Gallery">
-                                <div
-                                    className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-                                    {mod.media.map((media) => (
-                                        <div className="p-2 bg-background-800 rounded-2xl flex-none" key={media.url}>
-                                            <div className="overflow-hidden rounded-xl">
-                                                <img className="w-full h-full object-contain" src={media.url}
-                                                     alt={`${mod.name}'s screenshot`} />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </Tab>
-                            <Tab title="Comments">
-                                <div
-                                    className="p-4 bg-background-800/50 rounded-2xl flex flex-col gap-2 overflow-hidden">
-                                    {comments.map((comment) => (
-                                        <div className="p-3 bg-background-800/60 rounded-xl w-full flex flex-col gap-2" key={comment.id}>
-                                            {comment.author && (
-                                                <div className="flex gap-2 items-center">
-                                                    <img className="w-11 h-11 rounded-sm bg-background-900/50" src={comment.author.avatarUrl}
-                                                         alt={`${comment.author.name}'s avatar`} />
-                                                    <p className="text-lg">{comment.author.name}</p>
+                        <div className="flex gap-4">
+                            <Tabs classNames={{
+                                wrapper: "w-full",
+                                contentWrapper: "w-full"
+                            }}>
+                                <Tab title="Description">
+                                    <div className="p-4 bg-background-800/50 rounded-2xl">
+                                        <Interweave content={mod.content ?? ''} transform={transformContent} />
+                                    </div>
+                                </Tab>
+                                <Tab title="Gallery">
+                                    <div
+                                        className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                                        {mod.media.map((media) => (
+                                            <div className="p-2 bg-background-800 rounded-2xl flex-none"
+                                                 key={media.url}>
+                                                <div className="overflow-hidden rounded-xl">
+                                                    <img className="w-full h-full object-contain" src={media.url}
+                                                         alt={`${mod.name}'s screenshot`} />
                                                 </div>
-                                            )}
-                                            <div className="text-background-300" dangerouslySetInnerHTML={{
-                                                __html: comment.content
-                                            }}></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Tab>
+                                <Tab title="Comments">
+                                    <div
+                                        className="p-4 bg-background-800/50 rounded-2xl flex flex-col gap-2 overflow-hidden">
+                                        {comments.map((comment) => (
+                                            <div
+                                                className="p-3 bg-background-800/60 rounded-xl w-full flex flex-col gap-2"
+                                                key={comment.id}>
+                                                {comment.author && (
+                                                    <div className="flex gap-2 items-center">
+                                                        <img className="w-11 h-11 rounded-sm bg-background-900/50"
+                                                             src={comment.author.avatarUrl}
+                                                             alt={`${comment.author.name}'s avatar`} />
+                                                        <p className="text-lg">{comment.author.name}</p>
+                                                    </div>
+                                                )}
+                                                <div className="text-background-300" dangerouslySetInnerHTML={{
+                                                    __html: comment.content
+                                                }}></div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Tab>
+                            </Tabs>
+                            <div
+                                className="w-64 p-4 bg-background-800/50 rounded-2xl flex-none-height flex flex-col gap-2">
+                                <div className="flex flex-col gap-2">
+                                    <h1 className="font-bold text-lg underline underline-offset-3 decoration-background-300/30">Submitter</h1>
+                                    <div className="flex gap-2 items-center text-background-200">
+                                        <img className="w-10 h-10 rounded-full" src={mod.author.avatarUrl}
+                                             alt={`${mod.author.name}'s avatar`} />
+                                        <div className="flex flex-col justify-center">
+                                            <p className="font-semibold">{mod.author.name}</p>
+                                            <p className="text-sm">Creator</p>
                                         </div>
-                                    ))}
+                                    </div>
                                 </div>
-                            </Tab>
-                        </Tabs>
+
+                                <Divider />
+
+                                <a className="mx-auto flex gap-1 items-center"
+                                   href={`https://gamebanana.com/mods/${mod.id}`}
+                                   target="_blank">Open in
+                                    Browser
+                                    <SquareArrowOutUpRight className="w-3 h-3" />
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </motion.div>
             )}

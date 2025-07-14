@@ -3,6 +3,10 @@ import { TabProps } from '@renderer/components/ui/Tab'
 
 type Props = {
     children?: ReactNode | ReactNode[]
+    classNames?: {
+        wrapper?: string
+        contentWrapper?: string
+    }
 }
 
 export default function Tabs(props: Props) {
@@ -24,7 +28,11 @@ export default function Tabs(props: Props) {
         itemRefs.current = itemRefs.current.slice(0, children.length)
     }, [children])
 
-    return <div className="flex flex-col gap-4">
+    const classNames = props.classNames ?? {}
+    const wrapperClassNames = classNames.wrapper ?? ''
+    const contentWrapperClassNames = classNames.contentWrapper ?? ''
+
+    return <div className={`${wrapperClassNames} flex flex-col gap-4`}>
         <div className="relative flex bg-background-800 rounded-2xl overflow-hidden self-start">
             {activeIndex < children.length && children[activeIndex] && (
                 <div
@@ -49,7 +57,7 @@ export default function Tabs(props: Props) {
         </div>
 
         {activeIndex < children.length && children[activeIndex] && (
-            <div>
+            <div className={contentWrapperClassNames}>
                 {children[activeIndex]}
             </div>
         )}

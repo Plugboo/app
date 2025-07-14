@@ -40,7 +40,7 @@ export default function ProfilePage() {
         return null
     }
 
-    return <main className="w-full p-4 pr-1">
+    return <main className="w-full p-4">
         <Transition
             show={!loading}
             enter="transition-opacity duration-500 ease-in-out"
