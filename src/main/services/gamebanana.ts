@@ -208,7 +208,7 @@ interface CommentInfo {
     _nStampScore: number
     _aPreviewMedia: any[]
     _sText: string
-    _aPoster: Poster
+    _aPoster?: Poster
     _bFollowLinks: boolean
     _aStamps: Stamp[]
 }
@@ -393,11 +393,11 @@ export default class GameBananaService extends BaseService {
                     createdAt: new Date(record._tsDateAdded),
                     updatedAt: new Date(record._tsDateModified),
                     replyCount: record._nReplyCount,
-                    author: {
+                    author: record._aPoster ? {
                         id: record._aPoster._idRow,
                         name: record._aPoster._sName,
                         avatarUrl: record._aPoster._sAvatarUrl
-                    }
+                    } : null
                 }
             ))
         } catch (exception) {

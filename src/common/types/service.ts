@@ -32,7 +32,7 @@ export interface Comment {
     updatedAt: Date,
     replyCount: number,
     content: string
-    author: Author
+    author: Author | null
 }
 
 export interface Category {
