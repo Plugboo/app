@@ -1,5 +1,4 @@
 import { Eye, Heart, MessageCircle } from 'lucide-react'
-import React from 'react'
 import { Mod } from '@common/types/service'
 
 type Props = {
