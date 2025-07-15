@@ -20,8 +20,7 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
         this.versions = []
     }
 
-    public async fetchVersions() {
-    }
+    public async fetchVersions() {}
 
     public serializeRendererData(): LoaderRData {
         return {

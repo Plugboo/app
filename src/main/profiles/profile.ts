@@ -18,12 +18,12 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
 
     public loader: LoaderInstance | null
 
-    constructor(id: string, gameId: string, name: string = "") {
+    constructor(id: string, gameId: string, name: string = '') {
         super()
         this.id = id
         this.gameId = gameId
         this.name = name
-        this.path = ""
+        this.path = ''
         this.mods = []
         this.loader = null
     }
@@ -46,9 +46,10 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
                 fs.mkdirSync(modsPath, { recursive: true })
             }
 
-            const directories = fs.readdirSync(modsPath, { withFileTypes: true })
-                .filter(dirent => dirent.isDirectory())
-                .map(dirent => dirent.name)
+            const directories = fs
+                .readdirSync(modsPath, { withFileTypes: true })
+                .filter((dirent) => dirent.isDirectory())
+                .map((dirent) => dirent.name)
 
             for (const directory of directories) {
                 const absolutePath = path.join(modsPath, directory)
@@ -97,7 +98,7 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
         return {
             id: this.id,
             gameId: this.gameId,
-            name: this.name,
+            name: this.name
         }
     }
 

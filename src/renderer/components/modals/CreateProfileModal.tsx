@@ -62,18 +62,24 @@ export default function CreateProfileModal(props: Props) {
     }, [props.open])
 
     return (
-        <Modal classNames={{
-            childrenWrapper: 'min-w-140 min-h-100 relative'
-        }} open={props.open} onChangeOpen={props.onChangeOpen}>
+        <Modal
+            classNames={{
+                childrenWrapper: 'min-w-140 min-h-100 relative'
+            }}
+            open={props.open}
+            onChangeOpen={props.onChangeOpen}
+        >
             <div className="absolute top-0 left-0 w-full h-full flex flex-col">
                 <div className="w-full p-6 flex items-center justify-between">
                     <div className="flex gap-1.5 items-center">
                         <Settings className="w-4 h-4" />
                         <h1 className="font-bold text-lg">Create Profile</h1>
                     </div>
-                    <Button className="ml-auto !rounded-full flex items-center justify-center w-8 !p-0 h-8"
-                            type="secondary"
-                            onClick={() => props.onChangeOpen(false)}>
+                    <Button
+                        className="ml-auto !rounded-full flex items-center justify-center w-8 !p-0 h-8"
+                        type="secondary"
+                        onClick={() => props.onChangeOpen(false)}
+                    >
                         <X />
                     </Button>
                 </div>
@@ -90,22 +96,20 @@ export default function CreateProfileModal(props: Props) {
                                 <Select
                                     placeholder="Select a loader.."
                                     onSelect={(value) => setSelectedLoader(loaders.find((v) => v.id === value) ?? null)}
-                                    values={loaders.map((loader) => (
-                                        {
-                                            value: loader.id,
-                                            label: loader.name
-                                        }
-                                    ))} />
+                                    values={loaders.map((loader) => ({
+                                        value: loader.id,
+                                        label: loader.name
+                                    }))}
+                                />
                                 {selectedLoader !== null && (
                                     <Select
                                         placeholder="Select a version.."
                                         onSelect={(value) => onSelectVersion(value)}
-                                        values={selectedLoader.versions.map((version) => (
-                                            {
-                                                value: version.version,
-                                                label: version.version
-                                            }
-                                        ))} />
+                                        values={selectedLoader.versions.map((version) => ({
+                                            value: version.version,
+                                            label: version.version
+                                        }))}
+                                    />
                                 )}
                             </div>
                         </div>

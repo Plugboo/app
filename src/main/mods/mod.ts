@@ -39,7 +39,7 @@ export class Mod extends RendererDataSerializer<ModRData> {
             id: this.id,
             name: this.name,
             author: this.author,
-            version: this.version,
+            version: this.version
         }
     }
 

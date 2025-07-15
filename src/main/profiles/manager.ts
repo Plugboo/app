@@ -19,9 +19,10 @@ export default class ProfileManager {
                 fs.mkdirSync(ProfileManager.path, { recursive: true })
             }
 
-            const directories = fs.readdirSync(ProfileManager.path, { withFileTypes: true })
-                .filter(dirent => dirent.isDirectory())
-                .map(dirent => dirent.name)
+            const directories = fs
+                .readdirSync(ProfileManager.path, { withFileTypes: true })
+                .filter((dirent) => dirent.isDirectory())
+                .map((dirent) => dirent.name)
 
             for (const directory of directories) {
                 const absolutePath = path.join(ProfileManager.path, directory)

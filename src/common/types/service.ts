@@ -1,9 +1,9 @@
 ﻿export type Id = string | number
 
 export interface Mod {
-    id: Id,
-    name: string,
-    version: string,
+    id: Id
+    name: string
+    version: string
     media: Media[]
     createdAt: Date
     updatedAt: Date
@@ -17,9 +17,9 @@ export interface Mod {
 }
 
 export interface Author {
-    id: Id,
-    name: string,
-    avatarUrl: string,
+    id: Id
+    name: string
+    avatarUrl: string
 }
 
 export interface Media {
@@ -27,10 +27,10 @@ export interface Media {
 }
 
 export interface Comment {
-    id: Id,
-    createdAt: Date,
-    updatedAt: Date,
-    replyCount: number,
+    id: Id
+    createdAt: Date
+    updatedAt: Date
+    replyCount: number
     content: string
     author: Author | null
 }
@@ -43,11 +43,11 @@ export interface Category {
 }
 
 export interface SearchModsOptions {
-    page?: number,
+    page?: number
     query?: string
     sort?: 'new' | 'default' | 'updated'
 }
 
 export interface GetCommentsOptions {
-    page?: number,
+    page?: number
 }

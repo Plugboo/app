@@ -16,5 +16,5 @@ export enum IpcChannel {
     Game_Loaders = 'game_loaders',
     Window_Minimize = 'window_minimize',
     Window_Maximize = 'window_maximize',
-    Window_Close = 'window_close',
+    Window_Close = 'window_close'
 }

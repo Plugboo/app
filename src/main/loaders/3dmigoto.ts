@@ -32,19 +32,19 @@ export default class ThreeDMigoto extends Loader {
                 })
                 const json = JSON.parse(content)
 
-                if (typeof json.timestamp !== "number") {
-                    throw new Error("Invalid timestamp")
+                if (typeof json.timestamp !== 'number') {
+                    throw new Error('Invalid timestamp')
                 }
 
                 if (!Array.isArray(json.versions)) {
-                    throw new Error("Invalid versions")
+                    throw new Error('Invalid versions')
                 }
 
                 /*
                  * Cache should only be valid for 2 minutes.
                  */
-                if ((Date.now()) - json.timestamp > 1000 * 60 * 2) {
-                    throw new Error("Cache is too old")
+                if (Date.now() - json.timestamp > 1000 * 60 * 2) {
+                    throw new Error('Cache is too old')
                 }
 
                 this.versions = []
@@ -90,12 +90,15 @@ export default class ThreeDMigoto extends Loader {
             const response = await fetch(url)
             const json = await response.json()
 
-            for (const release of (json as Github.Release[])) {
+            for (const release of json as Github.Release[]) {
                 let devAsset: Github.Asset | null = null
                 let playAsset: Github.Asset | null = null
 
                 for (const asset of release.assets) {
-                    if (asset.content_type !== 'application/x-zip-compressed' && asset.content_type !== 'application/zip') {
+                    if (
+                        asset.content_type !== 'application/x-zip-compressed' &&
+                        asset.content_type !== 'application/zip'
+                    ) {
                         continue
                     }
 
@@ -124,7 +127,7 @@ export default class ThreeDMigoto extends Loader {
             }
 
             {
-                const cacheFolder = path.resolve(absoluteCacheLocation, "..")
+                const cacheFolder = path.resolve(absoluteCacheLocation, '..')
                 if (!fs.existsSync(cacheFolder)) {
                     fs.mkdirSync(cacheFolder, { recursive: true })
                 }
@@ -135,7 +138,7 @@ export default class ThreeDMigoto extends Loader {
                 }
 
                 fs.writeFileSync(absoluteCacheLocation, JSON.stringify(cache, null, 2), {
-                    encoding: "utf8"
+                    encoding: 'utf8'
                 })
             }
 

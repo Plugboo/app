@@ -22,8 +22,7 @@ export default function App() {
 
     return (
         <HashRouter>
-            <div
-                className="dark bg-background-800 text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
+            <div className="dark bg-background-800 text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
                 <SideBar onClickSettings={() => setSettingsModalOpen(true)} />
                 {topBarEnabled && <TopBar />}
                 <SettingsModal open={settingsModalOpen} onChangeOpen={setSettingsModalOpen} />

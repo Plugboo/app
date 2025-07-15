@@ -26,14 +26,19 @@ export default function Modal(props: Props) {
                         transition={{
                             duration: 0.15
                         }}
-                        className="relative backdrop-blur-sm flex items-center justify-center bg-background-900/65 w-screen h-screen">
-                        <div className="absolute top-0 left-0 w-full h-screen" onClick={() => {
-                            if (props.onChangeOpen) {
-                                props.onChangeOpen(false)
-                            }
-                        }} />
+                        className="relative backdrop-blur-sm flex items-center justify-center bg-background-900/65 w-screen h-screen"
+                    >
                         <div
-                            className={`min-w-32 min-h-32 bg-background-800 p-8 rounded-xl border-1 border-background-700 drop-shadow-lg ${props.classNames ? props.classNames.childrenWrapper ?? '' : ''}`}>
+                            className="absolute top-0 left-0 w-full h-screen"
+                            onClick={() => {
+                                if (props.onChangeOpen) {
+                                    props.onChangeOpen(false)
+                                }
+                            }}
+                        />
+                        <div
+                            className={`min-w-32 min-h-32 bg-background-800 p-8 rounded-xl border-1 border-background-700 drop-shadow-lg ${props.classNames ? (props.classNames.childrenWrapper ?? '') : ''}`}
+                        >
                             {props.children}
                         </div>
                     </motion.div>

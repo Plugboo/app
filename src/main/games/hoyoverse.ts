@@ -12,11 +12,11 @@ interface HoYoLabArticle {
         subject: string
         content: string
         created_at: number
-    },
+    }
     user: {
         uid: string
         nickname: string
-    },
+    }
     cover_list: {
         url: string
         width: number
@@ -126,12 +126,18 @@ export default class HoYoverseGame extends Game {
             return HoYoverseGame._cachedHoYoLabArticles.get(id)
         }
 
-        console.log("[HoYoverseGame] Fetching news for game:", this.gameId)
+        console.log('[HoYoverseGame] Fetching news for game:', this.gameId)
 
         const start = performance.now()
         const result = await HoYoverseGame.getHoYoLabArticles(id, officialAccId)
 
-        console.log("[HoYoverseGame] Received", result.length, "valid articles in", (performance.now() - start).toFixed(2), "ms!")
+        console.log(
+            '[HoYoverseGame] Received',
+            result.length,
+            'valid articles in',
+            (performance.now() - start).toFixed(2),
+            'ms!'
+        )
         return result
     }
 
@@ -150,7 +156,7 @@ export default class HoYoverseGame extends Game {
             const json = await response.json()
             const articles: NewsArticle[] = []
 
-            for (const hoyoArticle of (json.data.list as HoYoLabArticle[])) {
+            for (const hoyoArticle of json.data.list as HoYoLabArticle[]) {
                 if (hoyoArticle.user.uid !== officialAccId) {
                     continue
                 }
@@ -200,7 +206,12 @@ export default class HoYoverseGame extends Game {
     }
 
     private static validateGenshinImpactPath(installPath: string): boolean {
-        return multiExists(installPath, ['GenshinImpact.exe', 'HoYoKProtect.sys', 'mhypbase.dll', 'GenshinImpact_Data/'])
+        return multiExists(installPath, [
+            'GenshinImpact.exe',
+            'HoYoKProtect.sys',
+            'mhypbase.dll',
+            'GenshinImpact_Data/'
+        ])
     }
 
     private static validateHonkaiStarRailPath(installPath: string): boolean {

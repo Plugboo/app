@@ -27,11 +27,19 @@ export default class IpcManager {
         ipcMain.handle(channel, async (event: IpcMainInvokeEvent, ...args: any) => {
             console.log(`[IpcManager] Received invoke in channel: ${channel}`)
             const start = performance.now()
-            const result = await Promise.resolve(handler({
-                event,
-                args: [...args]
-            }))
-            console.log('[IpcManager] Handled invoke in channel:', channel, 'in', (performance.now() - start).toFixed(2), 'ms!')
+            const result = await Promise.resolve(
+                handler({
+                    event,
+                    args: [...args]
+                })
+            )
+            console.log(
+                '[IpcManager] Handled invoke in channel:',
+                channel,
+                'in',
+                (performance.now() - start).toFixed(2),
+                'ms!'
+            )
 
             if (typeof result === 'object' || Array.isArray(result)) {
                 return JSON.stringify({

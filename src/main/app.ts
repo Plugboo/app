@@ -57,16 +57,14 @@ class Application {
          * Disable site reloading when not in development mode.
          */
         if (!MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-            app.on('browser-window-focus', function() {
+            app.on('browser-window-focus', function () {
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
-                globalShortcut.register('CommandOrControl+R', () => {
-                })
+                globalShortcut.register('CommandOrControl+R', () => {})
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
-                globalShortcut.register('F5', () => {
-                })
+                globalShortcut.register('F5', () => {})
             })
 
-            app.on('browser-window-blur', function() {
+            app.on('browser-window-blur', function () {
                 globalShortcut.unregister('CommandOrControl+R')
                 globalShortcut.unregister('F5')
             })

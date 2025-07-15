@@ -19,8 +19,7 @@ export default function TopBar() {
 
     return (
         <div className="fixed w-screen pl-15 h-9.5 shrink-0 pointer-events-none z-99">
-            <div
-                className="w-full h-full flex bg-background-800">
+            <div className="w-full h-full flex bg-background-800">
                 <div className="w-full h-full ml-1 border-b-2 border-background-700/30">
                     <div className="flex items-center justify-between app-region-drag pointer-events-auto">
                         <div className="h-full flex gap-1 items-center mt-0.5">
@@ -37,8 +36,7 @@ export default function TopBar() {
                                 <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
-                        <div
-                            className="flex gap-1 items-center justify-center bg-background-800/40 rounded-lg overflow-hidden pr-1 mt-0.5">
+                        <div className="flex gap-1 items-center justify-center bg-background-800/40 rounded-lg overflow-hidden pr-1 mt-0.5">
                             <button
                                 className="flex items-center justify-center p-1 w-8 h-8 rounded-lg transition-colors duration-100 hover:bg-background-600/40 ml-auto cursor-pointer app-region-nodrag"
                                 onClick={() => onClickMinimize()}
@@ -60,9 +58,7 @@ export default function TopBar() {
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
     )
 }

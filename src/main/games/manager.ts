@@ -9,9 +9,21 @@ export default class GameManager {
     public static pathsFile: string
 
     public static entries: Game[] = [
-        new HoYoverseGame(HoYoverseGameId.GenshinImpact, [new GameBananaService('8552')], [new ThreeDMigoto('SilentNightSound', 'GI-Model-Importer', 'genshin_impact/3dmigoto.json')]),
-        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail, [new GameBananaService('18366')], [new ThreeDMigoto('SilentNightSound', 'SR-Model-Importer', 'honkai_star_rail/3dmigoto.json')]),
-        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero, [new GameBananaService('19567')], [new ThreeDMigoto('leotorrez', 'ZZ-Model-Importer', 'zenless_zone_zero/3dmigoto.json')])
+        new HoYoverseGame(
+            HoYoverseGameId.GenshinImpact,
+            [new GameBananaService('8552')],
+            [new ThreeDMigoto('SilentNightSound', 'GI-Model-Importer', 'genshin_impact/3dmigoto.json')]
+        ),
+        new HoYoverseGame(
+            HoYoverseGameId.HonkaiStarRail,
+            [new GameBananaService('18366')],
+            [new ThreeDMigoto('SilentNightSound', 'SR-Model-Importer', 'honkai_star_rail/3dmigoto.json')]
+        ),
+        new HoYoverseGame(
+            HoYoverseGameId.ZenlessZoneZero,
+            [new GameBananaService('19567')],
+            [new ThreeDMigoto('leotorrez', 'ZZ-Model-Importer', 'zenless_zone_zero/3dmigoto.json')]
+        )
     ]
 
     public static loadPaths() {

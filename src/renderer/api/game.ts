@@ -23,7 +23,7 @@ export async function verifyGame(gameId: string) {
 
 export async function setupGame(gameId: string, path: string) {
     return invokeIpc<{
-        success: boolean,
+        success: boolean
         reason?: string
     }>(IpcChannel.Game_Setup, gameId, path)
 }
@@ -36,7 +36,12 @@ export async function getProfile(gameId: string): Promise<ProfileRData | null> {
     return invokeIpc<ProfileRData | null>(IpcChannel.Game_GetProfile, gameId)
 }
 
-export async function createProfile(gameId: string, name: string, loaderId: string, loaderVersion: string): Promise<boolean> {
+export async function createProfile(
+    gameId: string,
+    name: string,
+    loaderId: string,
+    loaderVersion: string
+): Promise<boolean> {
     return invokeIpc<boolean>(IpcChannel.Game_CreateProfile, gameId, name, loaderId, loaderVersion)
 }
 

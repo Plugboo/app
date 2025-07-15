@@ -289,32 +289,26 @@ export default class GameBananaService extends BaseService {
             }
 
             const root = data as ModSearchRoot
-            return root._aRecords.map((record) => (
-                {
-                    id: record._idRow,
-                    name: record._sName,
-                    createdAt: new Date(record._tsDateAdded),
-                    updatedAt: new Date(record._tsDateModified),
-                    comments: record._nPostCount ?? 0,
-                    likes: record._nLikeCount ?? 0,
-                    views: record._nViewCount ?? 0,
-                    version: record._sVersion ?? 'N/A',
-                    media: record._aPreviewMedia._aImages.map((image) => (
-                        {
-                            url: `${image._sBaseUrl}/${image._sFile}`
-                        }
-                    )),
-                    tags: [
-                        record._aRootCategory._sName
-                    ],
-                    author: {
-                        id: String(record._aSubmitter._idRow),
-                        name: record._aSubmitter._sName,
-                        avatarUrl: record._aSubmitter._sAvatarUrl
-                    },
-                    nsfw: record._bHasContentRatings
-                }
-            ))
+            return root._aRecords.map((record) => ({
+                id: record._idRow,
+                name: record._sName,
+                createdAt: new Date(record._tsDateAdded),
+                updatedAt: new Date(record._tsDateModified),
+                comments: record._nPostCount ?? 0,
+                likes: record._nLikeCount ?? 0,
+                views: record._nViewCount ?? 0,
+                version: record._sVersion ?? 'N/A',
+                media: record._aPreviewMedia._aImages.map((image) => ({
+                    url: `${image._sBaseUrl}/${image._sFile}`
+                })),
+                tags: [record._aRootCategory._sName],
+                author: {
+                    id: String(record._aSubmitter._idRow),
+                    name: record._aSubmitter._sName,
+                    avatarUrl: record._aSubmitter._sAvatarUrl
+                },
+                nsfw: record._bHasContentRatings
+            }))
         } catch (exception) {
             console.error('GameBananaService::searchMods(): Exception occurred while trying to search mods:', exception)
             return []
@@ -348,14 +342,10 @@ export default class GameBananaService extends BaseService {
                 likes: mod._nLikeCount ?? 0,
                 views: mod._nViewCount ?? 0,
                 version: mod._sVersion ?? 'N/A',
-                media: mod._aPreviewMedia._aImages.map((image) => (
-                    {
-                        url: `${image._sBaseUrl}/${image._sFile}`
-                    }
-                )),
-                tags: [
-                    mod._aCategory._sName
-                ],
+                media: mod._aPreviewMedia._aImages.map((image) => ({
+                    url: `${image._sBaseUrl}/${image._sFile}`
+                })),
+                tags: [mod._aCategory._sName],
                 author: {
                     id: String(mod._aSubmitter._idRow),
                     name: mod._aSubmitter._sName,
@@ -386,22 +376,25 @@ export default class GameBananaService extends BaseService {
             }
 
             const root = data as ModCommentsRoot
-            return root._aRecords.map((record) => (
-                {
-                    id: record._idRow,
-                    content: record._sText,
-                    createdAt: new Date(record._tsDateAdded),
-                    updatedAt: new Date(record._tsDateModified),
-                    replyCount: record._nReplyCount,
-                    author: record._aPoster ? {
-                        id: record._aPoster._idRow,
-                        name: record._aPoster._sName,
-                        avatarUrl: record._aPoster._sAvatarUrl
-                    } : null
-                }
-            ))
+            return root._aRecords.map((record) => ({
+                id: record._idRow,
+                content: record._sText,
+                createdAt: new Date(record._tsDateAdded),
+                updatedAt: new Date(record._tsDateModified),
+                replyCount: record._nReplyCount,
+                author: record._aPoster
+                    ? {
+                          id: record._aPoster._idRow,
+                          name: record._aPoster._sName,
+                          avatarUrl: record._aPoster._sAvatarUrl
+                      }
+                    : null
+            }))
         } catch (exception) {
-            console.error('GameBananaService::getModComments(): Exception occurred while trying to get mod comments:', exception)
+            console.error(
+                'GameBananaService::getModComments(): Exception occurred while trying to get mod comments:',
+                exception
+            )
             return []
         }
     }
@@ -420,16 +413,17 @@ export default class GameBananaService extends BaseService {
             }
 
             const root = data as ProfilePageRoot
-            return root._aModRootCategories.map((category) => (
-                {
-                    id: category._idRow,
-                    name: category._sName,
-                    iconUrl: category._sIconUrl,
-                    itemCount: category._nItemCount
-                }
-            ))
+            return root._aModRootCategories.map((category) => ({
+                id: category._idRow,
+                name: category._sName,
+                iconUrl: category._sIconUrl,
+                itemCount: category._nItemCount
+            }))
         } catch (exception) {
-            console.error('GameBananaService::getCategories(): Exception occurred while trying to get categories:', exception)
+            console.error(
+                'GameBananaService::getCategories(): Exception occurred while trying to get categories:',
+                exception
+            )
             return []
         }
     }

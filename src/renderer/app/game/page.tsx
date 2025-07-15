@@ -39,9 +39,14 @@ export default function GamePage() {
 
     return (
         <main className="w-full p-4">
-            <CreateProfileModal gameId={gameId} open={createProfileOpen} onChangeOpen={setProfileOpen} onCreate={() => {
-                loadProfiles()
-            }} />
+            <CreateProfileModal
+                gameId={gameId}
+                open={createProfileOpen}
+                onChangeOpen={setProfileOpen}
+                onCreate={() => {
+                    loadProfiles()
+                }}
+            />
             <Transition
                 show={!loading}
                 enter="transition-opacity duration-500 ease-in-out"
@@ -50,12 +55,12 @@ export default function GamePage() {
             >
                 <div className="flex flex-col gap-8">
                     <div className="relative w-full h-64">
-                        <div
-                            className="absolute bottom-0 left-0 w-full h-64 bg-linear-to-t z-1 from-background-900 via-background-900/70 to-background-900/0" />
+                        <div className="absolute bottom-0 left-0 w-full h-64 bg-linear-to-t z-1 from-background-900 via-background-900/70 to-background-900/0" />
                         <img
                             className="w-full h-full object-cover rounded-t-xl"
                             src="https://www.lolchampion.de/_wordpress_dev716a/wp-content/2021-riot-daten/skins/Gragas_2.jpg"
-                            alt={'Banner Test'} />
+                            alt={'Banner Test'}
+                        />
                         <h1 className="absolute bottom-12 left-12 font-semibold text-4xl z-2">Select profile</h1>
                     </div>
                     <div className="flex justify-between gap-4">
