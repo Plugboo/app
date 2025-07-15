@@ -1,12 +1,12 @@
 ﻿import { Settings, X } from 'lucide-react'
-import { GameProfile } from '@common/types/game'
+import { ProfileRData } from '@common/types/profile'
 import Modal from '@renderer/components/ui/Modal'
 import Button from '@renderer/components/ui/Button'
 
 type Props = {
     open: boolean
     onChangeOpen: (open: boolean) => void
-    profile: GameProfile
+    profile: ProfileRData
 }
 
 export default function ProfileSettingsModal(props: Props) {
