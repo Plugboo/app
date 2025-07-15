@@ -1,7 +1,7 @@
 import { Game } from '@main/games/game'
 import { GameInformation } from '@common/types/game'
 import { BaseService } from '@main/services/service'
-import { Loader } from '@common/types/loader'
+import { Loader } from '@main/loaders/loader'
 import { NewsArticle } from '@common/types/news'
 import HoYoPlay from '@main/utils/hoyoplay'
 import { multiExists } from '@main/utils/filesystem'
@@ -31,6 +31,8 @@ export enum HoYoverseGameId {
 }
 
 export default class HoYoverseGame extends Game {
+    private static _cachedHoYoLabArticles: Map<number, NewsArticle[]> = new Map()
+
     private readonly gameId: HoYoverseGameId
 
     constructor(gameId: HoYoverseGameId, services: BaseService[], loaders: Loader[]) {
@@ -132,8 +134,6 @@ export default class HoYoverseGame extends Game {
         console.log("[HoYoverseGame] Received", result.length, "valid articles in", (performance.now() - start).toFixed(2), "ms!")
         return result
     }
-
-    private static _cachedHoYoLabArticles: Map<number, NewsArticle[]> = new Map()
 
     /**
      * Fetches HoYoLab articles for a specific game ID and filters articles by an official account ID.
