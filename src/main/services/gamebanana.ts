@@ -1,4 +1,12 @@
-﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/types/service'
+﻿import {
+    Category,
+    Comment,
+    GetCommentsOptions,
+    Id,
+    Mod,
+    SearchModsOptions,
+    SearchModsResponse
+} from '@common/types/service'
 import { BaseService } from '@main/services/service'
 
 interface ModInfo {
@@ -260,7 +268,7 @@ export default class GameBananaService extends BaseService {
         this._gameId = gameId
     }
 
-    public async searchMods(options: SearchModsOptions): Promise<Mod[]> {
+    public async searchMods(options: SearchModsOptions): Promise<SearchModsResponse> {
         const page = options.page ?? 1
         const query = options.query ?? ''
         const sort = options.sort ?? 'default'
@@ -272,7 +280,10 @@ export default class GameBananaService extends BaseService {
             const directModNumber = parseInt(query, 10)
             if (!isNaN(directModNumber) && directModNumber >= 0) {
                 const response = await this.getMod(query)
-                return response ? [response] : []
+                return {
+                    mods: response ? [response] : [],
+                    totalCount: response ? 1 : 0
+                }
             }
         }
 
@@ -280,38 +291,50 @@ export default class GameBananaService extends BaseService {
             const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=${sort}&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
             const response = await fetch(url)
             if (!response.ok) {
-                return []
+                return {
+                    mods: [],
+                    totalCount: 0
+                }
             }
 
             const data = await response.json()
             if (data._sErrorCode !== undefined) {
-                return []
+                return {
+                    mods: [],
+                    totalCount: 0
+                }
             }
 
             const root = data as ModSearchRoot
-            return root._aRecords.map((record) => ({
-                id: record._idRow,
-                name: record._sName,
-                createdAt: new Date(record._tsDateAdded),
-                updatedAt: new Date(record._tsDateModified),
-                comments: record._nPostCount ?? 0,
-                likes: record._nLikeCount ?? 0,
-                views: record._nViewCount ?? 0,
-                version: record._sVersion ?? 'N/A',
-                media: record._aPreviewMedia._aImages.map((image) => ({
-                    url: `${image._sBaseUrl}/${image._sFile}`
+            return {
+                mods: root._aRecords.map((record) => ({
+                    id: record._idRow,
+                    name: record._sName,
+                    createdAt: new Date(record._tsDateAdded),
+                    updatedAt: new Date(record._tsDateModified),
+                    comments: record._nPostCount ?? 0,
+                    likes: record._nLikeCount ?? 0,
+                    views: record._nViewCount ?? 0,
+                    version: record._sVersion ?? 'N/A',
+                    media: record._aPreviewMedia._aImages.map((image) => ({
+                        url: `${image._sBaseUrl}/${image._sFile}`
+                    })),
+                    tags: [record._aRootCategory._sName],
+                    author: {
+                        id: String(record._aSubmitter._idRow),
+                        name: record._aSubmitter._sName,
+                        avatarUrl: record._aSubmitter._sAvatarUrl
+                    },
+                    nsfw: record._bHasContentRatings
                 })),
-                tags: [record._aRootCategory._sName],
-                author: {
-                    id: String(record._aSubmitter._idRow),
-                    name: record._aSubmitter._sName,
-                    avatarUrl: record._aSubmitter._sAvatarUrl
-                },
-                nsfw: record._bHasContentRatings
-            }))
+                totalCount: root._aMetadata._nRecordCount
+            }
         } catch (exception) {
             console.error('GameBananaService::searchMods(): Exception occurred while trying to search mods:', exception)
-            return []
+            return {
+                mods: [],
+                totalCount: 0
+            }
         }
     }
 

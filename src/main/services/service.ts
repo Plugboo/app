@@ -1,7 +1,7 @@
-﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions } from '@common/types/service'
+﻿import { Category, Comment, GetCommentsOptions, Id, Mod, SearchModsOptions, SearchModsResponse } from '@common/types/service'
 
 export class BaseService {
-    public async searchMods(options: SearchModsOptions): Promise<Mod[]> {
+    public async searchMods(options: SearchModsOptions): Promise<SearchModsResponse> {
         throw new Error('Not implemented')
     }
 

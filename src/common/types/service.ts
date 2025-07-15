@@ -48,6 +48,11 @@ export interface SearchModsOptions {
     sort?: 'new' | 'default' | 'updated'
 }
 
+export interface SearchModsResponse {
+    mods: Mod[]
+    totalCount: number
+}
+
 export interface GetCommentsOptions {
     page?: number
 }
