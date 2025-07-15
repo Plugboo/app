@@ -270,6 +270,7 @@ export default class GameBananaService extends BaseService {
 
     public async searchMods(options: SearchModsOptions): Promise<SearchModsResponse> {
         const page = options.page ?? 1
+        const limit = options.limit ?? 15
         const query = options.query ?? ''
         const sort = options.sort ?? 'default'
 
@@ -288,7 +289,7 @@ export default class GameBananaService extends BaseService {
         }
 
         try {
-            const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=${sort}&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
+            const url = `${BASE_URL}/Game/${this._gameId}/Subfeed?_sSort=${sort}&_nPerpage=${limit}&_csvModelInclusions=Mod&_nPage=${page}${query ? `&_sName=${query}` : ''}`
             const response = await fetch(url)
             if (!response.ok) {
                 return {

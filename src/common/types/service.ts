@@ -44,6 +44,7 @@ export interface Category {
 
 export interface SearchModsOptions {
     page?: number
+    limit?: number
     query?: string
     sort?: 'new' | 'default' | 'updated'
 }

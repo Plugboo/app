@@ -2,24 +2,23 @@ import { useState } from 'react'
 import Divider from './Divider'
 
 type Props = {
+    page: number
     maxPage: number
     onChangePage?: (page: number) => void
 }
 
 export default function Paginator(props: Props) {
-    const [page, setPage] = useState(0)
+    const { page, maxPage, onChangePage } = props
 
     const onClickButton = (newPage: number) => {
         if (newPage < 0) {
             newPage = 0
-        } else if (newPage > props.maxPage) {
-            newPage = props.maxPage
+        } else if (newPage > maxPage) {
+            newPage = maxPage
         }
 
-        setPage(newPage)
-
-        if (props.onChangePage) {
-            props.onChangePage(newPage)
+        if (onChangePage) {
+            onChangePage(newPage)
         }
     }
 
@@ -45,18 +44,18 @@ export default function Paginator(props: Props) {
                 </>
             )}
 
-            {Array(Math.min(5, props.maxPage))
+            {Array(Math.min(5, maxPage))
                 .fill(null)
                 .map((_, arrayIndex) => {
-                    let index = arrayIndex + page - Math.min(page, 2) - (3 - Math.min(props.maxPage - page, 3))
+                    let index = arrayIndex + page - Math.min(page, 2) - (3 - Math.min(maxPage - page, 3))
 
                     return <PaginatorButton index={index} />
                 })}
 
-            {props.maxPage - page >= 4 && props.maxPage > 5 && (
+            {maxPage - page >= 4 && maxPage > 5 && (
                 <>
                     <Divider className="!w-3 my-auto" />
-                    <PaginatorButton index={props.maxPage - 1} />
+                    <PaginatorButton index={maxPage - 1} />
                 </>
             )}
         </div>

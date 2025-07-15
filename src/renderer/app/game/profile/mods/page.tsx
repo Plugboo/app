@@ -1,5 +1,5 @@
 ﻿import { Link, useParams } from 'react-router'
-import React, { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
+import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import { getCategories, searchMods } from '@renderer/api/mods'
 import { Category, Mod, SearchModsResponse } from '@common/types/service'
 import Input from '@renderer/components/ui/Input'
@@ -23,7 +23,6 @@ export default function ModsPage() {
     const [lastInput, setLastInput] = useState('')
     const [input, setInput] = useState('')
     const [sort, setSort] = useState<'new' | 'default' | 'updated'>('default')
-    const [view, setView] = useState(15)
     const [page, setPage] = useState(0)
 
     const search = (force: boolean, sortOption?: string) => {
@@ -56,7 +55,7 @@ export default function ModsPage() {
 
     useEffect(() => {
         search(true)
-    }, [sort, page, view])
+    }, [sort, page])
 
     useEffect(() => {
         getCategories(gameId).then((result) => {
@@ -108,31 +107,6 @@ export default function ModsPage() {
                                     setSort(value as any)
                                 }}
                             />
-                            <Select
-                                prefix="View: "
-                                values={[
-                                    {
-                                        value: '5',
-                                        label: '5'
-                                    },
-                                    {
-                                        value: '10',
-                                        label: '10'
-                                    },
-                                    {
-                                        value: '15',
-                                        label: '15'
-                                    },
-                                    {
-                                        value: '20',
-                                        label: '20'
-                                    }
-                                ]}
-                                defaultValue="15"
-                                onSelect={(value) => {
-                                    setView(Number(value))
-                                }}
-                            />
                         </div>
                         <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
                             <h1 className="font-semibold text-xl">Categories</h1>
@@ -161,6 +135,7 @@ export default function ModsPage() {
                     <div className="flex flex-col gap-4 w-full">
                         <div>
                             <Paginator
+                                page={page}
                                 maxPage={Math.round(result.totalCount / 15)}
                                 onChangePage={(newPage: number) => {
                                     setPage(newPage)
