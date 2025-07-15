@@ -51,8 +51,7 @@ export default function Paginator(props: Props) {
             {Array(Math.min(5, maxPage))
                 .fill(null)
                 .map((_, arrayIndex) => {
-                    let index = arrayIndex + page - Math.min(page, 2) - (3 - Math.min(maxPage - page, 3))
-
+                    const index = arrayIndex + page - Math.min(page, 2) - (3 - Math.min(maxPage - page, 3))
                     return <PaginatorButton index={index} />
                 })}
 
