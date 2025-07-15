@@ -35,6 +35,10 @@ export default function Paginator(props: Props) {
         )
     }
 
+    if (maxPage === 0) {
+        return null
+    }
+
     return (
         <div className="flex gap-1.5 h-full">
             {page >= 3 && (
