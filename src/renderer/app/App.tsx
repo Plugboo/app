@@ -22,13 +22,14 @@ export default function App() {
 
     return (
         <HashRouter>
-            <div className="dark bg-background-800 text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
+            <div className="dark text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
                 <SideBar onClickSettings={() => setSettingsModalOpen(true)} />
+
                 {topBarEnabled && <TopBar />}
                 <SettingsModal open={settingsModalOpen} onChangeOpen={setSettingsModalOpen} />
 
                 <div className={`w-full h-full flex pl-16 ${topBarEnabled ? 'pt-9.5' : ''}`}>
-                    <div className="fixed right-0 top-0 bottom-0 w-3.5 bg-background-800/35 pointer-events-none" />
+                    <div className="fixed right-0 top-0 bottom-0 w-3.5 pointer-events-none" />
                     <div className="bg-background-900 border-background-700/75 w-full h-full overflow-hidden overflow-y-auto scrollbar-gutter-stable">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
