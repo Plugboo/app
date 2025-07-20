@@ -59,7 +59,7 @@ export default class ProfileManager {
         }
     }
 
-    public static createProfile(gameId: string, name: string, _loader: Loader, _loaderVersion: LoaderVersion) {
+    public static createProfile(gameId: string, name: string, loader: Loader, version: LoaderVersion) {
         try {
             if (!fs.existsSync(ProfileManager.path)) {
                 fs.mkdirSync(ProfileManager.path, { recursive: true })
@@ -73,10 +73,13 @@ export default class ProfileManager {
             const profile = new Profile(v4(), gameId)
             profile.path = absolutePath
             profile.name = name
+            profile.loader = {
+                id: loader.id,
+                version: version
+            }
+            profile.save()
+            profile.installLoader()
 
-            fs.mkdirSync(absolutePath)
-            fs.mkdirSync(path.join(absolutePath, 'mods'))
-            fs.writeFileSync(path.join(absolutePath, 'profile.json'), JSON.stringify(profile.serialize()))
             ProfileManager.entries.set(profile.id, profile)
 
             // const loaderPath = path.join(application.dataPath, 'loaders', gameId)

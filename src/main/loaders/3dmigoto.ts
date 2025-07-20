@@ -4,6 +4,7 @@ import { Loader, LoaderVersionCache } from '@main/loaders/loader'
 import path from 'node:path'
 import { application } from '@main/app'
 import fs from 'node:fs'
+import { Profile } from '@main/profiles/profile'
 
 export default class ThreeDMigoto extends Loader {
     private readonly githubUser: string
@@ -148,5 +149,9 @@ export default class ThreeDMigoto extends Loader {
         }
 
         this.versions = versions
+    }
+
+    public async installVersion(profile: Profile, version: LoaderVersion): Promise<boolean> {
+        return false
     }
 }

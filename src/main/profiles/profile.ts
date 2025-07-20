@@ -4,6 +4,8 @@ import { Mod } from '@main/mods/mod'
 import path from 'node:path'
 import { ProfileRData } from '@common/types/profile'
 import RendererDataSerializer from '@main/utils/renderer'
+import { application } from '@main/app'
+import GameManager from '@main/games/manager'
 
 export class Profile extends RendererDataSerializer<ProfileRData> {
     public readonly id: string
@@ -80,6 +82,55 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
         } catch (error) {
             console.error('[Profile] Exception occurred while trying to get all mods: ', error)
         }
+    }
+
+    /**
+     * Saves the profile data to the filesystem.
+     * Ensures that the necessary directories exist before writing the data.
+     */
+    public save() {
+        if (!fs.existsSync(this.path)) {
+            fs.mkdirSync(this.path, { recursive: true })
+        }
+
+        const modsPath = path.join(this.path, 'mods')
+        if (!fs.existsSync(modsPath)) {
+            fs.mkdirSync(modsPath)
+        }
+
+        fs.writeFileSync(path.join(this.path, 'profile.json'), JSON.stringify(this.serialize()))
+    }
+
+    public installLoader() {
+        if (this.loader === null) {
+            console.log('[Profile] No loader instance found. Skipping installation.')
+            return
+        }
+
+        const game = GameManager.entries.find((v) => v.info.id === this.gameId)
+        if (game === undefined) {
+            console.log('[Profile] Game not found. Skipping installation.')
+            return
+        }
+
+        const loader = game.loaders.find((v) => v.id === this.loader.id)
+        if (loader === undefined) {
+            console.log('[Profile] Loader not found. Skipping installation.')
+            return
+        }
+
+        const loaderPath = path.join(application.dataPath, 'loaders', this.gameId)
+        if (!fs.existsSync(loaderPath)) {
+            fs.mkdirSync(loaderPath, { recursive: true })
+        }
+
+        loader.installVersion(this, this.loader.version).then((result) => {
+            if (result === true) {
+                console.log('[Profile] Loader installed successfully.')
+            } else {
+                console.log('[Profile] Loader installation failed.')
+            }
+        })
     }
 
     public serializeRendererData(): ProfileRData {

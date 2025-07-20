@@ -1,5 +1,6 @@
 import { LoaderRData, LoaderVersion } from '@common/types/loader'
 import RendererDataSerializer from '@main/utils/renderer'
+import { Profile } from '@main/profiles/profile'
 
 export interface LoaderVersionCache {
     timestamp: number
@@ -21,6 +22,10 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
     }
 
     public async fetchVersions() {}
+
+    public async installVersion(profile: Profile, version: LoaderVersion): Promise<boolean> {
+        return false
+    }
 
     public serializeRendererData(): LoaderRData {
         return {
