@@ -10,6 +10,14 @@ import AdmZip from 'adm-zip'
 import * as upath from 'upath'
 import GameManager from '@main/games/manager'
 import { loadIni, stringifyIni } from 'load-ini'
+import { Game } from '@main/games/game'
+
+interface ThreeDMigotoConfig {
+    Loader?: {
+        target?: string
+        launch?: string
+    }
+}
 
 export default class ThreeDMigoto extends Loader {
     private readonly githubUser: string
@@ -222,20 +230,31 @@ export default class ThreeDMigoto extends Loader {
             }
         }
 
-        const config = await loadIni(path.resolve(profile.path, 'd3dx.ini'))
-        if (!Array.isArray(config)) {
-            if (config['Loader'] !== undefined && (config['Loader'] as any)['target'] !== undefined) {
-                ;(config['Loader'] as any)['launch'] = path.resolve(
-                    game.installPath,
-                    (config['Loader'] as any)['target'] as string
-                )
-
-                fs.writeFileSync(path.resolve(profile.path, 'd3dx.ini'), stringifyIni(config))
-            }
-        } else {
-            console.log("[3DMigoto (Loader)] Couldn't load d3dx.ini.")
-        }
-
+        await this.setupConfig(profile, game)
         return true
+    }
+
+    private async setupConfig(profile: Profile, game: Game) {
+        try {
+            const rawConfig = await loadIni(path.resolve(profile.path, 'd3dx.ini'))
+            if (Array.isArray(rawConfig)) {
+                console.log("[3DMigoto (Loader)] Couldn't load d3dx.ini.")
+                return false
+            }
+
+            const config = JSON.parse(JSON.stringify(rawConfig)) as ThreeDMigotoConfig
+            if (config.Loader === undefined || config.Loader.target === undefined) {
+                console.log('[3DMigoto (Loader)] Invalid d3dx.ini file.')
+                return false
+            }
+
+            config.Loader.launch = path.resolve(game.installPath, config.Loader.target)
+            fs.writeFileSync(path.resolve(profile.path, 'd3dx.ini'), stringifyIni(config))
+
+            return true
+        } catch {
+            console.log('[3DMigoto (Loader)] Unknown error setup config.')
+            return false
+        }
     }
 }
