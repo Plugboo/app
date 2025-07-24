@@ -11,6 +11,7 @@ import * as upath from 'upath'
 import GameManager from '@main/games/manager'
 import { loadIni, stringifyIni } from 'load-ini'
 import { Game } from '@main/games/game'
+import * as child_process from 'node:child_process'
 
 interface ThreeDMigotoConfig {
     Loader?: {
@@ -232,6 +233,45 @@ export default class ThreeDMigoto extends Loader {
 
         await this.setupConfig(profile, game)
         return true
+    }
+
+    public async startVersion(profile: Profile, _version: string): Promise<void> {
+        const loaderPath = path.resolve(profile.path, '3DMigoto Loader.exe')
+
+        if (!fs.existsSync(loaderPath)) {
+            console.error('[3DMigoto (Loader)] Loader Executable not found:', loaderPath)
+            return
+        }
+
+        const process = child_process.spawn(
+            'powershell.exe',
+            [
+                '-ExecutionPolicy',
+                'ByPass',
+                '-Command',
+                `& {Start-Process "${loaderPath}" -Verb RunAs -WorkingDirectory "${profile.path}"}`
+            ],
+            {
+                stdio: ['ignore', 'pipe', 'pipe']
+            }
+        )
+
+        process.stdout.setEncoding('utf8')
+        process.stderr.setEncoding('utf8')
+
+        process.stdout.on('data', (chunk) => {
+            console.log('[3DMigoto (Loader)] - Loader Process - STDOUT: ' + chunk)
+        })
+
+        process.stderr.on('data', (chunk) => {
+            console.log('[3DMigoto (Loader)] - Loader Process - STDERR: ' + chunk)
+        })
+
+        process.on('exit', (code) => {
+            console.log('[3DMigoto (Loader)] - Loader Process - EXITED: ' + code)
+        })
+
+        process.unref()
     }
 
     private async setupConfig(profile: Profile, game: Game) {

@@ -149,7 +149,14 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
         return {
             id: this.id,
             gameId: this.gameId,
-            name: this.name
+            name: this.name,
+            loader:
+                this.loader === null
+                    ? null
+                    : {
+                          id: this.loader.id,
+                          version: this.loader.version.version
+                      }
         }
     }
 
@@ -173,6 +180,17 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
             throw new Error('Invalid profile name')
         }
 
-        return new Profile(json.id, json.gameId, json.name)
+        const profile = new Profile(json.id, json.gameId, json.name)
+
+        if (typeof json.loader === 'object') {
+            if (typeof json.loader.id === 'string' && typeof json.loader.version === 'string') {
+                profile.loader = {
+                    id: json.loader.id,
+                    version: json.loader.version
+                }
+            }
+        }
+
+        return profile
     }
 }

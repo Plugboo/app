@@ -13,6 +13,7 @@ export enum IpcChannel {
     Game_GetProfile = 'game_profile',
     Game_CreateProfile = 'game_create_profile',
     Game_DeleteProfile = 'game_delete_profile',
+    Game_StartProfile = 'game_start_profile',
     Game_Loaders = 'game_loaders',
     Window_Minimize = 'window_minimize',
     Window_Maximize = 'window_maximize',

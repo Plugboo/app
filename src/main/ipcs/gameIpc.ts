@@ -147,6 +147,39 @@ export default class GameIpc {
 
     public static deleteProfile() {}
 
+    public static async startProfile(event: IpcEvent) {
+        if (event.args.length !== 1) {
+            return false
+        }
+
+        const profileId: string = event.args[0]
+        const profile = ProfileManager.entries.get(profileId)
+
+        if (profile === undefined) {
+            console.log('[GameIpc::startProfile] Profile not found:', profileId)
+            return
+        }
+
+        if (profile.loader === null) {
+            console.log('[GameIpc::startProfile] Loader not found:', profileId)
+            return
+        }
+
+        const game = GameManager.entries.find((v) => v.info.id === profile.gameId)
+        if (game === undefined) {
+            console.log('[GameIpc::startProfile] Game not found:', profileId, profile.gameId)
+            return
+        }
+
+        const loader = game.loaders.find((v) => v.id === profile.loader.id)
+        if (loader === undefined) {
+            console.log('[GameIpc::startProfile] Loader not found:', profileId, profile.loader.id)
+            return
+        }
+
+        await loader.startVersion(profile, profile.loader.version.version)
+    }
+
     public static getLoaders(event: IpcEvent) {
         if (event.args.length !== 1) {
             return []

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Transition } from '@tailwindui/react'
 import { FileQuestionMark, Hammer, LoaderCircle, Play, Plus, Settings } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router'
-import { getProfile } from '@renderer/api/game'
+import { getProfile, startProfile } from '@renderer/api/game'
 import Button from '@renderer/components/ui/Button'
 import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
 import Input from '@renderer/components/ui/Input'
@@ -24,6 +24,15 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
     const [status, setStatus] = useState<Status>(Status.UNKNOWN)
+
+    const onClickPlay = () => {
+        if (status === Status.PLAYING) {
+            return
+        }
+
+        setStatus(Status.PLAYING)
+        startProfile(profileId).then()
+    }
 
     useEffect(() => {
         getProfile(profileId).then((result) => {
@@ -60,7 +69,11 @@ export default function ProfilePage() {
                                 <h1 className="font-bold text-3xl">{profile.name}</h1>
                             </div>
                             <div className="flex gap-2">
-                                <Button className="flex gap-2" disabled={status === Status.PLAYING}>
+                                <Button
+                                    className="flex gap-2"
+                                    disabled={status === Status.PLAYING}
+                                    onClick={() => onClickPlay()}
+                                >
                                     {status === Status.UNKNOWN && (
                                         <>
                                             <Hammer />

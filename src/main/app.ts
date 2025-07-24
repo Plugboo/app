@@ -157,6 +157,7 @@ class Application {
         IpcManager.registerHandler(IpcChannel.Game_Setup, GameIpc.setup)
         IpcManager.registerHandler(IpcChannel.Game_CreateProfile, GameIpc.createProfile)
         IpcManager.registerHandler(IpcChannel.Game_DeleteProfile, GameIpc.deleteProfile)
+        IpcManager.registerHandler(IpcChannel.Game_StartProfile, GameIpc.startProfile)
         IpcManager.registerHandler(IpcChannel.Game_Loaders, GameIpc.getLoaders)
     }
 }

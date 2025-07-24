@@ -82,49 +82,10 @@ export default class ProfileManager {
 
             ProfileManager.entries.set(profile.id, profile)
 
-            // const loaderPath = path.join(application.dataPath, 'loaders', gameId)
-            // if (!fs.existsSync(loaderPath)) {
-            //     fs.mkdirSync(loaderPath, { recursive: true })
-            // }
-            //
-            // const versionPath = path.join(loaderPath, loaderVersion.playFile.name)
-            // if (!fs.existsSync(versionPath)) {
-            //     console.log('[ProfileManager] Loader version is not downloaded. Downloading..')
-            //     ProfileManager.downloadLoaderVersion(loaderPath, loaderVersion)
-            // } else {
-            //     console.log('[ProfileManager] Loader version is already downloaded. Extracting..')
-            //     const bytes = fs.readFileSync(versionPath)
-            //     for (const entry of iter(bytes)) {
-            //         console.log('[ProfileManager] Extracting file from loader version:', entry.filename)
-            //         Promise.resolve(entry.read()).then((buffer) => {
-            //             const dirPath = absolutePath + entry.filename.endsWith("/") ? entry.filename : path.resolve(entry.filename, "..")
-            //             console.log(dirPath)
-            //             if (!fs.existsSync(dirPath)) {
-            //                 fs.mkdirSync(dirPath, { recursive: true })
-            //             }
-            //             fs.writeFileSync(path.join(absolutePath, entry.filename), buffer)
-            //         })
-            //     }
-            // }
-
             return true
         } catch (error) {
             console.error(error)
             return false
         }
     }
-
-    // private static downloadLoaderVersion(filePath: string, version: LoaderVersion) {
-    //     fetch(version.playFile.url).then((response) => {
-    //         if (!response.ok) {
-    //             throw new Error(`HTTP error! status: ${response.status}`)
-    //         }
-    //
-    //         const stream = fs.createWriteStream(path.join(filePath, version.playFile.name))
-    //         response.body.pipe(stream)
-    //         response.body.on('error', (error) => {
-    //             console.error('[ProfileManager] Exception occurred while downloading loader version:', error)
-    //         })
-    //     })
-    // }
 }

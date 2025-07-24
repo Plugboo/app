@@ -27,6 +27,8 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
         return false
     }
 
+    public async startVersion(profile: Profile, version: string) {}
+
     public serializeRendererData(): LoaderRData {
         return {
             id: this.id,
