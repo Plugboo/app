@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 import Select from '@renderer/components/ui/Select'
 import ModStats from '@renderer/components/ModStats'
 import Paginator from '@renderer/components/ui/Paginator'
+import { installMod } from '@renderer/api/game'
 
 export default function ModsPage() {
     const { gameId, profileId } = useParams()
@@ -49,8 +50,9 @@ export default function ModsPage() {
         }
     }
 
-    const onClickInstall = (e: MouseEvent<HTMLButtonElement>) => {
+    const onClickInstall = (e: MouseEvent<HTMLButtonElement>, mod: Mod) => {
         e.preventDefault()
+        installMod(profileId, 'gamebanana', mod.id).then()
     }
 
     useEffect(() => {
@@ -197,7 +199,10 @@ export default function ModsPage() {
                                                     <ModStats mod={record} />
                                                 </div>
                                                 <div className="ml-auto h-full flex flex-col gap-2 shrink-0">
-                                                    <Button className="mt-auto flex gap-2" onClick={onClickInstall}>
+                                                    <Button
+                                                        className="mt-auto flex gap-2"
+                                                        onClick={(e) => onClickInstall(e, record)}
+                                                    >
                                                         <Download />
                                                         Install
                                                     </Button>

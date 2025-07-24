@@ -452,6 +452,37 @@ export default class GameBananaService extends BaseService {
         }
     }
 
+    public async getModDownloadUrl(modId: Id): Promise<{
+        url: string
+        fileName: string
+    } | null> {
+        try {
+            const url = `${BASE_URL}/Mod/${modId}?_csvProperties=_aFiles`
+            const response = await fetch(url)
+            if (!response.ok) {
+                return null
+            }
+
+            const data = await response.json()
+            const files = data._aFiles as File[]
+            if (files.length === 0) {
+                return null
+            }
+
+            const newestFile = files.sort((a, b) => b._tsDateAdded - a._tsDateAdded)[0]
+            return {
+                url: newestFile._sDownloadUrl,
+                fileName: newestFile._sFile
+            }
+        } catch (exception) {
+            console.error(
+                'GameBananaService::getModDownloadUrl(): Exception occurred while trying to get mod download url:',
+                exception
+            )
+            return null
+        }
+    }
+
     public getId(): string {
         return 'gamebanana'
     }

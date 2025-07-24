@@ -29,6 +29,8 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
 
     public async startVersion(profile: Profile, version: string) {}
 
+    public async installMod(profile: Profile, downloadUrl: string, fileName: string) {}
+
     public serializeRendererData(): LoaderRData {
         return {
             id: this.id,

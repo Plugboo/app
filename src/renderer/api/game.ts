@@ -4,6 +4,7 @@ import { LoaderRData } from '@common/types/loader'
 import invokeIpc from '@renderer/api/ipc'
 import { GameInformation } from '@common/types/game'
 import { ProfileRData } from '@common/types/profile'
+import { Id } from '@common/types/service'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
     return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)
@@ -47,6 +48,10 @@ export async function createProfile(
 
 export async function startProfile(profileId: string) {
     await invokeIpc<void>(IpcChannel.Game_StartProfile, profileId)
+}
+
+export async function installMod(profileId: string, serviceId: Id, modId: Id) {
+    await invokeIpc<void>(IpcChannel.Game_ProfileInstallMod, profileId, serviceId, modId)
 }
 
 export async function getLoaders(gameId: string): Promise<LoaderRData[]> {

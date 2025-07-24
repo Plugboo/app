@@ -274,6 +274,19 @@ export default class ThreeDMigoto extends Loader {
         process.unref()
     }
 
+    public async installMod(profile: Profile, downloadUrl: string, fileName: string): Promise<void> {
+        const tmpFileName = path.resolve(profile.path, fileName + '.tmp')
+        if (!(await downloadFile(downloadUrl, tmpFileName))) {
+            console.error('[3DMigoto (Loader)] Failed to download mod:', fileName)
+            return
+        }
+
+        const archive = new AdmZip(tmpFileName)
+        for (const entry of archive.getEntries()) {
+            console.log(entry.entryName)
+        }
+    }
+
     private async setupConfig(profile: Profile, game: Game) {
         try {
             const rawConfig = await loadIni(path.resolve(profile.path, 'd3dx.ini'))

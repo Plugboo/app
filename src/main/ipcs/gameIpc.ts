@@ -180,6 +180,53 @@ export default class GameIpc {
         await loader.startVersion(profile, profile.loader.version.version)
     }
 
+    public static async installProfileMod(event: IpcEvent) {
+        if (event.args.length !== 3) {
+            return false
+        }
+
+        const profileId: string = event.args[0]
+        const serviceId: string = event.args[1]
+        const modId: string = event.args[2]
+
+        const profile = ProfileManager.entries.get(profileId)
+        if (profile === undefined) {
+            console.log('[GameIpc::installProfileMod] Profile not found:', profileId)
+            return
+        }
+
+        if (profile.loader === null) {
+            console.log('[GameIpc::installProfileMod] Loader not found:', profileId)
+            return
+        }
+
+        const game = GameManager.entries.find((v) => v.info.id === profile.gameId)
+        if (game === undefined) {
+            console.log('[GameIpc::installProfileMod] Game not found:', profileId, profile.gameId)
+            return
+        }
+
+        const loader = game.loaders.find((v) => v.id === profile.loader.id)
+        if (loader === undefined) {
+            console.log('[GameIpc::installProfileMod] Loader not found:', profileId, profile.loader.id)
+            return
+        }
+
+        const service = game.services.find((v) => v.getId() === serviceId)
+        if (service === undefined) {
+            console.log('[GameIpc::installProfileMod] Service not found:', profileId, serviceId)
+            return
+        }
+
+        const info = await service.getModDownloadUrl(modId)
+        if (info === null) {
+            console.log('[GameIpc::installProfileMod] Mod not found:', profileId, modId)
+            return
+        }
+
+        await loader.installMod(profile, info.url, info.fileName)
+    }
+
     public static getLoaders(event: IpcEvent) {
         if (event.args.length !== 1) {
             return []

@@ -15,6 +15,7 @@ export enum IpcChannel {
     Game_DeleteProfile = 'game_delete_profile',
     Game_StartProfile = 'game_start_profile',
     Game_Loaders = 'game_loaders',
+    Game_ProfileInstallMod = 'game_profile_install_mod',
     Window_Minimize = 'window_minimize',
     Window_Maximize = 'window_maximize',
     Window_Close = 'window_close'
