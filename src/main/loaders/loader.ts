@@ -23,7 +23,7 @@ export class Loader extends RendererDataSerializer<LoaderRData> {
 
     public async fetchVersions() {}
 
-    public async installVersion(profile: Profile, version: LoaderVersion): Promise<boolean> {
+    public async installVersion(profile: Profile, version: string): Promise<boolean> {
         return false
     }
 

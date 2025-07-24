@@ -124,7 +124,7 @@ export class Profile extends RendererDataSerializer<ProfileRData> {
             fs.mkdirSync(loaderPath, { recursive: true })
         }
 
-        loader.installVersion(this, this.loader.version).then((result) => {
+        loader.installVersion(this, this.loader.version.version).then((result) => {
             if (result === true) {
                 console.log('[Profile] Loader installed successfully.')
             } else {

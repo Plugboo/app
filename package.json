@@ -28,7 +28,9 @@
     "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.29.0",
     "@tailwindcss/vite": "^4.1.10",
+    "@types/adm-zip": "^0.5.7",
     "@types/electron-squirrel-startup": "^1.0.2",
+    "@types/node-fetch": "^2.6.12",
     "@types/react-dom": "^19.1.6",
     "electron": "36.5.0",
     "eslint": "^8.57.1",
@@ -41,14 +43,17 @@
   },
   "dependencies": {
     "@tailwindui/react": "^0.1.1",
+    "adm-zip": "^0.5.16",
     "electron-squirrel-startup": "^1.0.1",
     "interweave": "^13.1.1",
+    "load-ini": "^1.1.0",
     "lucide-react": "^0.519.0",
     "motion": "^12.20.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.2",
     "tailwindcss": "^4.1.10",
+    "upath": "^2.0.1",
     "uuid": "^11.1.0"
   },
   "engines": {

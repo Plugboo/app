@@ -5,6 +5,11 @@ import path from 'node:path'
 import { application } from '@main/app'
 import fs from 'node:fs'
 import { Profile } from '@main/profiles/profile'
+import { downloadFile } from '@main/utils/net'
+import AdmZip from 'adm-zip'
+import * as upath from 'upath'
+import GameManager from '@main/games/manager'
+import { loadIni, stringifyIni } from 'load-ini'
 
 export default class ThreeDMigoto extends Loader {
     private readonly githubUser: string
@@ -151,7 +156,86 @@ export default class ThreeDMigoto extends Loader {
         this.versions = versions
     }
 
-    public async installVersion(profile: Profile, version: LoaderVersion): Promise<boolean> {
-        return false
+    public async installVersion(profile: Profile, version: string): Promise<boolean> {
+        const game = GameManager.entries.find((v) => v.info.id === profile.gameId)
+        if (game === undefined) {
+            console.error('[3DMigoto (Loader)] Game not found:', profile.gameId)
+            return false
+        }
+
+        if (game.installPath === null) {
+            console.error('[3DMigoto (Loader)] Game does not have an install path:', profile.gameId)
+            return false
+        }
+
+        const versionObj = this.versions.find((v) => v.version === version)
+        if (versionObj === undefined) {
+            console.error('[3DMigoto (Loader)] Version not found:', version)
+            return false
+        }
+
+        const versionPath = path.resolve(application.dataPath, 'loaders', profile.gameId, versionObj.playFile.name)
+
+        if (!fs.existsSync(versionPath)) {
+            console.log('[3DMigoto (Loader)] Downloading version:', versionObj.playFile.name)
+
+            if (!(await downloadFile(versionObj.playFile.url, versionPath))) {
+                console.error('[3DMigoto (Loader)] Failed to download version:', version)
+                return false
+            }
+
+            console.log('[3DMigoto (Loader)] Downloaded version:', versionObj.playFile.name)
+        }
+
+        const archive = new AdmZip(versionPath)
+
+        /*
+         * Manually extract every file, with a few exceptions, to the profile folder.
+         * Without exceptions we would use extractEntryTo.
+         */
+        for (const entry of archive.getEntries()) {
+            const realPath = entry.entryName.startsWith('3dmigoto')
+                ? upath.normalize(entry.entryName).replace('3dmigoto/', '')
+                : entry.entryName
+            const absolutePath = path.resolve(profile.path, realPath)
+
+            /*
+             * We don't need that here.
+             */
+            if (realPath === 'README.txt') {
+                continue
+            }
+
+            if (entry.isDirectory) {
+                if (!fs.existsSync(absolutePath)) {
+                    fs.mkdirSync(absolutePath, { recursive: true })
+                }
+            } else {
+                /*
+                 * Don't override the current configuration.
+                 */
+                if (realPath === 'd3dx.ini' && fs.existsSync(absolutePath)) {
+                    continue
+                }
+
+                fs.writeFileSync(absolutePath, entry.getData())
+            }
+        }
+
+        const config = await loadIni(path.resolve(profile.path, 'd3dx.ini'))
+        if (!Array.isArray(config)) {
+            if (config['Loader'] !== undefined && (config['Loader'] as any)['target'] !== undefined) {
+                ;(config['Loader'] as any)['launch'] = path.resolve(
+                    game.installPath,
+                    (config['Loader'] as any)['target'] as string
+                )
+
+                fs.writeFileSync(path.resolve(profile.path, 'd3dx.ini'), stringifyIni(config))
+            }
+        } else {
+            console.log("[3DMigoto (Loader)] Couldn't load d3dx.ini.")
+        }
+
+        return true
     }
 }
