@@ -1,6 +1,6 @@
-﻿use std::error::Error;
-use crate::game_mod::GameMod;
+﻿use crate::game_mod::GameMod;
 use crate::services::service::Service;
+use std::error::Error;
 
 const BASE_URL: &str = "https://gamebanana.com/apiv11";
 
@@ -40,16 +40,21 @@ struct SubfeedResult {
     _aRecords: Vec<SubfeedRecord>,
 }
 
-pub struct GameBanana {}
+pub struct GameBanana {
+    pub(crate) id: String,
+}
 
 impl Service for GameBanana {
     fn get_name(&self) -> &str {
         "GameBanana"
     }
 
-    fn get_mods(&self) -> Result<Vec<GameMod>, Box<dyn std::error::Error>> {
-        let resp = reqwest::blocking::get(format!("{}/Game/{}/Subfeed?_csvModelInclusions=Mod", BASE_URL, "8552"))?
-            .json::<SubfeedResult>()?;
+    fn get_mods(&self) -> Result<Vec<GameMod>, Box<dyn Error>> {
+        let resp = reqwest::blocking::get(format!(
+            "{}/Game/{}/Subfeed?_csvModelInclusions=Mod",
+            BASE_URL, self.id
+        ))?
+        .json::<SubfeedResult>()?;
         let mut mods = Vec::<GameMod>::new();
 
         for record in resp._aRecords.iter() {
@@ -62,7 +67,7 @@ impl Service for GameBanana {
     fn get_mod(&self, id: &str) -> Result<GameMod, Box<dyn Error>> {
         let record = reqwest::blocking::get(format!("{}/Mod/{}/ProfilePage", BASE_URL, id))?
             .json::<SubfeedRecord>()?;
-        
+
         Ok(convert_record_to_mod(self.get_name(), &record)?)
     }
 }
@@ -73,6 +78,10 @@ fn convert_record_to_mod(name: &str, record: &SubfeedRecord) -> Result<GameMod, 
         name: record._sName.to_string(),
         service: name.to_string(),
         author: record._aSubmitter._sName.to_string(),
-        version: if record._sVersion.is_some() { record._sVersion.clone().unwrap() } else { "N/A".to_string() },
+        version: if record._sVersion.is_some() {
+            record._sVersion.clone().unwrap()
+        } else {
+            "N/A".to_string()
+        },
     })
 }

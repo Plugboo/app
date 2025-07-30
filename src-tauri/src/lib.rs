@@ -1,5 +1,5 @@
-pub mod services;
 pub mod game_mod;
+pub mod services;
 
 use tauri::{App, Manager};
 use tauri_plugin_log::fern::colors::{Color, ColoredLevelConfig};
