@@ -1,4 +1,5 @@
-﻿use crate::game_mod::GameMod;
+﻿use std::error::Error;
+use crate::game_mod::GameMod;
 use crate::services::service::Service;
 
 const BASE_URL: &str = "https://gamebanana.com/apiv11";
@@ -52,16 +53,26 @@ impl Service for GameBanana {
         let mut mods = Vec::<GameMod>::new();
 
         for record in resp._aRecords.iter() {
-            let game_mod = GameMod {
-                id: record._idRow.to_string(),
-                name: record._sName.to_string(),
-                service: self.get_name().to_string(),
-                author: record._aSubmitter._sName.to_string(),
-                version: if record._sVersion.is_some() { record._sVersion.clone().unwrap() } else { "N/A".to_string() },
-            };
-            mods.push(game_mod);
+            mods.push(convert_record_to_mod(self.get_name(), &record)?);
         }
 
         Ok(mods)
     }
+
+    fn get_mod(&self, id: &str) -> Result<GameMod, Box<dyn Error>> {
+        let record = reqwest::blocking::get(format!("{}/Mod/{}/ProfilePage", BASE_URL, id))?
+            .json::<SubfeedRecord>()?;
+        
+        Ok(convert_record_to_mod(self.get_name(), &record)?)
+    }
+}
+
+fn convert_record_to_mod(name: &str, record: &SubfeedRecord) -> Result<GameMod, Box<dyn Error>> {
+    Ok(GameMod {
+        id: record._idRow.to_string(),
+        name: record._sName.to_string(),
+        service: name.to_string(),
+        author: record._aSubmitter._sName.to_string(),
+        version: if record._sVersion.is_some() { record._sVersion.clone().unwrap() } else { "N/A".to_string() },
+    })
 }
