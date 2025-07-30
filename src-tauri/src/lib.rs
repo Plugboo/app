@@ -1,8 +1,10 @@
+pub mod services;
+pub mod game_mod;
+
 use tauri::{App, Manager};
 use tauri_plugin_log::fern::colors::{Color, ColoredLevelConfig};
 
 pub fn init(_app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
-    log::info!("Initializing...");
     Ok(())
 }
 
