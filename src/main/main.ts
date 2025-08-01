@@ -1,3 +1,3 @@
 import GachaForge from '@main/application'
 
-new GachaForge()
+export const gachaForge = new GachaForge()

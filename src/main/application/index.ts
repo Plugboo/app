@@ -1,21 +1,25 @@
-import { app, BrowserWindow, dialog } from 'electron'
+import { app, BrowserWindow, dialog, Menu, Tray } from 'electron'
 import { compareVersions } from 'compare-versions'
 import settings from 'electron-settings'
 import path from 'node:path'
 import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub } from '@main/types/github'
+import { gachaForge } from '@main/main'
 
 export default class GachaForge {
     private readonly instanceLock: boolean
 
     private mainWindow: BrowserWindow | null
 
+    private tray: Tray | null
+
     private settings: Settings
 
     constructor() {
         this.instanceLock = app.requestSingleInstanceLock()
         this.mainWindow = null
+        this.tray = null
 
         /*
          * Default settings when starting GachaForge.
@@ -23,7 +27,8 @@ export default class GachaForge {
         this.settings = {
             window: {
                 titleBar: 'custom',
-                theme: 'dark'
+                theme: 'dark',
+                exitOnClose: false
             }
         }
 
@@ -108,6 +113,37 @@ export default class GachaForge {
         }
 
         /*
+         * Create an application tray when the application cannot be quit by closing the main window.
+         *
+         */
+        if (!this.settings.window.exitOnClose) {
+            this.tray = new Tray(`${app.getAppPath()}/assets/icon.png`)
+            this.tray.setContextMenu(
+                Menu.buildFromTemplate([
+                    { label: 'GachaForge', type: 'normal', enabled: false },
+                    { type: 'separator' },
+                    {
+                        label: 'Open',
+                        type: 'normal',
+                        click: () => {
+                            const window = gachaForge.mainWindow
+                            if (window !== null) {
+                                window.show()
+                            }
+                        }
+                    },
+                    {
+                        label: 'Quit',
+                        type: 'normal',
+                        click: () => {
+                            app.quit()
+                        }
+                    }
+                ])
+            )
+        }
+
+        /*
          * FIX: Window showing a blank screen while loading the page.
          */
         this.mainWindow.show()
@@ -122,6 +158,7 @@ export default class GachaForge {
     private async initSettings() {
         const titleBar = await this.getOrDefaultConfigEntry('window.titleBar', 'custom')
         const theme = await this.getOrDefaultConfigEntry('window.theme', 'dark')
+        const exitOnClose = await this.getOrDefaultConfigEntry('window.exitOnClose', false)
 
         if (titleBar !== 'native' && titleBar !== 'custom') {
             await this.setConfigEntry('window.titleBar', 'custom')
@@ -134,7 +171,8 @@ export default class GachaForge {
         this.settings = {
             window: {
                 titleBar: titleBar as 'native' | 'custom',
-                theme: theme as 'light' | 'dark'
+                theme: theme as 'light' | 'dark',
+                exitOnClose: exitOnClose
             }
         }
     }
