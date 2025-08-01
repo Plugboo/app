@@ -6,7 +6,7 @@
     Mod,
     SearchModsOptions,
     SearchModsResponse
-} from '@common/types/service'
+} from '../../src/preload/types/service'
 
 export class BaseService {
     public async searchMods(options: SearchModsOptions): Promise<SearchModsResponse> {

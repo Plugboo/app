@@ -1,5 +1,5 @@
 ﻿import { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
-import { IpcChannel } from '@common/types/ipc'
+import { IpcChannel } from '../../preload/types/ipc'
 import invokeIpc from '@renderer/api/ipc'
 
 export async function getAppTitleBar() {

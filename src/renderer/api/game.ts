@@ -1,10 +1,10 @@
-﻿import { IpcChannel } from '@common/types/ipc'
-import { NewsArticle } from '@common/types/news'
-import { LoaderRData } from '@common/types/loader'
+﻿import { IpcChannel } from '../../preload/types/ipc'
+import { NewsArticle } from '../../preload/types/news'
+import { LoaderRData } from '../../preload/types/loader'
 import invokeIpc from '@renderer/api/ipc'
-import { GameInformation } from '@common/types/game'
-import { ProfileRData } from '@common/types/profile'
-import { Id } from '@common/types/service'
+import { GameInformation } from '../../preload/types/game'
+import { ProfileRData } from '../../preload/types/profile'
+import { Id } from '../../preload/types/service'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
     return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)

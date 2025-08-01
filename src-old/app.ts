@@ -1,14 +1,14 @@
 import { app, BrowserWindow, BrowserWindowConstructorOptions, globalShortcut, shell } from 'electron'
 import path from 'node:path'
 import ConfigManager from './config'
-import ProfileManager from '@main/profiles/manager'
-import IpcManager from '@main/ipcs/ipc'
-import AppIpc from '@main/ipcs/appIpc'
-import { IpcChannel } from '@common/types/ipc'
-import ModIpc from '@main/ipcs/modIpc'
-import WindowIpc from '@main/ipcs/windowIpc'
-import GameIpc from '@main/ipcs/gameIpc'
-import GameManager from '@main/games/manager'
+import ProfileManager from './profiles/manager'
+import IpcManager from './ipcs/ipc'
+import AppIpc from './ipcs/appIpc'
+import { IpcChannel } from '../src/preload/types/ipc'
+import ModIpc from './ipcs/modIpc'
+import WindowIpc from './ipcs/windowIpc'
+import GameIpc from './ipcs/gameIpc'
+import GameManager from './games/manager'
 
 class Application {
     public readonly dataPath: string

@@ -1,7 +1,7 @@
 ﻿import { Link, useParams } from 'react-router'
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import { getCategories, searchMods } from '@renderer/api/mods'
-import { Category, Mod, SearchModsResponse } from '@common/types/service'
+import { Category, Mod, SearchModsResponse } from '../../../../../preload/types/service'
 import Input from '@renderer/components/ui/Input'
 import Button from '@renderer/components/ui/Button'
 import { Download, LoaderCircle, RefreshCcw } from 'lucide-react'

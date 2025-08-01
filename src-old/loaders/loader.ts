@@ -1,6 +1,6 @@
-import { LoaderRData, LoaderVersion } from '@common/types/loader'
-import RendererDataSerializer from '@main/utils/renderer'
-import { Profile } from '@main/profiles/profile'
+import { LoaderRData, LoaderVersion } from '../../src/preload/types/loader'
+import RendererDataSerializer from '../utils/renderer'
+import { Profile } from '../profiles/profile'
 
 export interface LoaderVersionCache {
     timestamp: number

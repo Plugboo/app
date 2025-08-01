@@ -6,8 +6,8 @@
     Mod,
     SearchModsOptions,
     SearchModsResponse
-} from '@common/types/service'
-import { BaseService } from '@main/services/service'
+} from '../../src/preload/types/service'
+import { BaseService } from './service'
 
 interface ModInfo {
     _idRow: number

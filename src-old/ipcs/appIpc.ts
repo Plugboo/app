@@ -1,6 +1,6 @@
-﻿import ConfigManager from '@main/config'
+﻿import ConfigManager from '../config'
 import { dialog, OpenDialogOptions } from 'electron'
-import { IpcEvent } from '@main/ipcs/ipc'
+import { IpcEvent } from './ipc'
 
 export default class AppIpc {
     public static getTitleBarConfig() {

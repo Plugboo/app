@@ -1,11 +1,11 @@
-import { LoaderInstance } from '@common/types/loader'
+import { LoaderInstance } from '../../src/preload/types/loader'
 import fs from 'node:fs'
-import { Mod } from '@main/mods/mod'
+import { Mod } from '../mods/mod'
 import path from 'node:path'
-import { ProfileRData } from '@common/types/profile'
-import RendererDataSerializer from '@main/utils/renderer'
-import { application } from '@main/app'
-import GameManager from '@main/games/manager'
+import { ProfileRData } from '../../src/preload/types/profile'
+import RendererDataSerializer from '../utils/renderer'
+import { application } from '../app'
+import GameManager from '../games/manager'
 
 export class Profile extends RendererDataSerializer<ProfileRData> {
     public readonly id: string

@@ -1,4 +1,4 @@
-import { application } from '@main/app'
+import { application } from '../app'
 
 export default class WindowIpc {
     public static minimize() {

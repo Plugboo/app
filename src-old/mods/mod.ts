@@ -1,5 +1,5 @@
-import RendererDataSerializer from '@main/utils/renderer'
-import { ModRData } from '@common/types/mod'
+import RendererDataSerializer from '../utils/renderer'
+import { ModRData } from '../../src/preload/types/mod'
 
 export class Mod extends RendererDataSerializer<ModRData> {
     public readonly id: string

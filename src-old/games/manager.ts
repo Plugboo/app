@@ -1,9 +1,9 @@
-import HoYoverseGame, { HoYoverseGameId } from '@main/games/hoyoverse'
-import GameBananaService from '@main/services/gamebanana'
+import HoYoverseGame, { HoYoverseGameId } from './hoyoverse'
+import GameBananaService from '../services/gamebanana'
 import path from 'node:path'
 import fs from 'node:fs'
-import { Game } from '@main/games/game'
-import ThreeDMigoto from '@main/loaders/3dmigoto'
+import { Game } from './game'
+import ThreeDMigoto from '../loaders/3dmigoto'
 
 export default class GameManager {
     public static pathsFile: string

@@ -1,10 +1,10 @@
-import { Game } from '@main/games/game'
-import { GameInformation } from '@common/types/game'
-import { BaseService } from '@main/services/service'
-import { Loader } from '@main/loaders/loader'
-import { NewsArticle } from '@common/types/news'
-import HoYoPlay from '@main/utils/hoyoplay'
-import { multiExists } from '@main/utils/filesystem'
+import { Game } from './game'
+import { GameInformation } from '../../src/preload/types/game'
+import { BaseService } from '../services/service'
+import { Loader } from '../loaders/loader'
+import { NewsArticle } from '../../src/preload/types/news'
+import HoYoPlay from '../utils/hoyoplay'
+import { multiExists } from '../utils/filesystem'
 
 interface HoYoLabArticle {
     post: {

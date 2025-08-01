@@ -1,4 +1,4 @@
-﻿import { IpcChannel } from '@common/types/ipc'
+﻿import { IpcChannel } from '../../preload/types/ipc'
 
 export async function minimizeWindow() {
     await window.electron.ipc.invoke(IpcChannel.Window_Minimize)

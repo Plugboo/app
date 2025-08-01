@@ -1,5 +1,5 @@
 ﻿import { ipcMain, IpcMainInvokeEvent } from 'electron'
-import { IpcChannel } from '@common/types/ipc'
+import { IpcChannel } from '../../src/preload/types/ipc'
 
 type IpcHandler = (event: IpcEvent) => unknown | Promise<unknown>
 

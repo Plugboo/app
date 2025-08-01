@@ -1,8 +1,8 @@
 import { IpcEvent } from './ipc'
-import { Id } from '@common/types/service'
-import ProfileManager from '@main/profiles/manager'
-import { NewsArticle } from '@common/types/news'
-import GameManager from '@main/games/manager'
+import { Id } from '../../src/preload/types/service'
+import ProfileManager from '../profiles/manager'
+import { NewsArticle } from '../../src/preload/types/news'
+import GameManager from '../games/manager'
 
 export default class GameIpc {
     public static async getNewsOfAll() {

@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { IpcChannel } from '@common/types/ipc'
+import { IpcChannel } from './types/ipc'
 
 const electron = {
     ipc: {

@@ -1,9 +1,9 @@
 ﻿import fs from 'node:fs'
 import path from 'node:path'
 import { v4 } from 'uuid'
-import { LoaderVersion } from '@common/types/loader'
-import { Profile } from '@main/profiles/profile'
-import { Loader } from '@main/loaders/loader'
+import { LoaderVersion } from '../../src/preload/types/loader'
+import { Profile } from './profile'
+import { Loader } from '../loaders/loader'
 
 export default class ProfileManager {
     public static path: string

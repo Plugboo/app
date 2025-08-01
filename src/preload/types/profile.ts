@@ -1,4 +1,4 @@
-import { ModRData } from '@common/types/mod'
+import { ModRData } from './mod'
 
 export interface ProfileRData {
     id: string
