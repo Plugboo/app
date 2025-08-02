@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, Menu, shell, Tray } from 'electron'
 import { compareVersions } from 'compare-versions'
 import settings from 'electron-settings'
 import path from 'node:path'
@@ -119,6 +119,19 @@ export default class GachaForge {
             await this.mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
         } else {
             await this.mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
+
+            /*
+             * Disable site reloading when not in development mode.
+             */
+            app.on('browser-window-focus', function () {
+                globalShortcut.register('CommandOrControl+R', () => {})
+                globalShortcut.register('F5', () => {})
+            })
+
+            app.on('browser-window-blur', function () {
+                globalShortcut.unregister('CommandOrControl+R')
+                globalShortcut.unregister('F5')
+            })
         }
 
         /*
