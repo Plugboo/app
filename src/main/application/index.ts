@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, Tray } from 'electron'
+import { app, BrowserWindow, dialog, Menu, shell, Tray } from 'electron'
 import { compareVersions } from 'compare-versions'
 import settings from 'electron-settings'
 import path from 'node:path'
@@ -107,6 +107,12 @@ export default class GachaForge {
             webPreferences: {
                 preload: path.join(__dirname, 'preload.js')
             }
+        })
+
+        this.mainWindow.webContents.setWindowOpenHandler((details) => {
+            console.log('[Application] Opening link: ' + details.url)
+            shell.openExternal(details.url)
+            return { action: 'deny' }
         })
 
         if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
