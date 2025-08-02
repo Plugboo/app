@@ -16,10 +16,13 @@ export default class GachaForge {
 
     private settings: Settings
 
+    private shouldExit: boolean
+
     constructor() {
         this.instanceLock = app.requestSingleInstanceLock()
         this.mainWindow = null
         this.tray = null
+        this.shouldExit = false
 
         /*
          * Default settings when starting GachaForge.
@@ -116,6 +119,18 @@ export default class GachaForge {
          * Create an application tray when the application cannot be quit by closing the main window.
          */
         if (!this.settings.window.exitOnClose) {
+            /*
+             * Instead of closing the window, hide it.
+             */
+            this.mainWindow.on('close', (event) => {
+                if (this.shouldExit) {
+                    return
+                }
+
+                this.mainWindow.hide()
+                event.preventDefault()
+            })
+
             this.tray = new Tray(`${app.getAppPath()}/assets/icon.png`)
             this.tray.setContextMenu(
                 Menu.buildFromTemplate([
@@ -135,6 +150,8 @@ export default class GachaForge {
                         label: 'Quit',
                         type: 'normal',
                         click: () => {
+                            this.shouldExit = true
+                            this.mainWindow.close()
                             app.quit()
                         }
                     }
