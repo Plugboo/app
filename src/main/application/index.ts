@@ -114,7 +114,6 @@ export default class GachaForge {
 
         /*
          * Create an application tray when the application cannot be quit by closing the main window.
-         *
          */
         if (!this.settings.window.exitOnClose) {
             this.tray = new Tray(`${app.getAppPath()}/assets/icon.png`)
@@ -181,27 +180,27 @@ export default class GachaForge {
      * Retrieves the configuration value for the specified key. If the key does not exist, the provided default value is saved and returned.
      *
      * @param key - The key to retrieve the configuration value for.
-     * @param value - The default value to use if no value exists for the specified key.
+     * @param defaultValue - The default value to use if no value exists for the specified key.
      * @return A promise resolving to the saved or retrieved configuration value.
      */
-    public async getOrDefaultConfigEntry<T>(key: string, value: T): Promise<T> {
+    public async getOrDefaultConfigEntry<T>(key: string, defaultValue: T): Promise<T> {
         if (await settings.has(key)) {
             const savedValue = await settings.get(key)
 
-            if (typeof value !== typeof savedValue) {
+            if (typeof defaultValue !== typeof savedValue) {
                 console.warn(
-                    `Overwriting setting '${key}' because the type of the new value (${typeof value}) is different from the type of the old value (${typeof savedValue}).`
+                    `Overwriting setting '${key}' because the type of the new value (${typeof defaultValue}) is different from the type of the old value (${typeof savedValue}).`
                 )
 
-                await this.setConfigEntry(key, value)
-                return value
+                await this.setConfigEntry(key, defaultValue)
+                return defaultValue
             }
 
             return savedValue as T
         }
 
-        await this.setConfigEntry(key, value)
-        return value
+        await this.setConfigEntry(key, defaultValue)
+        return defaultValue
     }
 
     /**
