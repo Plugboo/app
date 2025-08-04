@@ -252,6 +252,36 @@ export default class GachaForge {
 
             this.mainWindow.close()
         })
+        IpcManager.registerHandler('game/list', () => {
+            return this.games.getGames().map((v) => v.info)
+        })
+        IpcManager.registerHandler('game/verify', (event) => {
+            if (event.args.length !== 1) {
+                return
+            }
+
+            const gameId = event.args[0]
+            if (typeof gameId !== 'string') {
+                return
+            }
+
+            const game = this.games.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            if (game.installPath === null) {
+                return {
+                    success: false,
+                    reason: 'GAME_NOT_INITIALIZED',
+                    path: game.searchInstallation()
+                }
+            }
+
+            return {
+                success: true
+            }
+        })
     }
 
     /**

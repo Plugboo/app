@@ -11,7 +11,7 @@ export async function getNewsFromAll(): Promise<NewsArticle[]> {
 }
 
 export async function listGames() {
-    return (await invokeIpc<GameInformation[]>(IpcChannel.Game_List)) ?? []
+    return invokeIpc<GameInformation[]>('game/list')
 }
 
 export async function verifyGame(gameId: string) {
@@ -19,7 +19,7 @@ export async function verifyGame(gameId: string) {
         success: boolean
         reason?: string
         path?: string
-    }>(IpcChannel.Game_Verify, gameId)
+    }>('game/verify', gameId)
 }
 
 export async function setupGame(gameId: string, path: string) {
