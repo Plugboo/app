@@ -4,7 +4,7 @@ import settings from 'electron-settings'
 import path from 'node:path'
 import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
-import { GitHub } from '@main/types/github'
+import { GitHub } from '@main/util/github'
 import { gachaForge } from '@main/main'
 import IpcManager from './ipc'
 
