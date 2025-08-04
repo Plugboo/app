@@ -1,0 +1,131 @@
+import { Game } from './index'
+import { GameInformation } from '@preload/types/game'
+import { HoYoPlay } from '@main/util/hoyoplay'
+import { multiExists } from '@main/util/filesystem'
+
+export enum HoYoverseGameId {
+    GenshinImpact = 'genshin_impact',
+    HonkaiStarRail = 'honkai_star_rail',
+    ZenlessZoneZero = 'zenless_zone_zero'
+}
+
+export default class HoYoverseGame extends Game {
+    private readonly gameId: HoYoverseGameId
+
+    constructor(gameId: HoYoverseGameId) {
+        let info: GameInformation
+
+        switch (gameId) {
+            case HoYoverseGameId.GenshinImpact:
+                info = {
+                    id: 'genshin_impact',
+                    name: 'Genshin Impact',
+                    banner: 'https://cdn2.steamgriddb.com/thumb/2d273973a88b3ab45f0d0763300b0695.jpg',
+                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/54795ec619ebda94c86d00184861c96f.png',
+                    developer: 'HoYoverse'
+                }
+                break
+            case HoYoverseGameId.HonkaiStarRail:
+                info = {
+                    id: 'honkai_star_rail',
+                    name: 'Honkai: Star Rail',
+                    banner: 'https://cdn2.steamgriddb.com/thumb/7de88187918ddefb552555ae0a7fc9b6.jpg',
+                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/e52da5a31de788599378924f0e639557.png',
+                    developer: 'HoYoverse'
+                }
+                break
+            case HoYoverseGameId.ZenlessZoneZero:
+                info = {
+                    id: 'zenless_zone_zero',
+                    name: 'Zenless Zone Zero',
+                    banner: 'https://cdn2.steamgriddb.com/thumb/97657e12f1b8cbf71b6837f02b23d423.jpg',
+                    icon: 'https://cdn2.steamgriddb.com/icon_thumb/7029a498c4f596f73b35504df9bab02a.png',
+                    developer: 'HoYoverse'
+                }
+                break
+        }
+
+        super(info)
+        this.gameId = gameId
+    }
+
+    public validatePath(path: string): boolean {
+        switch (this.gameId) {
+            case HoYoverseGameId.GenshinImpact:
+                return HoYoverseGame.validateGenshinImpactPath(path)
+            case HoYoverseGameId.HonkaiStarRail:
+                return HoYoverseGame.validateHonkaiStarRailPath(path)
+            case HoYoverseGameId.ZenlessZoneZero:
+                return HoYoverseGame.validateZenlessZoneZeroPath(path)
+            default:
+                return false
+        }
+    }
+
+    public searchInstallation(): string {
+        let exeName: string
+
+        switch (this.gameId) {
+            case HoYoverseGameId.GenshinImpact:
+                exeName = 'GenshinImpact.exe'
+                break
+            case HoYoverseGameId.HonkaiStarRail:
+                exeName = 'StarRail.exe'
+                break
+            case HoYoverseGameId.ZenlessZoneZero:
+                exeName = 'ZenlessZoneZero.exe'
+                break
+        }
+
+        return HoYoverseGame.searchHoyoPlayInstallation(exeName)
+    }
+
+    /**
+     * Searches for a HoyoPlay installation based on the provided executable name and returns the installation path
+     * if available and valid.
+     *
+     * @param exeName - The name of the executable file associated with the HoyoPlay installation.
+     * @return The installation path of the HoyoPlay game if found and valid, or an empty string otherwise.
+     */
+    private static searchHoyoPlayInstallation(exeName: string): string {
+        const hoyoInstallation = HoYoPlay.Launcher.getInstallations().find(
+            (install) => install.gameInstallStatus.gameExeName === exeName
+        )
+
+        if (hoyoInstallation === undefined) {
+            return ''
+        }
+
+        if (hoyoInstallation.installPath.length === 0) {
+            return ''
+        }
+
+        if (hoyoInstallation.downloading) {
+            return ''
+        }
+
+        return hoyoInstallation.installPath
+    }
+
+    private static validateGenshinImpactPath(installPath: string): boolean {
+        return multiExists(installPath, [
+            'GenshinImpact.exe',
+            'HoYoKProtect.sys',
+            'mhypbase.dll',
+            'GenshinImpact_Data/'
+        ])
+    }
+
+    private static validateHonkaiStarRailPath(installPath: string): boolean {
+        return multiExists(installPath, ['StarRail.exe', 'HoYoKProtect.sys', 'mhypbase.dll', 'StarRail_Data/'])
+    }
+
+    private static validateZenlessZoneZeroPath(installPath: string): boolean {
+        return multiExists(installPath, [
+            'ZenlessZoneZero.exe',
+            'HoYoKProtect.sys',
+            'mhypbase.dll',
+            'ZenlessZoneZero_Data/'
+        ])
+    }
+}

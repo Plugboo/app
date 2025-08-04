@@ -7,6 +7,9 @@ import { Settings } from '@main/application/settings'
 import { GitHub } from '@main/util/github'
 import { gachaForge } from '@main/main'
 import IpcManager from './ipc'
+import GameManager from '@main/game/manager'
+import fs from 'node:fs'
+import { Profile } from '@main/game/profile'
 
 export default class GachaForge {
     private readonly instanceLock: boolean
@@ -19,11 +22,14 @@ export default class GachaForge {
 
     private shouldExit: boolean
 
+    private games: GameManager
+
     constructor() {
         this.instanceLock = app.requestSingleInstanceLock()
         this.mainWindow = null
         this.tray = null
         this.shouldExit = false
+        this.games = new GameManager()
 
         /*
          * Default settings when starting GachaForge.
@@ -93,37 +99,10 @@ export default class GachaForge {
      * @return A promise that resolves when the initialization process is complete.
      */
     private async init() {
-        IpcManager.init()
-
-        IpcManager.registerHandler('window/minimize', () => {
-            if (this.mainWindow === null) {
-                return
-            }
-
-            this.mainWindow.minimize()
-        })
-
-        IpcManager.registerHandler('window/maximize', () => {
-            if (this.mainWindow === null) {
-                return
-            }
-
-            if (this.mainWindow.isMaximized()) {
-                this.mainWindow.unmaximize()
-            } else {
-                this.mainWindow.maximize()
-            }
-        })
-
-        IpcManager.registerHandler('window/close', () => {
-            if (this.mainWindow === null) {
-                return
-            }
-
-            this.mainWindow.close()
-        })
-
+        this.initIpc()
         await this.initSettings()
+
+        this.readProfilesFromDisk()
 
         this.mainWindow = new BrowserWindow({
             title: 'GachaForge',
@@ -244,6 +223,78 @@ export default class GachaForge {
     }
 
     /**
+     * Initializes inter-process communication (IPC) handlers.
+     */
+    private initIpc() {
+        IpcManager.init()
+        IpcManager.registerHandler('window/minimize', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            this.mainWindow.minimize()
+        })
+        IpcManager.registerHandler('window/maximize', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            if (this.mainWindow.isMaximized()) {
+                this.mainWindow.unmaximize()
+            } else {
+                this.mainWindow.maximize()
+            }
+        })
+        IpcManager.registerHandler('window/close', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            this.mainWindow.close()
+        })
+    }
+
+    /**
+     * Reads user profiles from the disk, validating their structure, and associates them with their respective games.
+     * Ensures that the profiles directory exists, iterates over all subdirectories, and loads profile data if valid.
+     */
+    public readProfilesFromDisk() {
+        const profilesPath = path.resolve(getAppDataPath(), 'profiles')
+
+        if (!fs.existsSync(profilesPath)) {
+            fs.mkdirSync(profilesPath, { recursive: true })
+            return
+        }
+
+        const directories = fs
+            .readdirSync(profilesPath, { withFileTypes: true })
+            .filter((dirent) => dirent.isDirectory())
+            .map((dirent) => dirent.name)
+
+        for (const directory of directories) {
+            const absolutePath = path.join(profilesPath, directory)
+
+            if (!fs.existsSync(path.join(absolutePath, 'profile.json'))) {
+                continue
+            }
+
+            try {
+                const profile = Profile.readFromDisk(absolutePath)
+                const game = this.games.getGame(profile.gameId)
+                if (game === null) {
+                    console.warn(`[Application] Failed to read profile from disk: ${directory} (Game not found)`)
+                    continue
+                }
+
+                game.profiles.push(profile)
+            } catch (exception) {
+                console.error(`[Application] Failed to read profile from disk: ${directory}`)
+                console.error(exception)
+            }
+        }
+    }
+
+    /**
      * Retrieves the configuration value for the specified key. If the key does not exist, the provided default value is saved and returned.
      *
      * @param key - The key to retrieve the configuration value for.
@@ -316,3 +367,11 @@ export default class GachaForge {
         }
     }
 }
+
+/**
+ * Retrieves the application data path for the current application.
+ * Combines the system's application data directory with the application's name.
+ *
+ * @returns The resolved path to the application's data directory.
+ */
+export const getAppDataPath = (): string => path.resolve(app.getPath('appData'), app.getName())
