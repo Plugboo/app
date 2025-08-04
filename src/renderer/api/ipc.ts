@@ -1,4 +1,4 @@
-import { IpcChannel } from '../../preload/types/ipc'
+import { IpcChannel } from '@preload/types/ipc'
 
 export default async function invokeIpc<T>(channel: IpcChannel, ...args: any): Promise<T> {
     const response: any = await window.electron.ipc.invoke(channel, ...args)

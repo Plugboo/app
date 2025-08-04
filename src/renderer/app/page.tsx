@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { listGames, verifyGame } from '@renderer/api/game'
-import { GameInformation } from '../../preload/types/game'
+import { GameInformation } from '@preload/types/game'
 import { useNavigate } from 'react-router'
 import SetupGameModal from '@renderer/components/modals/SetupGameModal'
 import { motion } from 'framer-motion'

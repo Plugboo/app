@@ -5,8 +5,8 @@
     Mod,
     SearchModsOptions,
     SearchModsResponse
-} from '../../preload/types/service'
-import { IpcChannel } from '../../preload/types/ipc'
+} from '@preload/types/service'
+import { IpcChannel } from '@preload/types/ipc'
 import invokeIpc from '@renderer/api/ipc'
 
 export async function getModComments(gameId: string, modId: string, options: GetCommentsOptions): Promise<Comment[]> {

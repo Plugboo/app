@@ -1,5 +1,5 @@
 ﻿import { Settings, X } from 'lucide-react'
-import { ProfileRData } from '../../../preload/types/profile'
+import { ProfileRData } from '@preload/types/profile'
 import Modal from '@renderer/components/ui/Modal'
 import Button from '@renderer/components/ui/Button'
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NewsArticle } from '../../preload/types/news'
+import { NewsArticle } from '@preload/types/news'
 import { getNewsFromAll } from '@renderer/api/game'
 import { motion } from 'framer-motion'
 import { LoaderCircle } from 'lucide-react'
