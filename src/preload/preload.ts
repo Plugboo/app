@@ -1,9 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { IpcChannel } from './types/ipc'
 
 const electron = {
     ipc: {
-        invoke(channel: IpcChannel, ...args: unknown[]): Promise<unknown> {
+        invoke(channel: string, ...args: unknown[]): Promise<unknown> {
             return ipcRenderer.invoke(channel, ...args)
         }
     }

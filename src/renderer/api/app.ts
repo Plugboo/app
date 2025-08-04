@@ -3,7 +3,7 @@ import { IpcChannel } from '@preload/types/ipc'
 import invokeIpc from '@renderer/api/ipc'
 
 export async function getAppTitleBar() {
-    return invokeIpc<string>(IpcChannel.App_TitleBar)
+    return 'custom'
 }
 
 export async function pickFileDialog(options: OpenDialogOptions) {

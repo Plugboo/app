@@ -7,11 +7,11 @@ import { ProfileRData } from '@preload/types/profile'
 import { Id } from '@preload/types/service'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
-    return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)
+    return (await invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)) ?? []
 }
 
 export async function listGames() {
-    return invokeIpc<GameInformation[]>(IpcChannel.Game_List)
+    return (await invokeIpc<GameInformation[]>(IpcChannel.Game_List)) ?? []
 }
 
 export async function verifyGame(gameId: string) {

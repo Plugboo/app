@@ -6,6 +6,7 @@ import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub } from '@main/types/github'
 import { gachaForge } from '@main/main'
+import IpcManager from './ipc'
 
 export default class GachaForge {
     private readonly instanceLock: boolean
@@ -92,6 +93,36 @@ export default class GachaForge {
      * @return A promise that resolves when the initialization process is complete.
      */
     private async init() {
+        IpcManager.init()
+
+        IpcManager.registerHandler('window/minimize', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            this.mainWindow.minimize()
+        })
+
+        IpcManager.registerHandler('window/maximize', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            if (this.mainWindow.isMaximized()) {
+                this.mainWindow.unmaximize()
+            } else {
+                this.mainWindow.maximize()
+            }
+        })
+
+        IpcManager.registerHandler('window/close', () => {
+            if (this.mainWindow === null) {
+                return
+            }
+
+            this.mainWindow.close()
+        })
+
         await this.initSettings()
 
         this.mainWindow = new BrowserWindow({
