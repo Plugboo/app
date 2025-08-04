@@ -30,9 +30,9 @@ export default class GachaForge {
         this.settings = {
             window: {
                 titleBar: 'custom',
-                theme: 'dark',
                 exitOnClose: false
-            }
+            },
+            theme: 'dark'
         }
 
         /*
@@ -192,8 +192,8 @@ export default class GachaForge {
      */
     private async initSettings() {
         const titleBar = await this.getOrDefaultConfigEntry('window.titleBar', 'custom')
-        const theme = await this.getOrDefaultConfigEntry('window.theme', 'dark')
         const exitOnClose = await this.getOrDefaultConfigEntry('window.exitOnClose', false)
+        const theme = await this.getOrDefaultConfigEntry('theme', 'dark')
 
         if (titleBar !== 'native' && titleBar !== 'custom') {
             await this.setConfigEntry('window.titleBar', 'custom')
@@ -206,9 +206,9 @@ export default class GachaForge {
         this.settings = {
             window: {
                 titleBar: titleBar as 'native' | 'custom',
-                theme: theme as 'light' | 'dark',
                 exitOnClose: exitOnClose
-            }
+            },
+            theme: theme as 'light' | 'dark'
         }
     }
 
