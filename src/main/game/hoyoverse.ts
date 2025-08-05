@@ -62,7 +62,7 @@ export default class HoYoverseGame extends Game {
         }
     }
 
-    public searchInstallation(): string {
+    public searchInstallation(): string | null {
         let exeName: string
 
         switch (this.gameId) {
@@ -87,21 +87,17 @@ export default class HoYoverseGame extends Game {
      * @param exeName - The name of the executable file associated with the HoyoPlay installation.
      * @return The installation path of the HoyoPlay game if found and valid, or an empty string otherwise.
      */
-    private static searchHoyoPlayInstallation(exeName: string): string {
+    private static searchHoyoPlayInstallation(exeName: string): string | null {
         const hoyoInstallation = HoYoPlay.Launcher.getInstallations().find(
             (install) => install.gameInstallStatus.gameExeName === exeName
         )
 
         if (hoyoInstallation === undefined) {
-            return ''
+            return null
         }
 
         if (hoyoInstallation.installPath.length === 0) {
-            return ''
-        }
-
-        if (hoyoInstallation.downloading) {
-            return ''
+            return null
         }
 
         return hoyoInstallation.installPath

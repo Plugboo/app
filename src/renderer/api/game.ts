@@ -26,11 +26,11 @@ export async function setupGame(gameId: string, path: string) {
     return invokeIpc<{
         success: boolean
         reason?: string
-    }>(IpcChannel.Game_Setup, gameId, path)
+    }>('game/setup', gameId, path)
 }
 
 export async function getProfiles(gameId: string): Promise<ProfileRData[]> {
-    return invokeIpc<ProfileRData[]>(IpcChannel.Game_GetProfiles, gameId)
+    return invokeIpc<ProfileRData[]>('game/profiles', gameId)
 }
 
 export async function getProfile(profileId: string): Promise<ProfileRData | null> {
@@ -55,5 +55,5 @@ export async function installMod(profileId: string, serviceId: Id, modId: Id) {
 }
 
 export async function getLoaders(gameId: string): Promise<LoaderRData[]> {
-    return invokeIpc<LoaderRData[]>(IpcChannel.Game_Loaders, gameId)
+    return invokeIpc<LoaderRData[]>('game/loaders', gameId)
 }

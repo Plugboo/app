@@ -10,6 +10,7 @@ import IpcManager from './ipc'
 import GameManager from '@main/game/manager'
 import fs from 'node:fs'
 import { Profile } from '@main/game/profile'
+import { ProfileRData } from '@preload/types/profile'
 
 export default class GachaForge {
     private readonly instanceLock: boolean
@@ -100,6 +101,8 @@ export default class GachaForge {
      */
     private async init() {
         this.initIpc()
+
+        await this.initGames()
         await this.initSettings()
 
         this.readProfilesFromDisk()
@@ -195,10 +198,28 @@ export default class GachaForge {
     }
 
     /**
+     * Initializes all supported games.
+     */
+    private async initGames() {
+        /*
+         * Load every installation path from all supported games from the settings.json file.
+         */
+        for (const game of this.games.getGames()) {
+            const key = `games.${game.info.id}.installPath`
+            const value = await this.getConfigEntry(key)
+
+            if (typeof value !== 'string' && value !== null) {
+                await this.setConfigEntry(key, null)
+                continue
+            }
+
+            game.installPath = value
+        }
+    }
+
+    /**
      * Initializes application settings by fetching and validating configuration entries.
      * If an invalid configuration is found, it will be overwritten with the default value.
-     *
-     * @return A promise that resolves when the settings initialization is complete.
      */
     private async initSettings() {
         const titleBar = await this.getOrDefaultConfigEntry('window.titleBar', 'custom')
@@ -282,6 +303,76 @@ export default class GachaForge {
                 success: true
             }
         })
+        IpcManager.registerHandler('game/setup', async (event) => {
+            if (event.args.length !== 2) {
+                return
+            }
+
+            const gameId = event.args[0]
+            const path = event.args[1]
+
+            if (typeof gameId !== 'string' || typeof path !== 'string') {
+                return
+            }
+
+            const game = this.games.getGame(gameId)
+            if (game === null) {
+                return {
+                    success: false,
+                    reason: 'GAME_NOT_FOUND'
+                }
+            }
+
+            if (game.installPath !== null) {
+                return {
+                    success: false,
+                    reason: 'GAME_ALREADY_INITIALIZED'
+                }
+            }
+
+            if (!game.validatePath(path)) {
+                return {
+                    success: false,
+                    reason: 'INVALID_PATH'
+                }
+            }
+
+            game.installPath = path
+            await this.setConfigEntry(`games.${game.info.id}.installPath`, path)
+
+            return {
+                success: true
+            }
+        })
+        IpcManager.registerHandler('game/profiles', async (event) => {
+            if (event.args.length !== 1) {
+                return
+            }
+
+            const gameId = event.args[0]
+
+            if (typeof gameId !== 'string') {
+                return
+            }
+
+            const game = this.games.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            return game.profiles.map((v) => {
+                const data: ProfileRData = {
+                    id: v.id,
+                    gameId: v.gameId,
+                    name: v.name,
+                    mods: []
+                }
+                return data
+            })
+        })
+        IpcManager.registerHandler('game/loaders', () => {
+            return []
+        })
         IpcManager.registerHandler('app/titlebar', () => {
             return this.settings.window.titleBar
         })
@@ -352,6 +443,20 @@ export default class GachaForge {
 
         await this.setConfigEntry(key, defaultValue)
         return defaultValue
+    }
+
+    /**
+     * Retrieves the configuration entry for a specified key.
+     *
+     * @param key - The key associated with the configuration entry to retrieve.
+     * @return A promise that resolves to the configuration entry if it exists, or undefined if it does not.
+     */
+    public async getConfigEntry(key: string): Promise<any> {
+        if (await settings.has(key)) {
+            return await settings.get(key)
+        }
+
+        return undefined
     }
 
     /**
