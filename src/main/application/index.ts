@@ -282,6 +282,9 @@ export default class GachaForge {
                 success: true
             }
         })
+        IpcManager.registerHandler('app/titlebar', () => {
+            return this.settings.window.titleBar
+        })
     }
 
     /**
