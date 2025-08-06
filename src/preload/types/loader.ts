@@ -1,7 +1,6 @@
 ﻿export interface LoaderVersion {
     version: string
-    devFile: LoaderFile
-    playFile: LoaderFile
+    file: LoaderFile
 }
 
 export interface LoaderFile {
@@ -17,5 +16,5 @@ export interface LoaderInstance {
 export interface LoaderRData {
     id: string
     name: string
-    versions: LoaderVersion[]
+    versions: string[]
 }

@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { getAppDataPath } from '@main/application'
+import { LoaderInstance } from '@preload/types/loader'
 
 export class Profile {
     public readonly id: string
@@ -9,10 +10,13 @@ export class Profile {
 
     public name: string
 
+    public loader: LoaderInstance | null
+
     constructor(id: string, gameId: string) {
         this.id = id
         this.gameId = gameId
         this.name = ''
+        this.loader = null
     }
 
     /**
@@ -100,7 +104,13 @@ export class Profile {
             __version: 1,
             id: this.id,
             gameId: this.gameId,
-            name: this.name
+            name: this.name,
+            loader: this.loader
+                ? {
+                      id: this.loader.id,
+                      version: this.loader.version.version
+                  }
+                : null
         }
     }
 }

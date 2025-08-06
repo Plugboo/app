@@ -3,15 +3,11 @@ import HoYoverseGame, { HoYoverseGameId } from './hoyoverse'
 import { Profile } from './profile'
 
 export default class GameManager {
-    private readonly games: Game[]
-
-    constructor() {
-        this.games = [
-            new HoYoverseGame(HoYoverseGameId.GenshinImpact),
-            new HoYoverseGame(HoYoverseGameId.HonkaiStarRail),
-            new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero)
-        ]
-    }
+    private static readonly entries: Game[] = [
+        new HoYoverseGame(HoYoverseGameId.GenshinImpact),
+        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail),
+        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero)
+    ]
 
     /**
      * Retrieves a game by its unique identifier.
@@ -19,8 +15,8 @@ export default class GameManager {
      * @param id - The unique identifier of the game to retrieve.
      * @return The game object matching the provided identifier, or null if no match is found.
      */
-    public getGame(id: string): Game | null {
-        return this.games.find((v) => v.info.id === id) ?? null
+    public static getGame(id: string): Game | null {
+        return GameManager.entries.find((v) => v.info.id === id) ?? null
     }
 
     /**
@@ -29,8 +25,8 @@ export default class GameManager {
      * @param id - The unique identifier of the profile to retrieve.
      * @return The profile with the given identifier if found, otherwise null.
      */
-    public getProfile(id: string): Profile | null {
-        for (const game of this.games) {
+    public static getProfile(id: string): Profile | null {
+        for (const game of GameManager.entries) {
             const profile = game.profiles.find((v) => v.id === id)
             if (profile !== undefined) {
                 return profile
@@ -40,9 +36,9 @@ export default class GameManager {
     }
 
     /**
-     * Retrieves the list of games.
+     * Retrieves the list of entries.
      */
-    public getGames(): Game[] {
-        return this.games
+    public static getGames(): Game[] {
+        return GameManager.entries
     }
 }

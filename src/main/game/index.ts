@@ -1,5 +1,6 @@
 import { GameInformation } from '@preload/types/game'
 import { Profile } from './profile'
+import Loader from './loader'
 
 export class Game {
     public readonly info: GameInformation
@@ -8,10 +9,17 @@ export class Game {
 
     public profiles: Profile[]
 
-    constructor(info: GameInformation) {
+    public loaders: Loader[]
+
+    constructor(info: GameInformation, loaders: Loader[]) {
         this.info = info
         this.installPath = null
         this.profiles = []
+        this.loaders = loaders
+
+        if (this.loaders.length === 0) {
+            console.warn(`[Game] No loaders found for game: ${this.info.id}`)
+        }
     }
 
     /**

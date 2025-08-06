@@ -1,6 +1,6 @@
 ﻿import { Link, useParams } from 'react-router'
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
-import { getCategories, searchMods } from '@renderer/api/mods'
+import { searchMods } from '@renderer/api/mods'
 import { Category, Mod, SearchModsResponse } from '@preload/types/service'
 import Input from '@renderer/components/ui/Input'
 import Button from '@renderer/components/ui/Button'
@@ -18,7 +18,7 @@ export default function ModsPage() {
         mods: [],
         totalCount: 0
     })
-    const [categories, setCategories] = useState<Category[]>([])
+    const [categories, _] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
 
     const [lastInput, setLastInput] = useState('')
@@ -60,10 +60,10 @@ export default function ModsPage() {
     }, [sort, page])
 
     useEffect(() => {
-        getCategories(gameId).then((result) => {
-            setCategories(result)
-            search(true)
-        })
+        // getCategories(gameId).then((result) => {
+        //     setCategories(result)
+        //     search(true)
+        // })
     }, [gameId])
 
     return (

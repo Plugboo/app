@@ -18,7 +18,7 @@ export async function getMod(gameId: string, modId: string): Promise<Mod | null>
 }
 
 export async function searchMods(gameId: string, options: SearchModsOptions): Promise<SearchModsResponse> {
-    return invokeIpc<SearchModsResponse>(IpcChannel.Mods_Search, gameId, 'gamebanana', options)
+    return invokeIpc<SearchModsResponse>('mods/search', gameId, 'gamebanana', options)
 }
 
 export async function getCategories(gameId: string): Promise<Category[]> {

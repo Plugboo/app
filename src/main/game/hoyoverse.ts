@@ -2,6 +2,8 @@ import { Game } from './index'
 import { GameInformation } from '@preload/types/game'
 import { HoYoPlay } from '@main/util/hoyoplay'
 import { multiExists } from '@main/util/filesystem'
+import Loader from './loader'
+import MigotoLoader from '@main/game/loader/migoto'
 
 export enum HoYoverseGameId {
     GenshinImpact = 'genshin_impact',
@@ -14,6 +16,7 @@ export default class HoYoverseGame extends Game {
 
     constructor(gameId: HoYoverseGameId) {
         let info: GameInformation
+        const loaders: Loader[] = []
 
         switch (gameId) {
             case HoYoverseGameId.GenshinImpact:
@@ -28,6 +31,7 @@ export default class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
+                loaders.push(new MigotoLoader('SilentNightSound', 'GI-Model-Importer'))
                 break
             case HoYoverseGameId.HonkaiStarRail:
                 info = {
@@ -41,6 +45,7 @@ export default class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
+                loaders.push(new MigotoLoader('SilentNightSound', 'SR-Model-Importer'))
                 break
             case HoYoverseGameId.ZenlessZoneZero:
                 info = {
@@ -54,10 +59,11 @@ export default class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
+                loaders.push(new MigotoLoader('leotorrez', 'ZZ-Model-Importer'))
                 break
         }
 
-        super(info)
+        super(info, loaders)
         this.gameId = gameId
     }
 

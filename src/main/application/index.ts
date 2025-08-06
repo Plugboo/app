@@ -11,6 +11,9 @@ import GameManager from '@main/game/manager'
 import fs from 'node:fs'
 import { Profile } from '@main/game/profile'
 import { ProfileRData } from '@preload/types/profile'
+import { LoaderRData } from '@preload/types/loader'
+import { v4 } from 'uuid'
+import { SearchModsResponse } from '@preload/types/service'
 
 export default class GachaForge {
     private readonly instanceLock: boolean
@@ -23,14 +26,11 @@ export default class GachaForge {
 
     private shouldExit: boolean
 
-    private games: GameManager
-
     constructor() {
         this.instanceLock = app.requestSingleInstanceLock()
         this.mainWindow = null
         this.tray = null
         this.shouldExit = false
-        this.games = new GameManager()
 
         /*
          * Default settings when starting GachaForge.
@@ -204,7 +204,7 @@ export default class GachaForge {
         /*
          * Load every installation path from all supported games from the settings.json file.
          */
-        for (const game of this.games.getGames()) {
+        for (const game of GameManager.getGames()) {
             const key = `games.${game.info.id}.installPath`
             const value = await this.getConfigEntry(key)
 
@@ -274,7 +274,7 @@ export default class GachaForge {
             this.mainWindow.close()
         })
         IpcManager.registerHandler('game/list', () => {
-            return this.games.getGames().map((v) => v.info)
+            return GameManager.getGames().map((v) => v.info)
         })
         IpcManager.registerHandler('game/verify', (event) => {
             if (event.args.length !== 1) {
@@ -286,7 +286,7 @@ export default class GachaForge {
                 return
             }
 
-            const game = this.games.getGame(gameId)
+            const game = GameManager.getGame(gameId)
             if (game === null) {
                 return
             }
@@ -315,7 +315,7 @@ export default class GachaForge {
                 return
             }
 
-            const game = this.games.getGame(gameId)
+            const game = GameManager.getGame(gameId)
             if (game === null) {
                 return {
                     success: false,
@@ -355,7 +355,7 @@ export default class GachaForge {
                 return
             }
 
-            const game = this.games.getGame(gameId)
+            const game = GameManager.getGame(gameId)
             if (game === null) {
                 return
             }
@@ -370,8 +370,146 @@ export default class GachaForge {
                 return data
             })
         })
-        IpcManager.registerHandler('game/loaders', () => {
-            return []
+        IpcManager.registerHandler('game/loaders', async (event) => {
+            if (event.args.length !== 1) {
+                return
+            }
+
+            const gameId = event.args[0]
+
+            if (typeof gameId !== 'string') {
+                return
+            }
+
+            const game = GameManager.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            for (const loader of game.loaders) {
+                await loader.fetchVersions()
+            }
+
+            return game.loaders.map((loader) => {
+                const data: LoaderRData = {
+                    id: loader.id,
+                    name: loader.name,
+                    versions: loader.versions.map((version) => version.version)
+                }
+                return data
+            })
+        })
+        IpcManager.registerHandler('game/profiles/create', async (event) => {
+            if (event.args.length !== 4) {
+                return
+            }
+
+            const gameId = event.args[0]
+            const name = event.args[1]
+            const loaderId = event.args[2]
+            const loaderVersion = event.args[3]
+
+            if (
+                typeof gameId !== 'string' ||
+                typeof name !== 'string' ||
+                typeof loaderId !== 'string' ||
+                typeof loaderVersion !== 'string'
+            ) {
+                return
+            }
+
+            const game = GameManager.getGame(gameId)
+            if (game === null) {
+                return {
+                    success: false,
+                    reason: 'GAME_NOT_FOUND'
+                }
+            }
+
+            const loader = game.loaders.find((v) => v.id === loaderId)
+            if (loader === null) {
+                return {
+                    success: false,
+                    reason: 'LOADER_NOT_FOUND'
+                }
+            }
+
+            const version = loader.versions.find((v) => v.version === loaderVersion)
+            if (version === null) {
+                return {
+                    success: false,
+                    reason: 'VERSION_NOT_FOUND'
+                }
+            }
+
+            if (name.trim().length === 0) {
+                return {
+                    success: false,
+                    reason: 'NAME_CANNOT_BE_EMPTY'
+                }
+            }
+
+            const profile = new Profile(v4(), gameId)
+            profile.name = name
+            profile.loader = {
+                id: loaderId,
+                version: version
+            }
+            profile.writeToDisk()
+            game.profiles.push(profile)
+            console.log('[Application] Created new profile: ' + profile.name)
+
+            return {
+                success: true
+            }
+        })
+        IpcManager.registerHandler('game/profiles/get', async (event) => {
+            if (event.args.length !== 1) {
+                return
+            }
+
+            const profileId = event.args[0]
+            if (typeof profileId !== 'string') {
+                return
+            }
+
+            const profile = GameManager.getProfile(profileId)
+            if (profile === null) {
+                return null
+            }
+
+            const data: ProfileRData = {
+                id: profile.id,
+                gameId: profile.gameId,
+                name: profile.name,
+                mods: []
+            }
+
+            return data
+        })
+        IpcManager.registerHandler('mods/search', async (event) => {
+            if (event.args.length !== 3) {
+                return
+            }
+
+            const gameId = event.args[0]
+            const serviceId = event.args[1]
+            const rawOptions = event.args[2]
+
+            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof rawOptions !== 'object') {
+                return
+            }
+
+            const game = GameManager.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            const response: SearchModsResponse = {
+                mods: [],
+                totalCount: 0
+            }
+            return response
         })
         IpcManager.registerHandler('app/titlebar', () => {
             return this.settings.window.titleBar
@@ -404,7 +542,7 @@ export default class GachaForge {
 
             try {
                 const profile = Profile.readFromDisk(absolutePath)
-                const game = this.games.getGame(profile.gameId)
+                const game = GameManager.getGame(profile.gameId)
                 if (game === null) {
                     console.warn(`[Application] Failed to read profile from disk: ${directory} (Game not found)`)
                     continue
