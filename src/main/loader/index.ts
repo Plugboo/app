@@ -28,6 +28,10 @@ export class Loader {
         this.versions = []
     }
 
+    public async startProcess(profile: Profile) {
+        throw new Error('Not implemented')
+    }
+
     /**
      * Fetches available versions from the data source.
      */

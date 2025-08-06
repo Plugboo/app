@@ -8,6 +8,18 @@ import upath from 'upath'
 import fs from 'node:fs'
 import { v4 } from 'uuid'
 import { multiExists } from '@main/util/filesystem'
+import child_process from 'node:child_process'
+import { dialog } from 'electron'
+import { loadIni, stringifyIni } from 'load-ini'
+import { GameManager } from '@main/game/manager'
+import { Game } from '@main/game'
+
+interface Config {
+    Loader?: {
+        target?: string
+        launch?: string
+    }
+}
 
 export class MigotoLoader extends Loader {
     private readonly githubUser: string
@@ -18,6 +30,21 @@ export class MigotoLoader extends Loader {
         super('migoto', '3DMigoto')
         this.githubUser = githubUser
         this.githubRepo = githubRepo
+    }
+
+    public async startProcess(profile: Profile) {
+        if (process.platform !== 'win32') {
+            dialog.showMessageBoxSync({
+                type: 'error',
+                title: 'Start Failure',
+                message: 'GachaForge can unfortunately only start this game, with this loader, on Windows.',
+                buttons: ['Okay'],
+                noLink: true
+            })
+            return
+        }
+
+        this.startWindowsProcess(profile)
     }
 
     public async fetchVersions() {
@@ -112,6 +139,8 @@ export class MigotoLoader extends Loader {
 
         console.log('[MigotoLoader] Extraction finished.')
 
+        await this.setupConfig(profile, GameManager.getGame(profile.gameId))
+
         /*
          * Remove the downloaded zip file after extraction.
          */
@@ -120,5 +149,68 @@ export class MigotoLoader extends Loader {
 
     public validateInstallation(profile: Profile): boolean {
         return multiExists(profile.getFolderPath(), ['nvapi64.dll', 'd3dx.ini', 'd3dcompiler_46.dll', 'd3d11.dll'])
+    }
+
+    private startWindowsProcess(profile: Profile) {
+        const loaderPath = path.resolve(profile.getFolderPath(), '3DMigoto Loader.exe')
+
+        if (!fs.existsSync(loaderPath)) {
+            console.error('[MigotoLoader] Loader Executable not found:', loaderPath)
+            return
+        }
+
+        const process = child_process.spawn(
+            'powershell.exe',
+            [
+                '-ExecutionPolicy',
+                'ByPass',
+                '-Command',
+                `& {Start-Process "${loaderPath}" -Verb RunAs -WorkingDirectory "${profile.getFolderPath()}"}`
+            ],
+            {
+                stdio: ['ignore', 'pipe', 'pipe']
+            }
+        )
+
+        process.stdout.setEncoding('utf8')
+        process.stderr.setEncoding('utf8')
+
+        process.stdout.on('data', (chunk) => {
+            console.log('[MigotoLoader] - Loader Process - STDOUT: ' + chunk)
+        })
+
+        process.stderr.on('data', (chunk) => {
+            console.log('[MigotoLoader] - Loader Process - STDERR: ' + chunk)
+        })
+
+        process.on('exit', (code) => {
+            console.log('[MigotoLoader] - Loader Process - EXITED: ' + code)
+        })
+
+        process.unref()
+    }
+
+    private async setupConfig(profile: Profile, game: Game) {
+        try {
+            const rawConfig = await loadIni(path.resolve(profile.getFolderPath(), 'd3dx.ini'))
+            if (Array.isArray(rawConfig)) {
+                console.log("[MigotoLoader] Couldn't load d3dx.ini.")
+                return false
+            }
+
+            const config = JSON.parse(JSON.stringify(rawConfig)) as Config
+            if (config.Loader === undefined || config.Loader.target === undefined) {
+                console.log('[MigotoLoader] Invalid d3dx.ini file.')
+                return false
+            }
+
+            config.Loader.launch = path.resolve(game.installPath, config.Loader.target)
+            fs.writeFileSync(path.resolve(profile.getFolderPath(), 'd3dx.ini'), stringifyIni(config))
+
+            return true
+        } catch {
+            console.log('[MigotoLoader] Unknown error setup config.')
+            return false
+        }
     }
 }

@@ -53,7 +53,7 @@ export async function createProfile(
 }
 
 export async function startProfile(profileId: string) {
-    await invokeIpc<void>(IpcChannel.Game_StartProfile, profileId)
+    await invokeIpc<void>('game/profiles/start', profileId)
 }
 
 export async function installMod(profileId: string, serviceId: Id, modId: Id) {

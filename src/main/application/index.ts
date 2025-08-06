@@ -505,6 +505,37 @@ export class GachaForge {
 
             return data
         })
+        IpcManager.registerHandler('game/profiles/start', async (event) => {
+            if (event.args.length !== 1) {
+                return
+            }
+
+            const profileId = event.args[0]
+            if (typeof profileId !== 'string') {
+                return
+            }
+
+            const profile = GameManager.getProfile(profileId)
+            if (profile === null) {
+                return
+            }
+
+            if (profile.loader === null) {
+                return
+            }
+
+            const game = GameManager.getGame(profile.gameId)
+            if (game === null) {
+                return
+            }
+
+            const loader = game.loaders.find((v) => v.id === profile.loader.loaderId)
+            if (loader === null) {
+                return
+            }
+
+            await loader.startProcess(profile)
+        })
         IpcManager.registerHandler('mods/search', async (event) => {
             if (event.args.length !== 3) {
                 return
