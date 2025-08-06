@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { LoaderRData } from '@preload/types/loader'
 import { createProfile, getLoaders } from '@renderer/api/game'
 import Select from '@renderer/components/ui/Select'
+import { toast } from 'react-toastify'
 
 type Props = {
     gameId: string | null
@@ -25,15 +26,23 @@ export default function CreateProfileModal(props: Props) {
             return
         }
 
-        createProfile(props.gameId, name, selectedLoader.id, selectedVersion).then((result) => {
-            if (result.success) {
-                props.onChangeOpen(false)
+        const promise = createProfile(props.gameId, name, selectedLoader.id, selectedVersion)
 
-                if (props.onCreate) {
-                    props.onCreate()
+        toast
+            .promise(promise, {
+                pending: 'Creating profile...',
+                success: 'Profile created!',
+                error: 'Failed to create profile!'
+            })
+            .then((result) => {
+                if (result.success) {
+                    props.onChangeOpen(false)
+
+                    if (props.onCreate) {
+                        props.onCreate()
+                    }
                 }
-            }
-        })
+            })
     }
 
     const onSelectVersion = (value: string) => {
