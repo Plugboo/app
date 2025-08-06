@@ -2,8 +2,8 @@ import { Game } from './index'
 import { GameInformation } from '@preload/types/game'
 import { HoYoPlay } from '@main/util/hoyoplay'
 import { multiExists } from '@main/util/filesystem'
-import Loader from './loader'
-import MigotoLoader from '@main/game/loader/migoto'
+import Loader from '../loader'
+import MigotoLoader from '@main/loader/migoto'
 
 export enum HoYoverseGameId {
     GenshinImpact = 'genshin_impact',

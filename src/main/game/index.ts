@@ -1,6 +1,6 @@
 import { GameInformation } from '@preload/types/game'
 import { Profile } from './profile'
-import Loader from './loader'
+import Loader from '../loader'
 
 export class Game {
     public readonly info: GameInformation
