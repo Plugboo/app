@@ -12,11 +12,14 @@ export class Profile {
 
     public loader: LoaderInstance | null
 
+    public isLoaderInstalled: boolean
+
     constructor(id: string, gameId: string) {
         this.id = id
         this.gameId = gameId
         this.name = ''
         this.loader = null
+        this.isLoaderInstalled = false
     }
 
     /**
@@ -93,6 +96,14 @@ export class Profile {
 
         const profile = new Profile(data.id, data.gameId)
         profile.name = data.name
+
+        if (typeof data.loader === 'object') {
+            profile.loader = {
+                loaderId: data.loader.id,
+                version: data.loader.version
+            }
+        }
+
         return profile
     }
 

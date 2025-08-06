@@ -467,6 +467,7 @@ export class GachaForge {
             loader
                 .installVersion(profile)
                 .then(() => {
+                    profile.isLoaderInstalled = true
                     console.log('[Application] Installed profile version: ' + profile.name)
                 })
                 .catch((exception) => {
@@ -618,6 +619,27 @@ export class GachaForge {
                 if (game === null) {
                     console.warn(`[Application] Failed to read profile from disk: ${directory} (Game not found)`)
                     continue
+                }
+
+                if (profile.loader !== null) {
+                    const loader = game.loaders.find((v) => v.id === profile.loader.loaderId)
+                    if (loader !== null) {
+                        /*
+                         * Check if the loader is already installed on that profile.
+                         * If yes, it should be ready to start.
+                         */
+                        profile.isLoaderInstalled = loader.validateInstallation(profile)
+
+                        if (!profile.isLoaderInstalled) {
+                            console.warn(
+                                `[Application] Profile '${profile.id}' does not have the loader successfully installed (id: ${profile.loader.loaderId}, version: ${profile.loader.version})`
+                            )
+                        }
+                    } else {
+                        console.warn(
+                            `[Application] Profile '${profile.id}' contains unknown loader data (id: ${profile.loader.loaderId}, version: ${profile.loader.version})`
+                        )
+                    }
                 }
 
                 game.profiles.push(profile)

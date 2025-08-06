@@ -7,6 +7,7 @@ import AdmZip from 'adm-zip'
 import upath from 'upath'
 import fs from 'node:fs'
 import { v4 } from 'uuid'
+import { multiExists } from '@main/util/filesystem'
 
 export class MigotoLoader extends Loader {
     private readonly githubUser: string
@@ -115,5 +116,9 @@ export class MigotoLoader extends Loader {
          * Remove the downloaded zip file after extraction.
          */
         fs.rmSync(downloadPath)
+    }
+
+    public validateInstallation(profile: Profile): boolean {
+        return multiExists(profile.getFolderPath(), ['nvapi64.dll', 'd3dx.ini', 'd3dcompiler_46.dll', 'd3d11.dll'])
     }
 }

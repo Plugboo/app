@@ -43,4 +43,8 @@ export class Loader {
     public async installVersion(profile: Profile) {
         throw new Error('Not implemented')
     }
+
+    public validateInstallation(profile: Profile): boolean {
+        throw new Error('Not implemented')
+    }
 }
