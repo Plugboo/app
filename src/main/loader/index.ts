@@ -1,6 +1,6 @@
 ﻿import { LoaderVersion } from '@preload/types/loader'
 
-export default class Loader {
+export class Loader {
     public readonly id: string
 
     public readonly name: string

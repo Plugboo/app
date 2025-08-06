@@ -6,8 +6,8 @@ import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub } from '@main/util/github'
 import { gachaForge } from '@main/main'
-import IpcManager from './ipc'
-import GameManager from '@main/game/manager'
+import { IpcManager } from './ipc'
+import { GameManager } from '@main/game/manager'
 import fs from 'node:fs'
 import { Profile } from '@main/game/profile'
 import { ProfileRData } from '@preload/types/profile'
@@ -15,7 +15,7 @@ import { LoaderRData } from '@preload/types/loader'
 import { v4 } from 'uuid'
 import { SearchModsResponse } from '@preload/types/service'
 
-export default class GachaForge {
+export class GachaForge {
     private readonly instanceLock: boolean
 
     private mainWindow: BrowserWindow | null

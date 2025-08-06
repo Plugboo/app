@@ -2,7 +2,7 @@ import { Game } from './index'
 import HoYoverseGame, { HoYoverseGameId } from './hoyoverse'
 import { Profile } from './profile'
 
-export default class GameManager {
+export class GameManager {
     private static readonly entries: Game[] = [
         new HoYoverseGame(HoYoverseGameId.GenshinImpact),
         new HoYoverseGame(HoYoverseGameId.HonkaiStarRail),

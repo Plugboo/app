@@ -1,7 +1,7 @@
-﻿import Loader from './index'
+﻿import { Loader } from './index'
 import { GitHub } from '@main/util/github'
 
-export default class MigotoLoader extends Loader {
+export class MigotoLoader extends Loader {
     private readonly githubUser: string
 
     private readonly githubRepo: string

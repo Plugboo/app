@@ -7,7 +7,7 @@ export interface IpcEvent {
     args: any[]
 }
 
-export default class IpcManager {
+export class IpcManager {
     private static _handlers: Map<string, IpcHandler> = new Map()
 
     /**
