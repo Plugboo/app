@@ -97,6 +97,13 @@ export class Profile {
     }
 
     /**
+     * Returns the folder path for the profile.
+     */
+    public getFolderPath(): string {
+        return path.join(getAppDataPath(), 'profiles', this.id)
+    }
+
+    /**
      * Serializes the current object into a plain JavaScript object representation.
      */
     private serializeDisk(): any {

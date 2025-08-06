@@ -212,6 +212,12 @@ export class GachaForge {
                 continue
             }
 
+            if (!game.validatePath(value)) {
+                console.warn(`[Application] Invalid installation path for game '${game.info.name}': ${value}`)
+                await this.setConfigEntry(key, null)
+                continue
+            }
+
             game.installPath = value
         }
     }
@@ -457,6 +463,16 @@ export class GachaForge {
             profile.writeToDisk()
             game.profiles.push(profile)
             console.log('[Application] Created new profile: ' + profile.name)
+
+            loader
+                .installVersion(profile)
+                .then(() => {
+                    console.log('[Application] Installed profile version: ' + profile.name)
+                })
+                .catch((exception) => {
+                    console.error('[Application] Failed to install profile version: ' + profile.name)
+                    console.error(exception)
+                })
 
             return {
                 success: true

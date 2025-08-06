@@ -1,4 +1,6 @@
-﻿export interface LoaderVersion {
+﻿import { Profile } from '@main/game/profile'
+
+export interface LoaderVersion {
     version: string
     file: LoaderFile
 }
@@ -29,5 +31,16 @@ export class Loader {
     /**
      * Fetches available versions from the data source.
      */
-    public async fetchVersions() {}
+    public async fetchVersions() {
+        throw new Error('Not implemented')
+    }
+
+    /**
+     * Installs the specified loader associated with the provided profile.
+     *
+     * @param profile - The profile object containing details about the loader to be installed.
+     */
+    public async installVersion(profile: Profile) {
+        throw new Error('Not implemented')
+    }
 }
