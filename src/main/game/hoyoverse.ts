@@ -11,7 +11,7 @@ export enum HoYoverseGameId {
     ZenlessZoneZero = 'zenless_zone_zero'
 }
 
-export default class HoYoverseGame extends Game {
+export class HoYoverseGame extends Game {
     private readonly gameId: HoYoverseGameId
 
     constructor(gameId: HoYoverseGameId) {

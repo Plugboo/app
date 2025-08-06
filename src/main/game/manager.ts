@@ -1,5 +1,5 @@
 import { Game } from './index'
-import HoYoverseGame, { HoYoverseGameId } from './hoyoverse'
+import { HoYoverseGame, HoYoverseGameId } from './hoyoverse'
 import { Profile } from './profile'
 
 export class GameManager {
