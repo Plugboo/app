@@ -1,6 +1,7 @@
 import { GameInformation } from '@preload/types/game'
 import { Profile } from './profile'
-import { Loader } from '../loader'
+import { Loader } from '@main/loader'
+import { Service } from '@main/service'
 
 export class Game {
     public readonly info: GameInformation
@@ -9,12 +10,15 @@ export class Game {
 
     public profiles: Profile[]
 
+    public services: Service[]
+
     public loaders: Loader[]
 
-    constructor(info: GameInformation, loaders: Loader[]) {
+    constructor(info: GameInformation, services: Service[], loaders: Loader[]) {
         this.info = info
         this.installPath = null
         this.profiles = []
+        this.services = services
         this.loaders = loaders
 
         if (this.loaders.length === 0) {

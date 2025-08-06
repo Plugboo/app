@@ -10,11 +10,11 @@ import { IpcChannel } from '@preload/types/ipc'
 import invokeIpc from '@renderer/api/ipc'
 
 export async function getModComments(gameId: string, modId: string, options: GetCommentsOptions): Promise<Comment[]> {
-    return invokeIpc<Comment[]>(IpcChannel.Mods_GetComments, gameId, modId, 'gamebanana', options)
+    return invokeIpc<Comment[]>('mods/comments', gameId, 'gamebanana', modId, options)
 }
 
 export async function getMod(gameId: string, modId: string): Promise<Mod | null> {
-    return invokeIpc<Mod | null>(IpcChannel.Mods_GetMod, gameId, modId, 'gamebanana')
+    return invokeIpc<Mod | null>('mods/get', gameId, 'gamebanana', modId)
 }
 
 export async function searchMods(gameId: string, options: SearchModsOptions): Promise<SearchModsResponse> {

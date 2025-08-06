@@ -1,12 +1,13 @@
 import { Game } from './index'
 import { HoYoverseGame, HoYoverseGameId } from './hoyoverse'
 import { Profile } from './profile'
+import { GameBananaService } from '@main/service/gamebanana'
 
 export class GameManager {
     private static readonly entries: Game[] = [
-        new HoYoverseGame(HoYoverseGameId.GenshinImpact),
-        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail),
-        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero)
+        new HoYoverseGame(HoYoverseGameId.GenshinImpact, [new GameBananaService(8552)]),
+        new HoYoverseGame(HoYoverseGameId.HonkaiStarRail, [new GameBananaService(18366)]),
+        new HoYoverseGame(HoYoverseGameId.ZenlessZoneZero, [new GameBananaService(19567)])
     ]
 
     /**

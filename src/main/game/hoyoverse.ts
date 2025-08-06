@@ -4,6 +4,7 @@ import { HoYoPlay } from '@main/util/hoyoplay'
 import { multiExists } from '@main/util/filesystem'
 import { Loader } from '../loader'
 import { MigotoLoader } from '@main/loader/migoto'
+import { Service } from '@main/service'
 
 export enum HoYoverseGameId {
     GenshinImpact = 'genshin_impact',
@@ -14,7 +15,7 @@ export enum HoYoverseGameId {
 export class HoYoverseGame extends Game {
     private readonly gameId: HoYoverseGameId
 
-    constructor(gameId: HoYoverseGameId) {
+    constructor(gameId: HoYoverseGameId, services: Service[]) {
         let info: GameInformation
         const loaders: Loader[] = []
 
@@ -63,7 +64,7 @@ export class HoYoverseGame extends Game {
                 break
         }
 
-        super(info, loaders)
+        super(info, services, loaders)
         this.gameId = gameId
     }
 

@@ -494,9 +494,9 @@ export class GachaForge {
 
             const gameId = event.args[0]
             const serviceId = event.args[1]
-            const rawOptions = event.args[2]
+            const options = event.args[2]
 
-            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof rawOptions !== 'object') {
+            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof options !== 'object') {
                 return
             }
 
@@ -505,11 +505,68 @@ export class GachaForge {
                 return
             }
 
-            const response: SearchModsResponse = {
-                mods: [],
-                totalCount: 0
+            const service = game.services.find((v) => v.id === serviceId)
+            if (service === undefined) {
+                return
             }
-            return response
+
+            return await service.searchMods(options)
+        })
+        IpcManager.registerHandler('mods/get', async (event) => {
+            if (event.args.length !== 3) {
+                return
+            }
+
+            const gameId = event.args[0]
+            const serviceId = event.args[1]
+            const modId = event.args[2]
+
+            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof modId !== 'string') {
+                return
+            }
+
+            const game = GameManager.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            const service = game.services.find((v) => v.id === serviceId)
+            if (service === undefined) {
+                return
+            }
+
+            return await service.getMod(modId)
+        })
+        IpcManager.registerHandler('mods/comments', async (event) => {
+            if (event.args.length !== 4) {
+                return
+            }
+
+            const gameId = event.args[0]
+            const serviceId = event.args[1]
+            const modId = event.args[2]
+            const options = event.args[3]
+
+            if (
+                typeof gameId !== 'string' ||
+                typeof serviceId !== 'string' ||
+                typeof modId !== 'string' ||
+                typeof options !== 'object'
+            ) {
+                return
+            }
+
+            const game = GameManager.getGame(gameId)
+            if (game === null) {
+                return
+            }
+
+            const service = game.services.find((v) => v.id === serviceId)
+            if (service === undefined) {
+                return
+            }
+
+            return await service.getComments(modId, options)
         })
         IpcManager.registerHandler('app/titlebar', () => {
             return this.settings.window.titleBar
