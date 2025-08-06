@@ -11,7 +11,7 @@ import { GameManager } from '@main/game/manager'
 import fs from 'node:fs'
 import { Profile } from '@main/game/profile'
 import { ProfileRData } from '@preload/types/profile'
-import { LoaderRData } from '@preload/types/loader'
+import { LoaderRData, LoaderStatus } from '@preload/types/loader'
 import { v4 } from 'uuid'
 
 export class GachaForge {
@@ -370,7 +370,8 @@ export class GachaForge {
                     id: v.id,
                     gameId: v.gameId,
                     name: v.name,
-                    mods: []
+                    mods: [],
+                    loaderStatus: v.isLoaderInstalled ? LoaderStatus.READY : LoaderStatus.NOT_INSTALLED
                 }
                 return data
             })
@@ -498,7 +499,8 @@ export class GachaForge {
                 id: profile.id,
                 gameId: profile.gameId,
                 name: profile.name,
-                mods: []
+                mods: [],
+                loaderStatus: profile.isLoaderInstalled ? LoaderStatus.READY : LoaderStatus.NOT_INSTALLED
             }
 
             return data
