@@ -77,7 +77,7 @@ export default function HomePage() {
                                         <div className="absolute group-hover:opacity-100 opacity-0 transition-opacity duration-300 top-0 left-0 w-full h-full bg-linear-to-t from-background-900 via-background-900/35 to-background-900/0 z-2" />
                                         <img
                                             className="w-full h-full object-cover group-hover:scale-103 transition-translate duration-300"
-                                            src={game.banner}
+                                            src={game.cover}
                                             alt={`${game.name}'s banner`}
                                         />
                                     </div>

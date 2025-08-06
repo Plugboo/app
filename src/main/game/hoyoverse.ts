@@ -20,8 +20,12 @@ export default class HoYoverseGame extends Game {
                 info = {
                     id: 'genshin_impact',
                     name: 'Genshin Impact',
-                    banner: 'https://cdn2.steamgriddb.com/thumb/2d273973a88b3ab45f0d0763300b0695.jpg',
+                    cover: 'https://cdn2.steamgriddb.com/thumb/2d273973a88b3ab45f0d0763300b0695.jpg',
                     icon: 'https://cdn2.steamgriddb.com/icon_thumb/54795ec619ebda94c86d00184861c96f.png',
+                    banner: {
+                        url: 'https://cdn2.steamgriddb.com/hero_thumb/75e913d400755a0d2782fc65e2035e97.webm',
+                        type: 'video'
+                    },
                     developer: 'HoYoverse'
                 }
                 break
@@ -29,8 +33,12 @@ export default class HoYoverseGame extends Game {
                 info = {
                     id: 'honkai_star_rail',
                     name: 'Honkai: Star Rail',
-                    banner: 'https://cdn2.steamgriddb.com/thumb/7de88187918ddefb552555ae0a7fc9b6.jpg',
+                    cover: 'https://cdn2.steamgriddb.com/thumb/7de88187918ddefb552555ae0a7fc9b6.jpg',
                     icon: 'https://cdn2.steamgriddb.com/icon_thumb/e52da5a31de788599378924f0e639557.png',
+                    banner: {
+                        url: 'https://cdn2.steamgriddb.com/hero_thumb/619ce5fef8ff39623f01c7fcb2fb8051.webm',
+                        type: 'video'
+                    },
                     developer: 'HoYoverse'
                 }
                 break
@@ -38,8 +46,12 @@ export default class HoYoverseGame extends Game {
                 info = {
                     id: 'zenless_zone_zero',
                     name: 'Zenless Zone Zero',
-                    banner: 'https://cdn2.steamgriddb.com/thumb/97657e12f1b8cbf71b6837f02b23d423.jpg',
+                    cover: 'https://cdn2.steamgriddb.com/thumb/97657e12f1b8cbf71b6837f02b23d423.jpg',
                     icon: 'https://cdn2.steamgriddb.com/icon_thumb/7029a498c4f596f73b35504df9bab02a.png',
+                    banner: {
+                        url: 'https://cdn2.steamgriddb.com/hero_thumb/912c3958f7545cc891334c5f671c7555.png',
+                        type: 'image'
+                    },
                     developer: 'HoYoverse'
                 }
                 break
