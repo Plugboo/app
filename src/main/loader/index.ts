@@ -44,6 +44,12 @@ export class Loader {
         throw new Error('Not implemented')
     }
 
+    /**
+     * Validates the installation on the profile.
+     *
+     * @param profile - The profile object containing installation.
+     * @return Returns true if the installation is valid; otherwise, returns false.
+     */
     public validateInstallation(profile: Profile): boolean {
         throw new Error('Not implemented')
     }
