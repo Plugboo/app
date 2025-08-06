@@ -1,19 +1,4 @@
-﻿export interface LoaderVersion {
-    version: string
-    file: LoaderFile
-}
-
-export interface LoaderFile {
-    name: string
-    url: string
-}
-
-export interface LoaderInstance {
-    id: string
-    version: LoaderVersion
-}
-
-export interface LoaderRData {
+﻿export interface LoaderRData {
     id: string
     name: string
     versions: string[]

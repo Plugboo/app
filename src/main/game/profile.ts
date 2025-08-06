@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { getAppDataPath } from '@main/application'
-import { LoaderInstance } from '@preload/types/loader'
+import { LoaderInstance } from '@main/loader'
 
 export class Profile {
     public readonly id: string
@@ -107,7 +107,7 @@ export class Profile {
             name: this.name,
             loader: this.loader
                 ? {
-                      id: this.loader.id,
+                      id: this.loader.loaderId,
                       version: this.loader.version.version
                   }
                 : null

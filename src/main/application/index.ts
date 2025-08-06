@@ -13,7 +13,6 @@ import { Profile } from '@main/game/profile'
 import { ProfileRData } from '@preload/types/profile'
 import { LoaderRData } from '@preload/types/loader'
 import { v4 } from 'uuid'
-import { SearchModsResponse } from '@preload/types/service'
 
 export class GachaForge {
     private readonly instanceLock: boolean
@@ -452,7 +451,7 @@ export class GachaForge {
             const profile = new Profile(v4(), gameId)
             profile.name = name
             profile.loader = {
-                id: loaderId,
+                loaderId: loaderId,
                 version: version
             }
             profile.writeToDisk()

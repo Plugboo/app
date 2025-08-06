@@ -1,4 +1,17 @@
-﻿import { LoaderVersion } from '@preload/types/loader'
+﻿export interface LoaderVersion {
+    version: string
+    file: LoaderFile
+}
+
+export interface LoaderFile {
+    name: string
+    url: string
+}
+
+export interface LoaderInstance {
+    loaderId: string
+    version: LoaderVersion
+}
 
 export class Loader {
     public readonly id: string
