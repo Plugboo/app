@@ -212,7 +212,7 @@ export class GachaForge {
                 continue
             }
 
-            if (!game.validatePath(value)) {
+            if (value !== null && !game.validatePath(value)) {
                 console.warn(`[Application] Invalid installation path for game '${game.info.name}': ${value}`)
                 await this.setConfigEntry(key, null)
                 continue
