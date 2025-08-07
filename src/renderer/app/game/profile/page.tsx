@@ -6,7 +6,8 @@ import { getProfile, startProfile } from '@renderer/api/game'
 import Button from '@renderer/components/ui/Button'
 import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
 import Input from '@renderer/components/ui/Input'
-import { ProfileRData } from '@common/types/profile'
+import { ProfileRData } from '@preload/types/profile'
+import { LoaderStatus } from '@preload/types/loader'
 
 enum Status {
     UNKNOWN,
@@ -25,20 +26,34 @@ export default function ProfilePage() {
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
     const [status, setStatus] = useState<Status>(Status.UNKNOWN)
 
-    const onClickPlay = () => {
-        if (status === Status.PLAYING) {
-            return
+    const onClickButton = () => {
+        switch (status) {
+            case Status.UNKNOWN:
+                break
+            case Status.READY: {
+                setStatus(Status.PLAYING)
+                startProfile(profileId).then()
+                break
+            }
         }
-
-        setStatus(Status.PLAYING)
-        startProfile(profileId).then()
     }
 
     useEffect(() => {
         getProfile(profileId).then((result) => {
             setProfile(result)
             setLoading(false)
-            setStatus(Status.READY)
+
+            switch (result.loaderStatus) {
+                case LoaderStatus.READY:
+                    setStatus(Status.READY)
+                    break
+                case LoaderStatus.INSTALLING:
+                    setStatus(Status.INSTALLING)
+                    break
+                case LoaderStatus.NOT_INSTALLED:
+                    setStatus(Status.UNKNOWN)
+                    break
+            }
         })
     }, [profileId])
 
@@ -72,12 +87,18 @@ export default function ProfilePage() {
                                 <Button
                                     className="flex gap-2"
                                     disabled={status === Status.PLAYING}
-                                    onClick={() => onClickPlay()}
+                                    onClick={() => onClickButton()}
                                 >
                                     {status === Status.UNKNOWN && (
                                         <>
                                             <Hammer />
                                             Repair
+                                        </>
+                                    )}
+                                    {status === Status.REPAIRING && (
+                                        <>
+                                            <LoaderCircle className="animate-spin" />
+                                            Repairing
                                         </>
                                     )}
                                     {status === Status.INSTALLING && (

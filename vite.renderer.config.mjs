@@ -6,11 +6,11 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@common': path.resolve(__dirname, 'src', 'common'),
-      '@renderer': path.resolve(__dirname, 'src', 'renderer')
-    }
-  },
-  plugins: [tailwindcss()]
+    resolve: {
+        alias: {
+            '@preload': path.resolve(__dirname, 'src', 'preload'),
+            '@renderer': path.resolve(__dirname, 'src', 'renderer')
+        }
+    },
+    plugins: [tailwindcss()]
 })

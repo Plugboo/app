@@ -13,7 +13,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "paths": {
-      "@common/*": ["./src/common/*"],
+      "@preload/*": ["./src/preload/*"],
       "@main/*": ["./src/main/*"],
       "@renderer/*": ["./src/renderer/*"]
     }

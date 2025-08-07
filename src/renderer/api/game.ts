@@ -1,17 +1,17 @@
-﻿import { IpcChannel } from '@common/types/ipc'
-import { NewsArticle } from '@common/types/news'
-import { LoaderRData } from '@common/types/loader'
+﻿import { IpcChannel } from '@preload/types/ipc'
+import { NewsArticle } from '@preload/types/news'
+import { LoaderRData } from '@preload/types/loader'
 import invokeIpc from '@renderer/api/ipc'
-import { GameInformation } from '@common/types/game'
-import { ProfileRData } from '@common/types/profile'
-import { Id } from '@common/types/service'
+import { GameInformation } from '@preload/types/game'
+import { ProfileRData } from '@preload/types/profile'
+import { Id } from '@preload/types/service'
 
 export async function getNewsFromAll(): Promise<NewsArticle[]> {
-    return invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)
+    return (await invokeIpc<NewsArticle[]>(IpcChannel.Game_NewsAll)) ?? []
 }
 
 export async function listGames() {
-    return invokeIpc<GameInformation[]>(IpcChannel.Game_List)
+    return invokeIpc<GameInformation[]>('game/list')
 }
 
 export async function verifyGame(gameId: string) {
@@ -19,22 +19,22 @@ export async function verifyGame(gameId: string) {
         success: boolean
         reason?: string
         path?: string
-    }>(IpcChannel.Game_Verify, gameId)
+    }>('game/verify', gameId)
 }
 
 export async function setupGame(gameId: string, path: string) {
     return invokeIpc<{
         success: boolean
         reason?: string
-    }>(IpcChannel.Game_Setup, gameId, path)
+    }>('game/setup', gameId, path)
 }
 
 export async function getProfiles(gameId: string): Promise<ProfileRData[]> {
-    return invokeIpc<ProfileRData[]>(IpcChannel.Game_GetProfiles, gameId)
+    return invokeIpc<ProfileRData[]>('game/profiles', gameId)
 }
 
 export async function getProfile(profileId: string): Promise<ProfileRData | null> {
-    return invokeIpc<ProfileRData | null>(IpcChannel.Game_GetProfile, profileId)
+    return invokeIpc<ProfileRData | null>('game/profiles/get', profileId)
 }
 
 export async function createProfile(
@@ -42,18 +42,24 @@ export async function createProfile(
     name: string,
     loaderId: string,
     loaderVersion: string
-): Promise<boolean> {
-    return invokeIpc<boolean>(IpcChannel.Game_CreateProfile, gameId, name, loaderId, loaderVersion)
+): Promise<{
+    success: boolean
+    reason?: string
+}> {
+    return invokeIpc<{
+        success: boolean
+        reason?: string
+    }>('game/profiles/create', gameId, name, loaderId, loaderVersion)
 }
 
 export async function startProfile(profileId: string) {
-    await invokeIpc<void>(IpcChannel.Game_StartProfile, profileId)
+    await invokeIpc<void>('game/profiles/start', profileId)
 }
 
 export async function installMod(profileId: string, serviceId: Id, modId: Id) {
-    await invokeIpc<void>(IpcChannel.Game_ProfileInstallMod, profileId, serviceId, modId)
+    await invokeIpc<void>('game/profiles/mods/install', profileId, serviceId, modId)
 }
 
 export async function getLoaders(gameId: string): Promise<LoaderRData[]> {
-    return invokeIpc<LoaderRData[]>(IpcChannel.Game_Loaders, gameId)
+    return invokeIpc<LoaderRData[]>('game/loaders', gameId)
 }

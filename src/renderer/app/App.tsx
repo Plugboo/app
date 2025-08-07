@@ -9,6 +9,7 @@ import SideBar from '@renderer/components/SideBar'
 import ModsPage from '@renderer/app/game/profile/mods/page'
 import ModPage from '@renderer/app/game/profile/mods/[modId]/page'
 import SettingsModal from '@renderer/components/modals/SettingsModal'
+import { ToastContainer } from 'react-toastify'
 
 export default function App() {
     const [topBarEnabled, setTopBarEnabled] = useState(true)
@@ -40,6 +41,15 @@ export default function App() {
                         </Routes>
                     </div>
                 </div>
+
+                <ToastContainer
+                    toastClassName="!bg-background-800 !text-text-100"
+                    position="bottom-right"
+                    hideProgressBar={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
             </div>
         </HashRouter>
     )

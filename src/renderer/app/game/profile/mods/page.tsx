@@ -1,7 +1,7 @@
 ﻿import { Link, useParams } from 'react-router'
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
-import { getCategories, searchMods } from '@renderer/api/mods'
-import { Category, Mod, SearchModsResponse } from '@common/types/service'
+import { searchMods } from '@renderer/api/mods'
+import { Category, Mod, SearchModsResponse } from '@preload/types/service'
 import Input from '@renderer/components/ui/Input'
 import Button from '@renderer/components/ui/Button'
 import { Download, LoaderCircle, RefreshCcw } from 'lucide-react'
@@ -18,7 +18,7 @@ export default function ModsPage() {
         mods: [],
         totalCount: 0
     })
-    const [categories, setCategories] = useState<Category[]>([])
+    const [_, __] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
 
     const [lastInput, setLastInput] = useState('')
@@ -60,10 +60,10 @@ export default function ModsPage() {
     }, [sort, page])
 
     useEffect(() => {
-        getCategories(gameId).then((result) => {
-            setCategories(result)
-            search(true)
-        })
+        // getCategories(gameId).then((result) => {
+        //     setCategories(result)
+        //     search(true)
+        // })
     }, [gameId])
 
     return (
@@ -110,29 +110,29 @@ export default function ModsPage() {
                                 }}
                             />
                         </div>
-                        <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
-                            <h1 className="font-semibold text-xl">Categories</h1>
-                            <div className="flex flex-col">
-                                {categories.map((category: Category) => (
-                                    <div
-                                        className="flex gap-2 rounded-2xl cursor-pointer transition-colors duration-150 ease-in-out hover:bg-background-700 p-2"
-                                        key={category.id}
-                                    >
-                                        <div className="w-12 h-12 p-1.5 bg-background-900/35 rounded-xl">
-                                            <img
-                                                className="w-full h-full object-contain"
-                                                src={category.iconUrl}
-                                                alt={`${category.name}'s icon`}
-                                            />
-                                        </div>
-                                        <div className="flex flex-col justify-center">
-                                            <p className="text-background-200 font-medium">{category.name}</p>
-                                            <p className="text-background-300 font-normal">{category.itemCount}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+                        {/*<div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">*/}
+                        {/*    <h1 className="font-semibold text-xl">Categories</h1>*/}
+                        {/*    <div className="flex flex-col">*/}
+                        {/*        {categories.map((category: Category) => (*/}
+                        {/*            <div*/}
+                        {/*                className="flex gap-2 rounded-2xl cursor-pointer transition-colors duration-150 ease-in-out hover:bg-background-700 p-2"*/}
+                        {/*                key={category.id}*/}
+                        {/*            >*/}
+                        {/*                <div className="w-12 h-12 p-1.5 bg-background-900/35 rounded-xl">*/}
+                        {/*                    <img*/}
+                        {/*                        className="w-full h-full object-contain"*/}
+                        {/*                        src={category.iconUrl}*/}
+                        {/*                        alt={`${category.name}'s icon`}*/}
+                        {/*                    />*/}
+                        {/*                </div>*/}
+                        {/*                <div className="flex flex-col justify-center">*/}
+                        {/*                    <p className="text-background-200 font-medium">{category.name}</p>*/}
+                        {/*                    <p className="text-background-300 font-normal">{category.itemCount}</p>*/}
+                        {/*                </div>*/}
+                        {/*            </div>*/}
+                        {/*        ))}*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
                     <div className="flex flex-col gap-4 w-full">
                         <div>
@@ -176,7 +176,7 @@ export default function ModsPage() {
                                                 <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
                                                     <img
                                                         className={`w-full h-full object-cover ${record.nsfw ? 'blur-sm' : ''}`}
-                                                        src={record.media[0].url}
+                                                        src={record.media[0].smallImage.url}
                                                         alt={`${record.name}'s screenshot`}
                                                     />
                                                 </div>

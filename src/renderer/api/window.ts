@@ -1,13 +1,13 @@
-﻿import { IpcChannel } from '@common/types/ipc'
+﻿import invokeIpc from '@renderer/api/ipc'
 
 export async function minimizeWindow() {
-    await window.electron.ipc.invoke(IpcChannel.Window_Minimize)
+    await invokeIpc('window/minimize')
 }
 
 export async function maximizeWindow() {
-    await window.electron.ipc.invoke(IpcChannel.Window_Maximize)
+    await invokeIpc('window/maximize')
 }
 
 export async function closeWindow() {
-    await window.electron.ipc.invoke(IpcChannel.Window_Close)
+    await invokeIpc('window/close')
 }

@@ -1,7 +1,7 @@
 ﻿import { useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { Comment, Mod } from '@common/types/service'
+import { Comment, Mod } from '@preload/types/service'
 import { getMod, getModComments } from '@renderer/api/mods'
 import { Download, LoaderCircle, SquareArrowOutUpRight } from 'lucide-react'
 import Button from '@renderer/components/ui/Button'
@@ -53,7 +53,7 @@ export default function ModPage() {
                                 <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
                                     <img
                                         className="w-full h-full object-cover"
-                                        src={mod.media[0].url}
+                                        src={mod.media[0].originalImage.url}
                                         alt={`${mod.name}'s screenshot`}
                                     />
                                 </div>
@@ -87,12 +87,12 @@ export default function ModPage() {
                                             {mod.media.map((media) => (
                                                 <div
                                                     className="p-2 bg-background-800 rounded-2xl flex-none"
-                                                    key={media.url}
+                                                    key={media.originalImage.url}
                                                 >
                                                     <div className="overflow-hidden rounded-xl">
                                                         <img
                                                             className="w-full h-full object-contain"
-                                                            src={media.url}
+                                                            src={media.smallImage.url}
                                                             alt={`${mod.name}'s screenshot`}
                                                         />
                                                     </div>

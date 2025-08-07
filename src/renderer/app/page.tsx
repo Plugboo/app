@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { listGames, verifyGame } from '@renderer/api/game'
-import { GameInformation } from '@common/types/game'
+import { GameInformation } from '@preload/types/game'
 import { useNavigate } from 'react-router'
 import SetupGameModal from '@renderer/components/modals/SetupGameModal'
 import { motion } from 'framer-motion'
-import NewsSection from '@renderer/app/NewsSection'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -59,11 +58,6 @@ export default function HomePage() {
                     animate={{ opacity: 1 }}
                     className="flex flex-col gap-6 w-full h-full"
                 >
-                    <div className="flex flex-col gap-4 w-full">
-                        <h1 className="font-semibold text-xl">News</h1>
-                        <NewsSection />
-                    </div>
-
                     <div className="flex flex-col gap-4">
                         <h1 className="font-semibold text-xl">All Games</h1>
                         <div className="flex gap-3">
@@ -77,7 +71,7 @@ export default function HomePage() {
                                         <div className="absolute group-hover:opacity-100 opacity-0 transition-opacity duration-300 top-0 left-0 w-full h-full bg-linear-to-t from-background-900 via-background-900/35 to-background-900/0 z-2" />
                                         <img
                                             className="w-full h-full object-cover group-hover:scale-103 transition-translate duration-300"
-                                            src={game.banner}
+                                            src={game.cover}
                                             alt={`${game.name}'s banner`}
                                         />
                                     </div>

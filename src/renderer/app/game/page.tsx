@@ -1,15 +1,17 @@
 ﻿import { Transition } from '@tailwindui/react'
 import { useEffect, useState } from 'react'
-import { getProfiles } from '../../api/game'
+import { getProfiles, listGames } from '../../api/game'
 import { useNavigate, useParams } from 'react-router'
 import Button from '@renderer/components/ui/Button'
 import CreateProfileModal from '@renderer/components/modals/CreateProfileModal'
-import { ProfileRData } from '@common/types/profile'
+import { ProfileRData } from '@preload/types/profile'
+import { GameInformation } from '@preload/types/game'
 
 export default function GamePage() {
     const { gameId } = useParams()
     const navigate = useNavigate()
 
+    const [game, setGame] = useState<GameInformation | null>(null)
     const [profiles, setProfiles] = useState<ProfileRData[]>([])
     const [loading, setLoading] = useState(true)
     const [createProfileOpen, setProfileOpen] = useState(false)
@@ -20,9 +22,17 @@ export default function GamePage() {
     }
 
     const loadProfiles = () => {
-        getProfiles(gameId).then((result) => {
-            setProfiles(result)
-            setLoading(false)
+        listGames().then((result) => {
+            const game = result.find((game) => game.id === gameId)
+            if (game) {
+                setGame(game)
+                getProfiles(gameId).then((result) => {
+                    setProfiles(result)
+                    setLoading(false)
+                })
+            } else {
+                navigate('/')
+            }
         })
     }
 
@@ -36,6 +46,10 @@ export default function GamePage() {
             loadProfiles()
         }
     }, [gameId])
+
+    if (game === null) {
+        return null
+    }
 
     return (
         <main className="w-full p-4">
@@ -56,11 +70,21 @@ export default function GamePage() {
                 <div className="flex flex-col gap-8">
                     <div className="relative w-full h-64">
                         <div className="absolute bottom-0 left-0 w-full h-64 bg-linear-to-t z-1 from-background-900 via-background-900/70 to-background-900/0" />
-                        <img
-                            className="w-full h-full object-cover rounded-t-xl"
-                            src="https://www.lolchampion.de/_wordpress_dev716a/wp-content/2021-riot-daten/skins/Gragas_2.jpg"
-                            alt={'Banner Test'}
-                        />
+
+                        {game.banner.type === 'image' && (
+                            <img
+                                className="w-full h-full object-cover rounded-t-xl pointer-events-none"
+                                src={game.banner.url}
+                                alt={`${game.name}'s banner`}
+                            />
+                        )}
+
+                        {game.banner.type === 'video' && (
+                            <video className="w-full h-full object-cover rounded-t-xl pointer-events-none" autoPlay>
+                                <source src={game.banner.url} type="video/mp4" />
+                            </video>
+                        )}
+
                         <h1 className="absolute bottom-12 left-12 font-semibold text-4xl z-2">Select profile</h1>
                     </div>
                     <div className="flex justify-between gap-4">

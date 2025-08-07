@@ -3,9 +3,10 @@ import Modal from '@renderer/components/ui/Modal'
 import Button from '@renderer/components/ui/Button'
 import Input from '@renderer/components/ui/Input'
 import { useEffect, useState } from 'react'
-import { LoaderRData, LoaderVersion } from '@common/types/loader'
+import { LoaderRData } from '@preload/types/loader'
 import { createProfile, getLoaders } from '@renderer/api/game'
 import Select from '@renderer/components/ui/Select'
+import { toast } from 'react-toastify'
 
 type Props = {
     gameId: string | null
@@ -17,7 +18,7 @@ type Props = {
 export default function CreateProfileModal(props: Props) {
     const [loaders, setLoaders] = useState<LoaderRData[]>([])
     const [selectedLoader, setSelectedLoader] = useState<LoaderRData | null>(null)
-    const [selectedVersion, setSelectedVersion] = useState<LoaderVersion | null>(null)
+    const [selectedVersion, setSelectedVersion] = useState<string | null>(null)
     const [name, setName] = useState('')
 
     const onClickCreate = () => {
@@ -25,15 +26,23 @@ export default function CreateProfileModal(props: Props) {
             return
         }
 
-        createProfile(props.gameId, name, selectedLoader.id, selectedVersion.version).then((result) => {
-            if (result) {
-                props.onChangeOpen(false)
+        const promise = createProfile(props.gameId, name, selectedLoader.id, selectedVersion)
 
-                if (props.onCreate) {
-                    props.onCreate()
+        toast
+            .promise(promise, {
+                pending: 'Creating profile...',
+                success: 'Profile created!',
+                error: 'Failed to create profile!'
+            })
+            .then((result) => {
+                if (result.success) {
+                    props.onChangeOpen(false)
+
+                    if (props.onCreate) {
+                        props.onCreate()
+                    }
                 }
-            }
-        })
+            })
     }
 
     const onSelectVersion = (value: string) => {
@@ -41,7 +50,7 @@ export default function CreateProfileModal(props: Props) {
             return
         }
 
-        setSelectedVersion(selectedLoader.versions.find((v) => v.version === value) ?? null)
+        setSelectedVersion(selectedLoader.versions.find((v) => v === value) ?? null)
     }
 
     useEffect(() => {
@@ -106,8 +115,8 @@ export default function CreateProfileModal(props: Props) {
                                         placeholder="Select a version.."
                                         onSelect={(value) => onSelectVersion(value)}
                                         values={selectedLoader.versions.map((version) => ({
-                                            value: version.version,
-                                            label: version.version
+                                            value: version,
+                                            label: version
                                         }))}
                                     />
                                 )}
