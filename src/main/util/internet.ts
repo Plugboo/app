@@ -37,9 +37,15 @@ export async function downloadFile(
 
         await new Promise((resolve, reject) => {
             res.body.pipe(stream)
+
+            let lastProgress = 0
             res.body.on('data', () => {
                 if (progressCallback !== undefined) {
-                    progressCallback(Math.round((stream.bytesWritten / total) * 100))
+                    const currentProgress = Math.round((stream.bytesWritten / total) * 100)
+                    if (currentProgress !== lastProgress) {
+                        progressCallback(currentProgress)
+                        lastProgress = currentProgress
+                    }
                 }
             })
             res.body.on('error', reject)
