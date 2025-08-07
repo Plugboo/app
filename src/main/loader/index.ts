@@ -1,4 +1,5 @@
 ﻿import { Profile } from '@main/game/profile'
+import { Mod, ModFile } from '@preload/types/service'
 
 export interface LoaderVersion {
     version: string
@@ -55,6 +56,17 @@ export class Loader {
      * @return Returns true if the installation is valid; otherwise, returns false.
      */
     public validateInstallation(profile: Profile): boolean {
+        throw new Error('Not implemented')
+    }
+
+    /**
+     * Installs a mod into the specified profile using the provided mod and file details.
+     *
+     * @param profile - The profile where the mod is to be installed.
+     * @param mod - The mod object containing information about the mod to be installed.
+     * @param file - The specific version of the mod to be installed.
+     */
+    public async installMod(profile: Profile, mod: Mod, file: ModFile) {
         throw new Error('Not implemented')
     }
 }

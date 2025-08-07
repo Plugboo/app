@@ -5,9 +5,11 @@ import {
     Id,
     Media,
     Mod,
+    ModFile,
     SearchModsOptions,
     SearchModsResponse
 } from '@preload/types/service'
+import mime from 'mime-types'
 
 interface ModInfo {
     _idRow: number
@@ -84,6 +86,22 @@ interface Record {
     _bIsStuck?: boolean
     _akState?: string
     _sState?: string
+}
+
+interface File {
+    _idRow: number
+    _sFile: string
+    _nFilesize: number
+    _tsDateAdded: number
+    _nDownloadCount: number
+    _sDownloadUrl: string
+    _sMd5Checksum: string
+    _sAnalysisState: string
+    _sAnalysisResult: string
+    _sAnalysisResultVerbose: string
+    _sAvastAvState: string
+    _sAvastAvResult: string
+    _bHasContents: boolean
 }
 
 interface PreviewMedia {
@@ -296,6 +314,7 @@ export class GameBananaService extends Service {
                     version: record._sVersion ?? 'N/A',
                     media: record._aPreviewMedia._aImages.map(GameBananaService.getMediaFromPreview),
                     tags: [record._aRootCategory._sName],
+                    files: [],
                     author: {
                         id: String(record._aSubmitter._idRow),
                         name: record._aSubmitter._sName,
@@ -347,6 +366,7 @@ export class GameBananaService extends Service {
                     name: mod._aSubmitter._sName,
                     avatarUrl: mod._aSubmitter._sAvatarUrl
                 },
+                files: mod._aFiles.map(GameBananaService.getFilesFromModFile),
                 content: mod._sText,
                 nsfw: false
             }
@@ -391,6 +411,17 @@ export class GameBananaService extends Service {
                 exception
             )
             return []
+        }
+    }
+
+    private static getFilesFromModFile(file: File): ModFile {
+        const mimetype = mime.lookup(file._sFile)
+        return {
+            id: String(file._idRow),
+            name: file._sFile,
+            url: file._sDownloadUrl,
+            mimetype: mimetype ? mimetype : 'application/octet-stream',
+            md5: file._sMd5Checksum
         }
     }
 

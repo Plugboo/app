@@ -14,6 +14,15 @@ export interface Mod {
     tags: string[]
     content?: string
     nsfw: boolean
+    files: ModFile[]
+}
+
+export interface ModFile {
+    id: string
+    name: string
+    url: string
+    mimetype: string
+    md5: string
 }
 
 export interface Author {

@@ -57,7 +57,7 @@ export async function startProfile(profileId: string) {
 }
 
 export async function installMod(profileId: string, serviceId: Id, modId: Id) {
-    await invokeIpc<void>(IpcChannel.Game_ProfileInstallMod, profileId, serviceId, modId)
+    await invokeIpc<void>('game/profiles/mods/install', profileId, serviceId, modId)
 }
 
 export async function getLoaders(gameId: string): Promise<LoaderRData[]> {

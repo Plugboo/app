@@ -3,6 +3,114 @@ import path from 'node:path'
 import { getAppDataPath } from '@main/application'
 import { LoaderInstance } from '@main/loader'
 
+export class ProfileMod {
+    public readonly id: string
+
+    public readonly profileId: string
+
+    public readonly name: string
+
+    public readonly version: string
+
+    public readonly author: string
+
+    public isEnabled: boolean
+
+    constructor(id: string, profileId: string, name: string, version: string, author: string) {
+        this.id = id
+        this.profileId = profileId
+        this.name = name
+        this.version = version
+        this.author = author
+        this.isEnabled = false
+    }
+
+    /**
+     * Writes the mod's data to the disk. Ensures the directory structure exists before writing files.
+     */
+    public writeToDisk() {
+        const diskPath = path.join(getAppDataPath(), 'profiles', this.profileId, 'mods', this.id)
+        if (!fs.existsSync(diskPath)) {
+            fs.mkdirSync(diskPath, { recursive: true })
+        }
+
+        fs.writeFileSync(path.join(diskPath, 'modinfo.json'), JSON.stringify(this.serializeDisk()))
+    }
+
+    /**
+     * Reads a mod object from a file located in the specified folder path.
+     *
+     * @param profile The profile that the mod is located in.
+     * @param folderPath The path to the folder containing the profile JSON file.
+     * @return The Profile Mod object parsed from the JSON file.
+     * @throws Error if the folder does not exist, if the modinfo.json file is not found, or if the mod info version is unsupported.
+     */
+    public static readFromDisk(profile: Profile, folderPath: string): ProfileMod {
+        if (!fs.existsSync(folderPath)) {
+            throw new Error(`Folder does not exist`)
+        }
+
+        if (!fs.existsSync(path.join(folderPath, 'modinfo.json'))) {
+            throw new Error(`Profile file does not exist`)
+        }
+
+        const data = fs.readFileSync(path.join(folderPath, 'modinfo.json'), {
+            encoding: 'utf8'
+        })
+        const json = JSON.parse(data)
+
+        /*
+         * NOTE: We change this when we have version 2 or higher available.
+         */
+        if (!json.__version || json.__version !== 1) {
+            throw new Error(`Unsupported mod version: ${json.__version}`)
+        }
+
+        return ProfileMod.parseVersion1(profile, json)
+    }
+
+    /**
+     * Parses the provided data to create a `ProfileMod` instance while validating its structure.
+     *
+     * @param profile The profile that the mod is located in.
+     * @param data - The data object containing mod information to be parsed.
+     * @return A `ProfileMod` instance created with the validated structure from the provided data.
+     * @throws Error if any required field is missing or has an invalid type.
+     */
+    private static parseVersion1(profile: Profile, data: any): ProfileMod {
+        if (typeof data.id !== 'string') {
+            throw new Error(`Invalid mod ID: ${data.id}`)
+        }
+
+        if (typeof data.name !== 'string') {
+            throw new Error(`Invalid mod name: ${data.name}`)
+        }
+
+        if (typeof data.version !== 'string') {
+            throw new Error(`Invalid mod version: ${data.version}`)
+        }
+
+        if (typeof data.author !== 'string') {
+            throw new Error(`Invalid mod author: ${data.author}`)
+        }
+
+        return new ProfileMod(data.id, profile.id, data.name, data.version, data.author)
+    }
+
+    /**
+     * Serializes the current object into a plain JavaScript object representation.
+     */
+    private serializeDisk(): any {
+        return {
+            __version: 1,
+            id: this.id,
+            name: this.name,
+            version: this.version,
+            author: this.author
+        }
+    }
+}
+
 export class Profile {
     public readonly id: string
 
@@ -14,12 +122,48 @@ export class Profile {
 
     public isLoaderInstalled: boolean
 
+    public mods: ProfileMod[]
+
     constructor(id: string, gameId: string) {
         this.id = id
         this.gameId = gameId
         this.name = ''
         this.loader = null
         this.isLoaderInstalled = false
+        this.mods = []
+    }
+
+    /**
+     * Loads the mods for the current profile from the associated mods directory.
+     * Scans the directory for mod folders and attempts to read their info.
+     */
+    public loadMods() {
+        const diskPath = path.join(getAppDataPath(), 'profiles', this.id, 'mods')
+        if (!fs.existsSync(diskPath)) {
+            console.warn(`[Profile] Mods folder does not exist: ${diskPath}`)
+            return
+        }
+
+        const directories = fs
+            .readdirSync(diskPath, { withFileTypes: true })
+            .filter((dirent) => dirent.isDirectory())
+            .map((dirent) => dirent.name)
+
+        for (const directory of directories) {
+            const absolutePath = path.join(diskPath, directory)
+
+            if (!fs.existsSync(path.join(absolutePath, 'modinfo.json'))) {
+                continue
+            }
+
+            try {
+                const mod = ProfileMod.readFromDisk(this, absolutePath)
+                this.mods.push(mod)
+            } catch (exception) {
+                console.error(`[Application] Failed to read profile from disk: ${directory}`)
+                console.error(exception)
+            }
+        }
     }
 
     /**
@@ -71,7 +215,9 @@ export class Profile {
             throw new Error(`Unsupported profile version: ${json.__version}`)
         }
 
-        return Profile.parseVersion1(json)
+        const profile = Profile.parseVersion1(json)
+        profile.loadMods()
+        return profile
     }
 
     /**

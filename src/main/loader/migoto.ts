@@ -1,6 +1,6 @@
 ﻿import { Loader } from './index'
 import { GitHub } from '@main/util/github'
-import { Profile } from '@main/game/profile'
+import { Profile, ProfileMod } from '@main/game/profile'
 import path from 'node:path'
 import { downloadFile } from '@main/util/internet'
 import AdmZip from 'adm-zip'
@@ -13,6 +13,8 @@ import { dialog } from 'electron'
 import { loadIni, stringifyIni } from 'load-ini'
 import { GameManager } from '@main/game/manager'
 import { Game } from '@main/game'
+import { Mod, ModFile } from '@preload/types/service'
+import mime from 'mime-types'
 
 interface Config {
     Loader?: {
@@ -149,6 +151,44 @@ export class MigotoLoader extends Loader {
 
     public validateInstallation(profile: Profile): boolean {
         return multiExists(profile.getFolderPath(), ['nvapi64.dll', 'd3dx.ini', 'd3dcompiler_46.dll', 'd3d11.dll'])
+    }
+
+    public async installMod(profile: Profile, mod: Mod, file: ModFile) {
+        const extension = mime.extension(file.mimetype)
+        if (!extension || !['zip', 'rar'].includes(extension)) {
+            throw new Error('Invalid file type.')
+        }
+
+        const folderPath = path.resolve(profile.getFolderPath(), 'mods', String(mod.id))
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath)
+        }
+
+        const downloadPath = path.resolve(folderPath, v4())
+        const downloadResult = await downloadFile(file.url, downloadPath, (progress) => {
+            console.log(`[MigotoLoader] Downloading mod file (${mod.id}): ${progress}%`)
+        })
+
+        if (!downloadResult) {
+            throw new Error(`Failed to download mod file (${mod.id}).`)
+        }
+
+        console.log('[MigotoLoader] Finished mod download.')
+
+        const dataPath = path.resolve(folderPath, 'data')
+        if (!fs.existsSync(dataPath)) {
+            fs.mkdirSync(dataPath)
+        }
+
+        const archive = new AdmZip(downloadPath)
+        archive.extractAllTo(dataPath, true)
+
+        const resultMod = new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name)
+        resultMod.isEnabled = true
+        resultMod.writeToDisk()
+        console.log(`[MigotoLoader] Installed mod (${mod.id})`)
+
+        fs.rmSync(downloadPath)
     }
 
     private startWindowsProcess(profile: Profile) {
