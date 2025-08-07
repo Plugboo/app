@@ -4,7 +4,6 @@ import { GameInformation } from '@preload/types/game'
 import { useNavigate } from 'react-router'
 import SetupGameModal from '@renderer/components/modals/SetupGameModal'
 import { motion } from 'framer-motion'
-import NewsSection from '@renderer/app/NewsSection'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -59,11 +58,6 @@ export default function HomePage() {
                     animate={{ opacity: 1 }}
                     className="flex flex-col gap-6 w-full h-full"
                 >
-                    <div className="flex flex-col gap-4 w-full">
-                        <h1 className="font-semibold text-xl">News</h1>
-                        <NewsSection />
-                    </div>
-
                     <div className="flex flex-col gap-4">
                         <h1 className="font-semibold text-xl">All Games</h1>
                         <div className="flex gap-3">
