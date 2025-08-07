@@ -22,8 +22,17 @@ export interface Author {
     avatarUrl: string
 }
 
-export interface Media {
+export interface Image {
     url: string
+    width?: number
+    height?: number
+}
+
+export interface Media {
+    originalImage: Image
+    largeImage?: Image
+    smallImage?: Image
+    thumbnailImage?: Image
 }
 
 export interface Comment {

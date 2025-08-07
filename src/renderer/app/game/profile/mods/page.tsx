@@ -176,7 +176,7 @@ export default function ModsPage() {
                                                 <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
                                                     <img
                                                         className={`w-full h-full object-cover ${record.nsfw ? 'blur-sm' : ''}`}
-                                                        src={record.media[0].url}
+                                                        src={record.media[0].smallImage.url}
                                                         alt={`${record.name}'s screenshot`}
                                                     />
                                                 </div>

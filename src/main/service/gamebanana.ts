@@ -1,5 +1,13 @@
 ﻿import { Service } from './index'
-import { Comment, GetCommentsOptions, Id, Mod, SearchModsOptions, SearchModsResponse } from '@preload/types/service'
+import {
+    Comment,
+    GetCommentsOptions,
+    Id,
+    Media,
+    Mod,
+    SearchModsOptions,
+    SearchModsResponse
+} from '@preload/types/service'
 
 interface ModInfo {
     _idRow: number
@@ -286,9 +294,7 @@ export class GameBananaService extends Service {
                     likes: record._nLikeCount ?? 0,
                     views: record._nViewCount ?? 0,
                     version: record._sVersion ?? 'N/A',
-                    media: record._aPreviewMedia._aImages.map((image) => ({
-                        url: `${image._sBaseUrl}/${image._sFile}`
-                    })),
+                    media: record._aPreviewMedia._aImages.map(GameBananaService.getMediaFromPreview),
                     tags: [record._aRootCategory._sName],
                     author: {
                         id: String(record._aSubmitter._idRow),
@@ -334,9 +340,7 @@ export class GameBananaService extends Service {
                 likes: mod._nLikeCount ?? 0,
                 views: mod._nViewCount ?? 0,
                 version: mod._sVersion ?? 'N/A',
-                media: mod._aPreviewMedia._aImages.map((image) => ({
-                    url: `${image._sBaseUrl}/${image._sFile}`
-                })),
+                media: mod._aPreviewMedia._aImages.map(GameBananaService.getMediaFromPreview),
                 tags: [mod._aCategory._sName],
                 author: {
                     id: String(mod._aSubmitter._idRow),
@@ -388,5 +392,47 @@ export class GameBananaService extends Service {
             )
             return []
         }
+    }
+
+    private static getMediaFromPreview(image: Image): Media {
+        const media: Media = {
+            originalImage: {
+                url: `${image._sBaseUrl}/${image._sFile}`
+            }
+        }
+
+        if (image._sFile100 !== undefined) {
+            media.smallImage = {
+                url: `${image._sBaseUrl}/${image._sFile100}`,
+                width: image._wFile100,
+                height: image._hFile100
+            }
+        }
+
+        if (image._sFile800 !== undefined) {
+            media.largeImage = {
+                url: `${image._sBaseUrl}/${image._sFile800}`,
+                width: image._wFile800,
+                height: image._hFile800
+            }
+        }
+
+        if (image._sFile530 !== undefined) {
+            media.smallImage = {
+                url: `${image._sBaseUrl}/${image._sFile530}`,
+                width: image._wFile530,
+                height: image._hFile530
+            }
+        }
+
+        if (image._sFile220 !== undefined) {
+            media.smallImage = {
+                url: `${image._sBaseUrl}/${image._sFile220}`,
+                width: image._wFile220,
+                height: image._hFile220
+            }
+        }
+
+        return media
     }
 }
