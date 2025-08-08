@@ -39,7 +39,7 @@ export class MigotoLoader extends Loader {
             dialog.showMessageBoxSync({
                 type: 'error',
                 title: 'Start Failure',
-                message: 'GachaForge can unfortunately only start this game, with this loader, on Windows.',
+                message: 'Plugboo can unfortunately only start this game, with this loader, on Windows.',
                 buttons: ['Okay'],
                 noLink: true
             })

@@ -1,3 +1,3 @@
-import { GachaForge } from '@main/application'
+import { Plugboo } from '@main/application'
 
-export const gachaForge = new GachaForge()
+export const plugboo = new Plugboo()

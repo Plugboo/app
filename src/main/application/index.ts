@@ -5,7 +5,7 @@ import path from 'node:path'
 import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub } from '@main/util/github'
-import { gachaForge } from '@main/main'
+import { plugboo } from '@main/main'
 import { IpcManager } from './ipc'
 import { GameManager } from '@main/game/manager'
 import fs from 'node:fs'
@@ -14,7 +14,7 @@ import { ProfileRData } from '@preload/types/profile'
 import { LoaderRData, LoaderStatus } from '@preload/types/loader'
 import { v4 } from 'uuid'
 
-export class GachaForge {
+export class Plugboo {
     private readonly instanceLock: boolean
 
     private mainWindow: BrowserWindow | null
@@ -32,7 +32,7 @@ export class GachaForge {
         this.shouldExit = false
 
         /*
-         * Default settings when starting GachaForge.
+         * Default settings when starting Plugboo.
          */
         this.settings = {
             window: {
@@ -43,7 +43,7 @@ export class GachaForge {
         }
 
         /*
-         * Allow only one instance of GachaForge to be running.
+         * Allow only one instance of Plugboo to be running.
          */
         if (!this.instanceLock) {
             app.quit()
@@ -75,10 +75,10 @@ export class GachaForge {
                     defaultId: 0,
                     cancelId: 1,
                     noLink: true,
-                    detail: 'This update will automatically be installed when you restart GachaForge.'
+                    detail: 'This update will automatically be installed when you restart Plugboo.'
                 })
 
-                // TODO: Add implementation for updating GachaForge to the latest version.
+                // TODO: Add implementation for updating Plugboo to the latest version.
             })
 
             await this.init()
@@ -107,7 +107,7 @@ export class GachaForge {
         this.readProfilesFromDisk()
 
         this.mainWindow = new BrowserWindow({
-            title: 'GachaForge',
+            title: 'Plugboo',
             width: 1340,
             height: 850,
             minWidth: 1050,
@@ -165,13 +165,13 @@ export class GachaForge {
             this.tray = new Tray(`${app.getAppPath()}/assets/icon.png`)
             this.tray.setContextMenu(
                 Menu.buildFromTemplate([
-                    { label: 'GachaForge', type: 'normal', enabled: false },
+                    { label: 'Plugboo', type: 'normal', enabled: false },
                     { type: 'separator' },
                     {
                         label: 'Open',
                         type: 'normal',
                         click: () => {
-                            const window = gachaForge.mainWindow
+                            const window = plugboo.mainWindow
                             if (window !== null) {
                                 window.show()
                             }
@@ -788,7 +788,7 @@ export class GachaForge {
      */
     private async checkForUpdate(): Promise<GitHub.Release | null> {
         try {
-            const releases = await GitHub.getReleases('ZickZenni', 'GachaForge')
+            const releases = await GitHub.getReleases('ZickZenni', 'Plugboo')
             const newerReleases: GitHub.Release[] = []
 
             for (const release of releases) {
@@ -800,7 +800,7 @@ export class GachaForge {
             }
 
             /*
-             * GachaForge is up to date or no releases were found.
+             * Plugboo is up to date or no releases were found.
              */
             if (newerReleases.length === 0) {
                 return null
