@@ -788,7 +788,7 @@ export class Plugboo {
      */
     private async checkForUpdate(): Promise<GitHub.Release | null> {
         try {
-            const releases = await GitHub.getReleases('ZickZenni', 'Plugboo')
+            const releases = await GitHub.getReleases('Plugboo', 'app')
             const newerReleases: GitHub.Release[] = []
 
             for (const release of releases) {
