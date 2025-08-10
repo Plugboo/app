@@ -4,7 +4,7 @@ import settings from 'electron-settings'
 import path from 'node:path'
 import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
-import { GitHub } from '@main/util/github'
+import { GitHub, Release } from '@main/util/github'
 import { plugboo } from '@main/main'
 import { IpcManager } from './ipc'
 import { GameManager } from '@main/game/manager'
@@ -786,10 +786,10 @@ export class Plugboo {
      * @return A Promise that resolves to the latest release with a newer version than the current application version
      * or null if no newer release is found or if an error occurs during the process.
      */
-    private async checkForUpdate(): Promise<GitHub.Release | null> {
+    private async checkForUpdate(): Promise<Release | null> {
         try {
             const releases = await GitHub.getReleases('Plugboo', 'app')
-            const newerReleases: GitHub.Release[] = []
+            const newerReleases: Release[] = []
 
             for (const release of releases) {
                 const releaseVersion = release.tag_name

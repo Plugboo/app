@@ -53,28 +53,28 @@ export class MigotoLoader extends Loader {
         this.versions = []
 
         try {
-            const releases = await GitHub.getReleases(this.githubUser, this.githubRepo)
+            const releases = await GitHub.getReleases('SpectrumQT', 'XXMI-Libs-Package')
             for (const release of releases) {
-                for (const asset of release.assets) {
-                    if (
-                        asset.content_type !== 'application/x-zip-compressed' &&
-                        asset.content_type !== 'application/zip'
-                    ) {
-                        continue
-                    }
-
-                    if (!asset.name.toLowerCase().includes('play')) {
-                        continue
-                    }
-
-                    this.versions.push({
-                        version: release.tag_name,
-                        file: {
-                            name: asset.name,
-                            url: asset.browser_download_url
-                        }
-                    })
+                if (release.draft) {
+                    continue
                 }
+
+                if (release.assets.length === 0) {
+                    continue
+                }
+
+                const asset = release.assets[0]
+                if (asset.content_type !== 'application/x-zip-compressed' && asset.content_type !== 'application/zip') {
+                    continue
+                }
+
+                this.versions.push({
+                    version: release.tag_name,
+                    file: {
+                        name: asset.name,
+                        url: asset.browser_download_url
+                    }
+                })
             }
         } catch (exception) {
             console.error(`[MigotoLoader] Failed to fetch versions (${this.githubUser}/${this.githubRepo}):`, exception)

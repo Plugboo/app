@@ -32,7 +32,7 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('SilentNightSound', 'GI-Model-Importer'))
+                loaders.push(new MigotoLoader('SilentNightSound', 'GIMI-Package'))
                 break
             case HoYoverseGameId.HonkaiStarRail:
                 info = {
@@ -46,7 +46,7 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('SilentNightSound', 'SR-Model-Importer'))
+                loaders.push(new MigotoLoader('SpectrumQT', 'SRMI-Package'))
                 break
             case HoYoverseGameId.ZenlessZoneZero:
                 info = {
@@ -60,7 +60,7 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('leotorrez', 'ZZ-Model-Importer'))
+                loaders.push(new MigotoLoader('leotorrez', 'ZZMI-Package'))
                 break
         }
 
