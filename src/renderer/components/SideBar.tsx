@@ -33,7 +33,7 @@ export default function SideBar(props: Props) {
     }, [])
 
     return (
-        <div className="fixed left-0 top-0 z-30 w-16 h-full shrink-0 grow-0 bg-background-800/65">
+        <div className="z-30 w-16 min-h-[0] grow bg-background-800/65">
             <div className="flex flex-col justify-between items-center h-full p-2 py-3 text-background-300">
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col items-center p-2 py-0 gap-4">
