@@ -37,7 +37,7 @@ export default function Modal(props: Props) {
                             }}
                         />
                         <div
-                            className={`min-w-32 min-h-32 bg-background-800 p-8 rounded-xl border-1 border-background-700 drop-shadow-lg ${props.classNames ? (props.classNames.childrenWrapper ?? '') : ''}`}
+                            className={`min-w-32 min-h-32 bg-background-800 p-8 rounded-md border-1 border-background-700 drop-shadow-lg ${props.classNames ? (props.classNames.childrenWrapper ?? '') : ''}`}
                         >
                             {props.children}
                         </div>

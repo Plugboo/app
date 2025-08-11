@@ -40,6 +40,7 @@ export default function ProfilePage() {
 
     useEffect(() => {
         getProfile(profileId).then((result) => {
+            console.log('[ProfilePage] Result:', result)
             setProfile(result)
             setLoading(false)
 
@@ -164,10 +165,16 @@ export default function ProfilePage() {
 
                             {profile.mods.map((mod, index) => (
                                 <div
-                                    className={`w-full h-16 p-4 ${index < profile.mods.length - 1 ? 'border-b-1 border-background-700' : ''}`}
+                                    className={`w-full flex gap-3 p-4 ${index < profile.mods.length - 1 ? 'border-b-2 border-background-900/30' : ''}`}
                                     key={mod.id}
                                 >
-                                    <p>{mod.name}</p>
+                                    <div className="h-16 aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
+                                        <img
+                                            className="w-full h-full object-cover"
+                                            src={`profile://${profile.id}/${mod.id}/icon`}
+                                        />
+                                    </div>
+                                    <p className="font-semibold">{mod.name}</p>
                                 </div>
                             ))}
                         </div>

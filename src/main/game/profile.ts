@@ -141,6 +141,9 @@ export class Profile {
         const diskPath = path.join(getAppDataPath(), 'profiles', this.id, 'mods')
         if (!fs.existsSync(diskPath)) {
             console.warn(`[Profile] Mods folder does not exist: ${diskPath}`)
+            fs.mkdirSync(diskPath, {
+                recursive: true
+            })
             return
         }
 

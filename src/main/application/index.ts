@@ -1,18 +1,19 @@
-import { app, BrowserWindow, dialog, globalShortcut, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, dialog, globalShortcut, Menu, net, session, shell, Tray } from 'electron'
 import { compareVersions } from 'compare-versions'
 import settings from 'electron-settings'
 import path from 'node:path'
-import { checkForInternet } from '@main/util/internet'
+import { checkForInternet, downloadFile } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub, Release } from '@main/util/github'
 import { plugboo } from '@main/main'
 import { IpcManager } from './ipc'
 import { GameManager } from '@main/game/manager'
 import fs from 'node:fs'
-import { Profile } from '@main/game/profile'
+import { Profile, ProfileMod } from '@main/game/profile'
 import { ProfileRData } from '@preload/types/profile'
 import { LoaderRData, LoaderStatus } from '@preload/types/loader'
 import { v4 } from 'uuid'
+import { pathToFileURL } from 'node:url'
 
 export class Plugboo {
     private readonly instanceLock: boolean
@@ -100,6 +101,7 @@ export class Plugboo {
      */
     private async init() {
         this.initIpc()
+        this.initProtocols()
 
         await this.initGames()
         await this.initSettings()
@@ -499,7 +501,13 @@ export class Plugboo {
                 id: profile.id,
                 gameId: profile.gameId,
                 name: profile.name,
-                mods: [],
+                mods: profile.mods.map((mod) => ({
+                    id: mod.id,
+                    name: mod.name,
+                    author: mod.author,
+                    version: mod.version,
+                    enabled: mod.isEnabled
+                })),
                 loaderStatus: profile.isLoaderInstalled ? LoaderStatus.READY : LoaderStatus.NOT_INSTALLED
             }
 
@@ -579,7 +587,19 @@ export class Plugboo {
             }
 
             console.log(`[Application] Installing mod '${mod.name}' (${mod.id})...`)
-            await loader.installMod(profile, mod, mod.files[0])
+
+            try {
+                await loader.installMod(profile, mod, mod.files[0])
+
+                const iconPath = path.join(getAppDataPath(), 'profiles', profile.id, 'mods', String(mod.id), 'icon.png')
+                if (!(await downloadFile(mod.media[0].smallImage.url, iconPath))) {
+                    console.error(`[Application] Failed to download icon for mod '${mod.name}' (${mod.id})`)
+                }
+
+                profile.mods.push(new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name))
+            } catch (exception) {
+                console.error(`[Application] Failed installing mod '${mod.name}':`, exception)
+            }
         })
         IpcManager.registerHandler('mods/search', async (event) => {
             if (event.args.length !== 3) {
@@ -664,6 +684,46 @@ export class Plugboo {
         })
         IpcManager.registerHandler('app/titlebar', () => {
             return this.settings.window.titleBar
+        })
+    }
+
+    private initProtocols() {
+        session.defaultSession.protocol.handle('assets', (request: GlobalRequest) => {
+            const fileUrl = request.url.replace('assets://', '')
+            const assetsPath = path.join(app.getAppPath(), 'assets')
+            const filePath = path.join(assetsPath, fileUrl)
+            if (!filePath.startsWith(assetsPath)) {
+                return null
+            }
+
+            return net.fetch(pathToFileURL(filePath).toString())
+        })
+
+        session.defaultSession.protocol.handle('profile', (request: GlobalRequest) => {
+            const fileUrl = request.url.replace('profile://', '')
+            const parts = fileUrl.split('/')
+
+            /*
+             * We currently only support getting the mod icon.
+             */
+            if (parts.length !== 3) {
+                return null
+            }
+
+            const profileId = parts[0]
+            const modId = parts[1]
+            const item = parts[2]
+
+            if (item !== 'icon') {
+                return null
+            }
+
+            const iconPath = path.join(getAppDataPath(), 'profiles', profileId, 'mods', modId, 'icon.png')
+            if (!fs.existsSync(iconPath)) {
+                return null
+            }
+
+            return net.fetch(pathToFileURL(iconPath).toString())
         })
     }
 
