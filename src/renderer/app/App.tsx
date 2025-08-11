@@ -30,7 +30,7 @@ export default function App() {
                 <div className="grow h-full flex">
                     <SideBar onClickSettings={() => setSettingsModalOpen(true)} />
 
-                    <div className="bg-background-900 border-background-700/75 w-full min-h-[0] grow overflow-hidden overflow-y-auto scrollbar-gutter-stable">
+                    <div className="bg-background-800/50 w-full min-h-[0] grow overflow-hidden overflow-y-auto scrollbar-gutter-stable">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/game/:gameId" element={<GamePage />} />
