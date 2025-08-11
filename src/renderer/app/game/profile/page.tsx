@@ -172,6 +172,7 @@ export default function ProfilePage() {
                                         <img
                                             className="w-full h-full object-cover"
                                             src={`profile://${profile.id}/${mod.id}/icon`}
+                                            alt={`${mod.name}'s icon`}
                                         />
                                     </div>
                                     <p className="font-semibold">{mod.name}</p>
