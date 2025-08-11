@@ -23,14 +23,14 @@ export default function App() {
 
     return (
         <HashRouter>
-            <div className="dark text-text-50 w-screen h-screen antialiased flex overflow-hidden flex-col">
+            <div className="dark text-text-50 w-screen max-h-screen h-screen antialiased flex overflow-hidden flex-col">
                 <SettingsModal open={settingsModalOpen} onChangeOpen={setSettingsModalOpen} />
 
                 {topBarEnabled && <TopBar />}
-                <div className="grow h-full flex">
+                <div className="grow flex overflow-hidden">
                     <SideBar onClickSettings={() => setSettingsModalOpen(true)} />
 
-                    <div className="bg-background-800/50 w-full min-h-[0] grow overflow-hidden overflow-y-auto scrollbar-gutter-stable">
+                    <div className="bg-background-800/50 w-full overflow-y-auto scrollbar-gutter-stable">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/game/:gameId" element={<GamePage />} />

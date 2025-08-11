@@ -77,11 +77,6 @@ export default function HomePage() {
                                     </div>
                                     <div className="absolute -bottom-12 left-0 opacity-0 group-hover:bottom-0 group-hover:opacity-100 select-none z-4 p-2 transition-translate duration-300 pointer-events-none">
                                         <div className="flex items-center gap-2">
-                                            <img
-                                                className="w-10 h-10 rounded-xl"
-                                                src={game.icon}
-                                                alt={`${game.name}'s icon`}
-                                            />
                                             <div className="flex flex-col text-sm">
                                                 <p className="font-semibold">{game.name}</p>
                                                 <p className="-mt-1 font-semibold text-background-400">
