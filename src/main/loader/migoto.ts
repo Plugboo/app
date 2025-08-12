@@ -3,8 +3,6 @@ import { GitHub } from '@main/util/github'
 import { Profile, ProfileMod } from '@main/game/profile'
 import path from 'node:path'
 import { downloadFile } from '@main/util/internet'
-import AdmZip from 'adm-zip'
-import upath from 'upath'
 import fs from 'node:fs'
 import { v4 } from 'uuid'
 import { multiExists } from '@main/util/filesystem'
@@ -15,6 +13,7 @@ import { GameManager } from '@main/game/manager'
 import { Game } from '@main/game'
 import { Mod, ModFile } from '@preload/types/service'
 import mime from 'mime-types'
+import { Archive } from '@main/util/archive'
 
 interface Config {
     Loader?: {
@@ -110,41 +109,9 @@ export class MigotoLoader extends Loader {
         console.log('[MigotoLoader] Finished loader download.')
 
         console.log('[MigotoLoader] Begin extraction..')
-        const archive = new AdmZip(downloadPath)
 
-        /*
-         * Manually extract every file, with a few exceptions, to the profile folder.
-         * Without exceptions we would use extractEntryTo.
-         */
-        for (const entry of archive.getEntries()) {
-            const realPath = entry.entryName.startsWith('3dmigoto')
-                ? upath.normalize(entry.entryName).replace('3dmigoto/', '')
-                : entry.entryName
-            const absolutePath = path.resolve(profile.getFolderPath(), realPath)
-
-            /*
-             * We don't need that here.
-             */
-            if (realPath === 'README.txt') {
-                continue
-            }
-
-            if (entry.isDirectory) {
-                if (!fs.existsSync(absolutePath)) {
-                    fs.mkdirSync(absolutePath, { recursive: true })
-                }
-            } else {
-                /*
-                 * Don't override the current configuration.
-                 */
-                if (realPath === 'd3dx.ini' && fs.existsSync(absolutePath)) {
-                    continue
-                }
-
-                fs.writeFileSync(absolutePath, entry.getData())
-                console.log(`[MigotoLoader] Extracted file: ${realPath}`)
-            }
-        }
+        const archive = new Archive(downloadPath)
+        await archive.unpack(profile.getFolderPath())
 
         console.log('[MigotoLoader] Extraction finished.')
 
@@ -162,7 +129,7 @@ export class MigotoLoader extends Loader {
 
     public async installMod(profile: Profile, mod: Mod, file: ModFile) {
         const extension = mime.extension(file.mimetype)
-        if (!extension || !['zip', 'rar'].includes(extension)) {
+        if (!extension || !['7z', 'zip', 'rar'].includes(extension)) {
             throw new Error('Invalid file type.')
         }
 
@@ -171,7 +138,7 @@ export class MigotoLoader extends Loader {
             fs.mkdirSync(folderPath)
         }
 
-        const downloadPath = path.resolve(folderPath, v4())
+        const downloadPath = path.resolve(folderPath, `${v4()}.${extension}`)
         const downloadResult = await downloadFile(file.url, downloadPath, (progress) => {
             console.log(`[MigotoLoader] Downloading mod file (${mod.id}): ${progress}%`)
         })
@@ -187,8 +154,8 @@ export class MigotoLoader extends Loader {
             fs.mkdirSync(dataPath)
         }
 
-        const archive = new AdmZip(downloadPath)
-        archive.extractAllTo(dataPath, true)
+        const archive = new Archive(downloadPath)
+        await archive.unpack(dataPath)
 
         const resultMod = new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name)
         resultMod.isEnabled = true

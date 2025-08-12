@@ -14,6 +14,7 @@ import { ProfileRData } from '@preload/types/profile'
 import { LoaderRData, LoaderStatus } from '@preload/types/loader'
 import { v4 } from 'uuid'
 import { pathToFileURL } from 'node:url'
+import { Archive } from '@main/util/archive'
 
 export class Plugboo {
     private readonly instanceLock: boolean
@@ -100,6 +101,12 @@ export class Plugboo {
      * @return A promise that resolves when the initialization process is complete.
      */
     private async init() {
+        if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+            Archive.copyBinaries()
+        } else {
+            Archive.fixPaths()
+        }
+
         this.initIpc()
         this.initProtocols()
 
