@@ -2,6 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { getAppDataPath } from '@main/application'
 import { LoaderInstance } from '@main/loader'
+import { downloadFile } from '@main/util/internet'
+import sharp, { Sharp } from 'sharp'
 
 export class ProfileMod {
     public readonly id: string
@@ -35,6 +37,65 @@ export class ProfileMod {
         }
 
         fs.writeFileSync(path.join(diskPath, 'modinfo.json'), JSON.stringify(this.serializeDisk()))
+    }
+
+    /**
+     * Downloads and processes an icon for a mod from a given URL.
+     * The downloaded icon is resized and saved in the appropriate directory.
+     *
+     * @param url - The URL of the icon to download.
+     * @return Resolves when the icon has been successfully downloaded, processed, and saved.
+     */
+    public async downloadIcon(url: string) {
+        const downloadPath = path.join(getAppDataPath(), 'profiles', this.profileId, 'mods', this.id, 'icon.tmp.png')
+
+        if (!(await downloadFile(url, downloadPath))) {
+            console.error(`[Application] Failed to download icon for mod '${this.name}' (${this.id})`)
+            return
+        }
+
+        try {
+            const image = sharp(downloadPath)
+            const metadata = await image.metadata()
+
+            let extraction: Sharp | null
+
+            if (metadata.width <= metadata.height) {
+                const diff = metadata.height - metadata.width
+
+                // noinspection JSSuspiciousNameCombination
+                extraction = image.extract({
+                    left: 0,
+                    top: Math.floor(diff / 2),
+                    width: metadata.width,
+                    height: metadata.width
+                })
+            } else {
+                const diff = metadata.width - metadata.height
+
+                // noinspection JSSuspiciousNameCombination
+                extraction = image.extract({
+                    left: Math.floor(diff / 2),
+                    top: 0,
+                    width: metadata.height,
+                    height: metadata.height
+                })
+            }
+
+            if (extraction !== null) {
+                await extraction
+                    .resize({
+                        width: 250,
+                        height: 250
+                    })
+                    .toFile(path.join(getAppDataPath(), 'profiles', this.profileId, 'mods', this.id, 'icon.png'))
+            }
+        } catch (exception) {
+            console.error(`[ProfileMod] Failed to process icon for mod '${this.name}' (${this.id})`)
+            console.error(exception)
+        } finally {
+            fs.rmSync(downloadPath)
+        }
     }
 
     /**

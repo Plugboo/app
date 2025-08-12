@@ -2,7 +2,7 @@ import { app, BrowserWindow, dialog, globalShortcut, Menu, net, session, shell, 
 import { compareVersions } from 'compare-versions'
 import settings from 'electron-settings'
 import path from 'node:path'
-import { checkForInternet, downloadFile } from '@main/util/internet'
+import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub, Release } from '@main/util/github'
 import { plugboo } from '@main/main'
@@ -171,7 +171,11 @@ export class Plugboo {
                 event.preventDefault()
             })
 
-            this.tray = new Tray(`${app.getAppPath()}/assets/icon.png`)
+            this.tray = new Tray(
+                MAIN_WINDOW_VITE_DEV_SERVER_URL
+                    ? `${app.getAppPath()}/assets/icon.png`
+                    : `${app.getAppPath()}/../assets/icon.png`
+            )
             this.tray.setContextMenu(
                 Menu.buildFromTemplate([
                     { label: 'Plugboo', type: 'normal', enabled: false },
@@ -596,14 +600,12 @@ export class Plugboo {
             console.log(`[Application] Installing mod '${mod.name}' (${mod.id})...`)
 
             try {
+                const modInstance = new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name)
+
                 await loader.installMod(profile, mod, mod.files[0])
+                await modInstance.downloadIcon(mod.media[0].originalImage.url)
 
-                const iconPath = path.join(getAppDataPath(), 'profiles', profile.id, 'mods', String(mod.id), 'icon.png')
-                if (!(await downloadFile(mod.media[0].smallImage.url, iconPath))) {
-                    console.error(`[Application] Failed to download icon for mod '${mod.name}' (${mod.id})`)
-                }
-
-                profile.mods.push(new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name))
+                profile.mods.push(modInstance)
             } catch (exception) {
                 console.error(`[Application] Failed installing mod '${mod.name}':`, exception)
             }

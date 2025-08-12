@@ -9,8 +9,15 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses'
 
 const config: ForgeConfig = {
     packagerConfig: {
-        asar: true,
-        executableName: 'plugboo'
+        extraResource: ['./assets/'],
+        asar: {
+            unpack: '**/node_modules/{sharp,@img}/**/*'
+        },
+        ignore: (file: string) => {
+            if (!file) return false
+            const keep = file.startsWith('/.vite') || file.startsWith('/node_modules')
+            return !keep
+        }
     },
     rebuildConfig: {},
     makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],

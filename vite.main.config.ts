@@ -8,5 +8,10 @@ export default defineConfig({
             '@preload': path.resolve(__dirname, 'src', 'preload'),
             '@main': path.resolve(__dirname, 'src', 'main')
         }
+    },
+    build: {
+        rollupOptions: {
+            external: ['sharp']
+        }
     }
 })
