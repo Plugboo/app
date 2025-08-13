@@ -16,7 +16,7 @@ function getClassesForType(type: Type): string {
         case 'primary':
             return 'bg-primary-400 hover:brightness-[90%] text-background-800'
         case 'secondary':
-            return 'bg-secondary-600/30 hover:brightness-[115%] text-primary-600'
+            return 'bg-secondary-600/60 hover:brightness-[115%] text-secondary-300'
         default:
             return ''
     }
