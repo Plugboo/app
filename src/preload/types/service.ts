@@ -1,7 +1,5 @@
-﻿export type Id = string | number
-
-export interface Mod {
-    id: Id
+﻿export interface Mod {
+    id: string
     name: string
     version: string
     media: Media[]
@@ -26,7 +24,7 @@ export interface ModFile {
 }
 
 export interface Author {
-    id: Id
+    id: string
     name: string
     avatarUrl: string
 }
@@ -45,7 +43,7 @@ export interface Media {
 }
 
 export interface Comment {
-    id: Id
+    id: string
     createdAt: Date
     updatedAt: Date
     replyCount: number
@@ -54,7 +52,7 @@ export interface Comment {
 }
 
 export interface Category {
-    id: Id
+    id: string
     name: string
     itemCount: number
     iconUrl: string

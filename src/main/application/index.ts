@@ -95,6 +95,14 @@ export class Plugboo {
         })
     }
 
+    public sendEventToMain(channel: string, ...args: any[]) {
+        if (this.mainWindow === null) {
+            return
+        }
+
+        this.mainWindow.webContents.send(channel, ...args)
+    }
+
     /**
      * Initializes the main application window and settings.
      *
@@ -564,11 +572,7 @@ export class Plugboo {
             const serviceId = event.args[1]
             const modId = event.args[2]
 
-            if (
-                typeof profileId !== 'string' ||
-                typeof serviceId !== 'string' ||
-                (typeof modId !== 'string' && typeof modId !== 'number')
-            ) {
+            if (typeof profileId !== 'string' || typeof serviceId !== 'string' || typeof modId !== 'string') {
                 return
             }
 
@@ -587,6 +591,10 @@ export class Plugboo {
                 return
             }
 
+            if (service.pendingInstalls.includes(modId)) {
+                return
+            }
+
             const loader = game.loaders.find((v) => v.id === profile.loader.loaderId)
             if (loader === undefined) {
                 return
@@ -599,16 +607,51 @@ export class Plugboo {
 
             console.log(`[Application] Installing mod '${mod.name}' (${mod.id})...`)
 
-            try {
-                const modInstance = new ProfileMod(String(mod.id), profile.id, mod.name, mod.version, mod.author.name)
-
-                await loader.installMod(profile, mod, mod.files[0])
-                await modInstance.downloadIcon(mod.media[0].originalImage.url)
-
-                profile.mods.push(modInstance)
-            } catch (exception) {
-                console.error(`[Application] Failed installing mod '${mod.name}':`, exception)
+            service.pendingInstalls.push(mod.id)
+            loader
+                .installMod(profile, mod, mod.files[0])
+                .then(async () => {
+                    const modInstance = new ProfileMod(mod.id, profile.id, mod.name, mod.version, mod.author.name)
+                    await modInstance.downloadIcon(mod.media[0].originalImage.url)
+                    profile.mods.push(modInstance)
+                    plugboo.sendEventToMain('game/profiles/mods/install', modId, true)
+                })
+                .catch((exception) => {
+                    console.error(`[Application] Failed to install mod '${mod.name}' (${mod.id})`)
+                    console.error(exception)
+                })
+                .finally(() => {
+                    service.pendingInstalls.splice(service.pendingInstalls.indexOf(mod.id), 1)
+                })
+        })
+        IpcManager.registerHandler('game/profiles/mods/install/list', async (event) => {
+            if (event.args.length !== 2) {
+                return
             }
+
+            const profileId = event.args[0]
+            const serviceId = event.args[1]
+
+            if (typeof profileId !== 'string' || typeof serviceId !== 'string') {
+                return
+            }
+
+            const profile = GameManager.getProfile(profileId)
+            if (profile === null) {
+                return
+            }
+
+            const game = GameManager.getGame(profile.gameId)
+            if (game === null) {
+                return
+            }
+
+            const service = game.services.find((v) => v.id === serviceId)
+            if (service === undefined) {
+                return
+            }
+
+            return service.pendingInstalls
         })
         IpcManager.registerHandler('mods/search', async (event) => {
             if (event.args.length !== 3) {

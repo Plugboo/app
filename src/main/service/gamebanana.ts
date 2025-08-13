@@ -2,7 +2,6 @@
 import {
     Comment,
     GetCommentsOptions,
-    Id,
     Media,
     Mod,
     ModFile,
@@ -304,7 +303,7 @@ export class GameBananaService extends Service {
             const root = data as ModSearchRoot
             return {
                 mods: root._aRecords.map((record) => ({
-                    id: record._idRow,
+                    id: String(record._idRow),
                     name: record._sName,
                     createdAt: new Date(record._tsDateAdded),
                     updatedAt: new Date(record._tsDateModified),
@@ -332,7 +331,7 @@ export class GameBananaService extends Service {
         }
     }
 
-    public async getMod(modId: Id): Promise<Mod | null> {
+    public async getMod(modId: string): Promise<Mod | null> {
         try {
             const url = `${BASE_URL}/Mod/${modId}/ProfilePage`
             const response = await fetch(url)
@@ -351,7 +350,7 @@ export class GameBananaService extends Service {
             }
 
             return {
-                id: mod._idRow,
+                id: String(mod._idRow),
                 name: mod._sName,
                 createdAt: new Date(mod._tsDateAdded),
                 updatedAt: new Date(mod._tsDateModified),
@@ -375,7 +374,7 @@ export class GameBananaService extends Service {
         }
     }
 
-    public async getComments(modId: Id, options: GetCommentsOptions): Promise<Comment[]> {
+    public async getComments(modId: string, options: GetCommentsOptions): Promise<Comment[]> {
         const page = options.page ?? 1
 
         try {
@@ -392,14 +391,14 @@ export class GameBananaService extends Service {
 
             const root = data as ModCommentsRoot
             return root._aRecords.map((record) => ({
-                id: record._idRow,
+                id: String(record._idRow),
                 content: record._sText,
                 createdAt: new Date(record._tsDateAdded),
                 updatedAt: new Date(record._tsDateModified),
                 replyCount: record._nReplyCount,
                 author: record._aPoster
                     ? {
-                          id: record._aPoster._idRow,
+                          id: String(record._aPoster._idRow),
                           name: record._aPoster._sName,
                           avatarUrl: record._aPoster._sAvatarUrl
                       }

@@ -1,10 +1,13 @@
-﻿import { Comment, GetCommentsOptions, Id, Mod, SearchModsOptions, SearchModsResponse } from '@preload/types/service'
+﻿import { Comment, GetCommentsOptions, Mod, SearchModsOptions, SearchModsResponse } from '@preload/types/service'
 
 export class Service {
     public readonly id: string
 
+    public pendingInstalls: string[]
+
     constructor(id: string) {
         this.id = id
+        this.pendingInstalls = []
     }
 
     /**
@@ -23,7 +26,7 @@ export class Service {
      * @param modId - The unique identifier of the mod to retrieve.
      * @return A promise that resolves to the mod object if found, or null if no mod with the given identifier exists.
      */
-    public async getMod(modId: Id): Promise<Mod | null> {
+    public async getMod(modId: string): Promise<Mod | null> {
         throw new Error('Not implemented')
     }
 
@@ -34,7 +37,7 @@ export class Service {
      * @param options - An object containing options to filter or modify the retrieval of comments.
      * @return A promise that resolves to an array of Comment objects.
      */
-    public async getComments(modId: Id, options: GetCommentsOptions): Promise<Comment[]> {
+    public async getComments(modId: string, options: GetCommentsOptions): Promise<Comment[]> {
         throw new Error('Not implemented')
     }
 }
