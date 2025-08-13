@@ -33,7 +33,7 @@ export default function SideBar(props: Props) {
     }, [])
 
     return (
-        <div className="z-30 w-16 self-start grow-0 h-full bg-background-700/45 border-r-2 border-background-800">
+        <div className="z-30 w-16 self-start grow-0 h-full bg-background-700/45">
             <div className="flex flex-col justify-between items-center h-full p-2 py-3 text-background-300">
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col items-center p-2 py-0 gap-4">
@@ -42,7 +42,7 @@ export default function SideBar(props: Props) {
                             return (
                                 <Link
                                     className={`
-                relative rounded-xl ease-in-out transition-colors duration-150 hover:bg-background-600/65 p-1.5 w-10 h-10 flex items-center justify-center cursor-pointer
+                relative rounded-xl ease-in-out transition-colors duration-150 hover:bg-background-600/65 z-80 p-1.5 w-10 h-10 flex items-center justify-center cursor-pointer
                 ${isSelected ? 'bg-background-600/50' : ''}
               `}
                                     key={route.key}
