@@ -1,62 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Transition } from '@tailwindui/react'
 import { FileQuestionMark, Hammer, LoaderCircle, Play, Plus, Settings } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router'
-import { getProfile, startProfile } from '@renderer/api/game'
+import { startProfile } from '@renderer/api/game'
 import Button from '@renderer/components/ui/Button'
 import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
 import Input from '@renderer/components/ui/Input'
-import { ProfileRData } from '@preload/types/profile'
 import { LoaderStatus } from '@preload/types/loader'
-
-enum Status {
-    UNKNOWN,
-    REPAIRING = 'REPAIRING',
-    INSTALLING = 'INSTALLING',
-    READY = 'READY',
-    PLAYING = 'PLAYING'
-}
+import useProfile from '@renderer/hooks/useProfile'
 
 export default function ProfilePage() {
     const { gameId, profileId } = useParams()
     const navigate = useNavigate()
 
-    const [profile, setProfile] = useState<ProfileRData | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { profile, loading } = useProfile(profileId)
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
-    const [status, setStatus] = useState<Status>(Status.UNKNOWN)
 
     const onClickButton = () => {
-        switch (status) {
-            case Status.UNKNOWN:
+        if (profile === null) {
+            return
+        }
+
+        switch (profile.loaderStatus) {
+            case LoaderStatus.NOT_INSTALLED:
                 break
-            case Status.READY: {
-                setStatus(Status.PLAYING)
+            case LoaderStatus.READY: {
                 startProfile(profileId).then()
                 break
             }
         }
     }
-
-    useEffect(() => {
-        getProfile(profileId).then((result) => {
-            console.log('[ProfilePage] Result:', result)
-            setProfile(result)
-            setLoading(false)
-
-            switch (result.loaderStatus) {
-                case LoaderStatus.READY:
-                    setStatus(Status.READY)
-                    break
-                case LoaderStatus.INSTALLING:
-                    setStatus(Status.INSTALLING)
-                    break
-                case LoaderStatus.NOT_INSTALLED:
-                    setStatus(Status.UNKNOWN)
-                    break
-            }
-        })
-    }, [profileId])
 
     /*
      * Render nothing when no current profile is set.
@@ -85,39 +58,23 @@ export default function ProfilePage() {
                                 <h1 className="font-bold text-3xl">{profile.name}</h1>
                             </div>
                             <div className="flex gap-2">
-                                <Button
-                                    className="flex gap-2"
-                                    disabled={status === Status.PLAYING}
-                                    onClick={() => onClickButton()}
-                                >
-                                    {status === Status.UNKNOWN && (
+                                <Button className="flex gap-2" onClick={() => onClickButton()}>
+                                    {profile.loaderStatus === LoaderStatus.NOT_INSTALLED && (
                                         <>
                                             <Hammer />
                                             Repair
                                         </>
                                     )}
-                                    {status === Status.REPAIRING && (
-                                        <>
-                                            <LoaderCircle className="animate-spin" />
-                                            Repairing
-                                        </>
-                                    )}
-                                    {status === Status.INSTALLING && (
+                                    {profile.loaderStatus === LoaderStatus.INSTALLING && (
                                         <>
                                             <LoaderCircle className="animate-spin" />
                                             Installing
                                         </>
                                     )}
-                                    {status === Status.READY && (
+                                    {profile.loaderStatus === LoaderStatus.READY && (
                                         <>
                                             <Play />
                                             Play
-                                        </>
-                                    )}
-                                    {status === Status.PLAYING && (
-                                        <>
-                                            <LoaderCircle className="animate-spin" />
-                                            Playing
                                         </>
                                     )}
                                 </Button>
