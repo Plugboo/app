@@ -5,8 +5,6 @@ import Modal from '../ui/Modal'
 import { GameInformation } from '@preload/types/game'
 import { setupGame } from '../../api/game'
 import { ERROR_MESSAGES } from '../../util/error'
-import { pickFileDialog } from '../../api/app'
-import { OpenDialogReturnValue } from 'electron'
 
 type Props = {
     open: boolean
@@ -37,16 +35,16 @@ export default function SetupGameModal(props: Props) {
     }
 
     const onClickChange = () => {
-        pickFileDialog({ properties: ['openDirectory', 'dontAddToRecent'] }).then((result: OpenDialogReturnValue) => {
-            if (result.canceled) {
-                return
-            }
-
-            const path = result.filePaths[0]
-            if (props.inputRef.current) {
-                props.inputRef.current.value = path
-            }
-        })
+        // pickFileDialog({ properties: ['openDirectory', 'dontAddToRecent'] }).then((result: OpenDialogReturnValue) => {
+        //     if (result.canceled) {
+        //         return
+        //     }
+        //
+        //     const path = result.filePaths[0]
+        //     if (props.inputRef.current) {
+        //         props.inputRef.current.value = path
+        //     }
+        // })
     }
 
     /*

@@ -1,11 +1,3 @@
-﻿import { OpenDialogOptions, OpenDialogReturnValue } from 'electron'
-import { IpcChannel } from '@preload/types/ipc'
-import invokeIpc from '@renderer/api/ipc'
-
-export async function getAppTitleBar() {
-    return invokeIpc<string>('app/titlebar')
-}
-
-export async function pickFileDialog(options: OpenDialogOptions) {
-    return invokeIpc<OpenDialogReturnValue>(IpcChannel.App_PickFile, options)
+﻿export async function getAppTitleBar() {
+    return window.electron.ipc.invoke<string>('app/titlebar')
 }

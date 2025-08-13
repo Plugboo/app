@@ -1,11 +1,16 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
+import { IpcHandlerChannel, IpcListenerChannel } from '@preload/ipc'
 
 const electron = {
     ipc: {
-        invoke(channel: string, ...args: unknown[]): Promise<unknown> {
-            return ipcRenderer.invoke(channel, ...args)
+        async invoke<T>(channel: IpcHandlerChannel, ...args: unknown[]): Promise<T> {
+            const response: any = await ipcRenderer.invoke('ipc-handler', channel, ...args)
+            if (typeof response === 'string' && response.includes('___IS_OBJECT')) {
+                return JSON.parse(response as string).data as T
+            }
+            return response as T
         },
-        on(channel: string, func: (...args: unknown[]) => void) {
+        on(channel: IpcListenerChannel, func: (...args: unknown[]) => void) {
             const subscription = (_event: IpcRendererEvent, ...args: unknown[]) => func(...args)
             ipcRenderer.on(channel, subscription)
 
