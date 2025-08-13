@@ -1,4 +1,5 @@
 import { ipcMain, IpcMainInvokeEvent } from 'electron'
+import { IpcHandlerChannel } from '@preload/ipc'
 
 type IpcHandler = (event: IpcEvent) => unknown | Promise<unknown>
 
@@ -57,7 +58,7 @@ export class IpcManager {
      * @param channel - The IPC channel to associate with the handler.
      * @param handler - The function that will be invoked when the specified channel receives a request.
      */
-    public static registerHandler(channel: string, handler: IpcHandler) {
+    public static registerHandler(channel: IpcHandlerChannel, handler: IpcHandler) {
         if (IpcManager._handlers.has(channel)) {
             throw new Error(`Channel already registered: ${channel}`)
         }
@@ -71,7 +72,7 @@ export class IpcManager {
      *
      * @param channel - The IPC channel whose handler should be removed.
      */
-    public static removeHandler(channel: string) {
+    public static removeHandler(channel: IpcHandlerChannel) {
         if (!IpcManager._handlers.has(channel)) {
             throw new Error(`Channel already removed: ${channel}`)
         }

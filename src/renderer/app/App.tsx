@@ -40,7 +40,6 @@ export default function App() {
                     toastClassName="!bg-background-800 !text-text-100"
                     position="bottom-right"
                     hideProgressBar={false}
-                    pauseOnFocusLoss
                     draggable
                     pauseOnHover
                 />

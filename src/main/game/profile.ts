@@ -40,6 +40,20 @@ export class ProfileMod {
     }
 
     /**
+     * Deletes the directory corresponding to the mod from the disk.
+     */
+    public deleteFromDisk() {
+        const diskPath = path.join(getAppDataPath(), 'profiles', this.profileId, 'mods', this.id)
+        if (!fs.existsSync(diskPath)) {
+            return
+        }
+
+        fs.rmSync(diskPath, {
+            recursive: true
+        })
+    }
+
+    /**
      * Downloads and processes an icon for a mod from a given URL.
      * The downloaded icon is resized and saved in the appropriate directory.
      *

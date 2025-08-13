@@ -52,6 +52,10 @@ export function installMod(profileId: string, serviceId: string, modId: string) 
     window.electron.ipc.invoke<void>('game/profiles/mods/install', profileId, serviceId, modId).then()
 }
 
+export async function uninstallMod(profileId: string, modId: string) {
+    return await window.electron.ipc.invoke<boolean>('game/profiles/mods/uninstall', profileId, modId)
+}
+
 export async function getPendingInstalls(profileId: string, serviceId: string) {
     return await window.electron.ipc.invoke<string[]>('game/profiles/mods/install/list', profileId, serviceId)
 }

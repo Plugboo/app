@@ -11,6 +11,7 @@ export type IpcHandlerChannel =
     | 'game/profiles/get'
     | 'game/profiles/start'
     | 'game/profiles/mods/install'
+    | 'game/profiles/mods/uninstall'
     | 'game/profiles/mods/install/list'
     | 'mods/search'
     | 'mods/get'

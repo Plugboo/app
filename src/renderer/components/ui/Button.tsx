@@ -1,6 +1,6 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
-type Type = 'primary' | 'secondary'
+type Type = 'default' | 'primary' | 'secondary'
 
 type Props = {
     className?: string
@@ -9,6 +9,7 @@ type Props = {
     type?: Type
     onClick?: MouseEventHandler<HTMLButtonElement>
     disabled?: boolean
+    isIconOnly?: boolean
 }
 
 function getClassesForType(type: Type): string {
@@ -17,8 +18,9 @@ function getClassesForType(type: Type): string {
             return 'bg-primary-400 hover:brightness-[90%] text-background-800'
         case 'secondary':
             return 'bg-secondary-600/60 hover:brightness-[115%] text-secondary-300'
+        case 'default':
         default:
-            return ''
+            return 'text-background-400 hover:brightness-[115%] hover:bg-background-700/60'
     }
 }
 
@@ -27,7 +29,7 @@ export default function Button(props: Props) {
 
     return (
         <button
-            className={`${className ?? ''} ${disabled ? '!brightness-75 cursor-not-allowed' : 'cursor-pointer'} font-medium ease-in-out duration-250 transition-all px-5 py-2 rounded-${props.rounded ?? 'lg'} ${getClassesForType(
+            className={`${className ?? ''} ${disabled ? '!brightness-75 cursor-not-allowed' : 'cursor-pointer'} font-medium ease-in-out duration-250 transition-all ${props.isIconOnly ? 'p-2' : 'px-5 py-2'} rounded-${props.rounded ?? 'lg'} ${getClassesForType(
                 props.type ?? 'primary'
             )}`}
             onClick={onClick}
