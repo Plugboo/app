@@ -35,7 +35,7 @@ export interface Asset {
     browser_download_url: string
 }
 
-interface RepoLocation {
+export interface RepoLocation {
     owner: string
     repo: string
 }

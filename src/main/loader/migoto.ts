@@ -1,5 +1,5 @@
-﻿import { Loader } from './index'
-import { GitHub } from '@main/util/github'
+﻿import { Loader, LoaderVersion } from './index'
+import { GitHub, RepoLocation } from '@main/util/github'
 import { Profile, ProfileMod } from '@main/game/profile'
 import path from 'node:path'
 import { downloadFile } from '@main/util/internet'
@@ -8,29 +8,31 @@ import { v4 } from 'uuid'
 import { multiExists } from '@main/util/filesystem'
 import child_process from 'node:child_process'
 import { dialog } from 'electron'
-import { loadIni, stringifyIni } from 'load-ini'
-import { GameManager } from '@main/game/manager'
-import { Game } from '@main/game'
 import { Mod, ModFile } from '@preload/types/service'
 import mime from 'mime-types'
 import { Archive } from '@main/util/archive'
+import { plugboo } from '@main/main'
 
-interface Config {
-    Loader?: {
-        target?: string
-        launch?: string
-    }
-}
+const INJECTOR_LOCATION: RepoLocation = { owner: 'Plugboo', repo: 'injector' }
 
 export class MigotoLoader extends Loader {
-    private readonly githubUser: string
+    private readonly configLocation: RepoLocation
 
-    private readonly githubRepo: string
+    private readonly libsLocation: RepoLocation
 
-    constructor(githubUser: string, githubRepo: string) {
+    private readonly executable: string
+
+    private configVersions: LoaderVersion[]
+
+    private injectorVersions: LoaderVersion[]
+
+    constructor(configLocation: RepoLocation, libsLocation: RepoLocation, executable: string) {
         super('migoto', '3DMigoto')
-        this.githubUser = githubUser
-        this.githubRepo = githubRepo
+        this.configLocation = configLocation
+        this.libsLocation = libsLocation
+        this.executable = executable
+        this.configVersions = []
+        this.injectorVersions = []
     }
 
     public async startProcess(profile: Profile) {
@@ -45,45 +47,98 @@ export class MigotoLoader extends Loader {
             return
         }
 
-        this.startWindowsProcess(profile)
+        await this.startWindowsProcess(profile)
     }
 
     public async fetchVersions() {
         this.versions = []
+        this.configVersions = []
+        this.injectorVersions = []
 
         try {
-            const releases = await GitHub.getReleases('SpectrumQT', 'XXMI-Libs-Package')
-            for (const release of releases) {
-                if (release.draft) {
-                    continue
-                }
-
-                for (const asset of release.assets) {
-                    if (
-                        asset.content_type !== 'application/x-zip-compressed' &&
-                        asset.content_type !== 'application/zip'
-                    ) {
+            {
+                const releases = await GitHub.getReleases(this.libsLocation.owner, this.libsLocation.repo)
+                for (const release of releases) {
+                    if (release.draft) {
                         continue
                     }
 
-                    /*
-                     * FIX: Asset being a literal JSON file, but GitHub says Content-Type "application/zip"???
-                     */
-                    if (asset.name.endsWith('.json')) {
-                        continue
-                    }
-
-                    this.versions.push({
-                        version: release.tag_name,
-                        file: {
-                            name: asset.name,
-                            url: asset.browser_download_url
+                    for (const asset of release.assets) {
+                        if (
+                            asset.content_type !== 'application/x-zip-compressed' &&
+                            asset.content_type !== 'application/zip'
+                        ) {
+                            continue
                         }
-                    })
+
+                        /*
+                         * FIX: Asset being a literal JSON file, but GitHub says Content-Type "application/zip"???
+                         */
+                        if (asset.name.endsWith('.json')) {
+                            continue
+                        }
+
+                        this.versions.push({
+                            version: release.tag_name,
+                            file: {
+                                name: asset.name,
+                                url: asset.browser_download_url
+                            }
+                        })
+                    }
+                }
+            }
+
+            {
+                const releases = await GitHub.getReleases(this.configLocation.owner, this.configLocation.repo)
+                for (const release of releases) {
+                    if (release.draft) {
+                        continue
+                    }
+
+                    for (const asset of release.assets) {
+                        if (
+                            asset.content_type !== 'application/x-zip-compressed' &&
+                            asset.content_type !== 'application/zip'
+                        ) {
+                            continue
+                        }
+
+                        this.configVersions.push({
+                            version: release.tag_name,
+                            file: {
+                                name: asset.name,
+                                url: asset.browser_download_url
+                            }
+                        })
+                    }
+                }
+            }
+
+            {
+                const releases = await GitHub.getReleases(INJECTOR_LOCATION.owner, INJECTOR_LOCATION.repo)
+                for (const release of releases) {
+                    if (release.draft) {
+                        continue
+                    }
+
+                    for (const asset of release.assets) {
+                        if (asset.content_type !== 'application/x-msdownload') {
+                            continue
+                        }
+
+                        this.injectorVersions.push({
+                            version: release.tag_name,
+                            file: {
+                                name: asset.name,
+                                url: asset.browser_download_url
+                            }
+                        })
+                    }
                 }
             }
         } catch (exception) {
-            console.error(`[MigotoLoader] Failed to fetch versions (${this.githubUser}/${this.githubRepo}):`, exception)
+            console.error(`[MigotoLoader] Failed to fetch versions:`, exception)
         }
     }
 
@@ -97,34 +152,61 @@ export class MigotoLoader extends Loader {
             throw new Error(`Profile does not have a valid loader version (${profile.loader.version.version}).`)
         }
 
-        const downloadPath = path.resolve(profile.getFolderPath(), `${v4()}.zip`)
-        const downloadResult = await downloadFile(version.file.url, downloadPath, (progress) => {
-            console.log(`[MigotoLoader] Downloading loader version (${version.version}): ${progress}%`)
-        })
+        {
+            const downloadPath = path.resolve(profile.getFolderPath(), `${v4()}.zip`)
 
-        if (!downloadResult) {
-            throw new Error(`Failed to download loader version (${version.version}).`)
+            /*
+             * Download required library files (e.g., d3d11.dll)
+             */
+            const downloadResult = await downloadFile(version.file.url, downloadPath, (progress) => {
+                console.log(`[MigotoLoader] Downloading library files (${version.version}): ${progress}%`)
+            })
+
+            if (!downloadResult) {
+                throw new Error(`Failed to download library files (${version.version}).`)
+            }
+
+            const archive = new Archive(downloadPath)
+            await archive.unpack(profile.getFolderPath())
+            fs.rmSync(downloadPath)
         }
 
-        console.log('[MigotoLoader] Finished loader download.')
+        {
+            const version = this.configVersions[0]
+            const downloadPath = path.resolve(profile.getFolderPath(), `${v4()}.zip`)
 
-        console.log('[MigotoLoader] Begin extraction..')
+            /*
+             * Download required config files (e.g., d3dx.ini)
+             */
+            const downloadResult = await downloadFile(version.file.url, downloadPath, (progress) => {
+                console.log(`[MigotoLoader] Downloading config files (${version.version}): ${progress}%`)
+            })
 
-        const archive = new Archive(downloadPath)
-        await archive.unpack(profile.getFolderPath())
+            if (!downloadResult) {
+                throw new Error(`Failed to download config files (${version.version}).`)
+            }
 
-        console.log('[MigotoLoader] Extraction finished.')
+            const archive = new Archive(downloadPath)
+            await archive.unpack(profile.getFolderPath())
+            fs.rmSync(downloadPath)
+        }
 
-        await this.setupConfig(profile, GameManager.getGame(profile.gameId))
+        {
+            const version = this.injectorVersions[0]
+            const downloadPath = path.resolve(profile.getFolderPath(), `injector.exe`)
 
-        /*
-         * Remove the downloaded zip file after extraction.
-         */
-        fs.rmSync(downloadPath)
+            const downloadResult = await downloadFile(version.file.url, downloadPath, (progress) => {
+                console.log(`[MigotoLoader] Downloading injector (${version.version}): ${progress}%`)
+            })
+
+            if (!downloadResult) {
+                throw new Error(`Failed to download injector (${version.version}).`)
+            }
+        }
     }
 
     public validateInstallation(profile: Profile): boolean {
-        return multiExists(profile.getFolderPath(), ['nvapi64.dll', 'd3dx.ini', 'd3dcompiler_46.dll', 'd3d11.dll'])
+        return multiExists(profile.getFolderPath(), ['d3dx.ini', 'd3d11.dll', 'injector.exe'])
     }
 
     public async installMod(profile: Profile, mod: Mod, file: ModFile) {
@@ -165,24 +247,26 @@ export class MigotoLoader extends Loader {
         fs.rmSync(downloadPath)
     }
 
-    private startWindowsProcess(profile: Profile) {
-        const loaderPath = path.resolve(profile.getFolderPath(), '3DMigoto Loader.exe')
+    private async startWindowsProcess(profile: Profile) {
+        const installPath = await plugboo.getConfigEntry(`games.${profile.gameId}.installPath`)
+        if (typeof installPath !== 'string' || installPath.length === 0) {
+            console.error('[MigotoLoader] Install path not found in config.json.')
+            return
+        }
+
+        const loaderPath = path.resolve(profile.getFolderPath(), 'injector.exe')
 
         if (!fs.existsSync(loaderPath)) {
             console.error('[MigotoLoader] Loader Executable not found:', loaderPath)
             return
         }
 
-        const process = child_process.spawn(
-            'powershell.exe',
-            [
-                '-ExecutionPolicy',
-                'ByPass',
-                '-Command',
-                `& {Start-Process "${loaderPath}" -Verb RunAs -WorkingDirectory "${profile.getFolderPath()}"}`
-            ],
+        console.log(installPath)
+
+        const process = child_process.exec(
+            `injector.exe -m d3d11.dll -t "${this.executable}" -l "${installPath}\\${this.executable}"`,
             {
-                stdio: ['ignore', 'pipe', 'pipe']
+                cwd: profile.getFolderPath()
             }
         )
 
@@ -202,29 +286,5 @@ export class MigotoLoader extends Loader {
         })
 
         process.unref()
-    }
-
-    private async setupConfig(profile: Profile, game: Game) {
-        try {
-            const rawConfig = await loadIni(path.resolve(profile.getFolderPath(), 'd3dx.ini'))
-            if (Array.isArray(rawConfig)) {
-                console.log("[MigotoLoader] Couldn't load d3dx.ini.")
-                return false
-            }
-
-            const config = JSON.parse(JSON.stringify(rawConfig)) as Config
-            if (config.Loader === undefined || config.Loader.target === undefined) {
-                console.log('[MigotoLoader] Invalid d3dx.ini file.')
-                return false
-            }
-
-            config.Loader.launch = path.resolve(game.installPath, config.Loader.target)
-            fs.writeFileSync(path.resolve(profile.getFolderPath(), 'd3dx.ini'), stringifyIni(config))
-
-            return true
-        } catch {
-            console.log('[MigotoLoader] Unknown error setup config.')
-            return false
-        }
     }
 }

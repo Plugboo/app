@@ -32,7 +32,16 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('SilentNightSound', 'GIMI-Package'))
+                loaders.push(
+                    new MigotoLoader(
+                        {
+                            owner: 'SilentNightSound',
+                            repo: 'GIMI-Package'
+                        },
+                        { owner: 'SpectrumQT', repo: 'XXMI-Libs-Package' },
+                        'GenshinImpact.exe'
+                    )
+                )
                 break
             case HoYoverseGameId.HonkaiStarRail:
                 info = {
@@ -46,7 +55,16 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('SpectrumQT', 'SRMI-Package'))
+                loaders.push(
+                    new MigotoLoader(
+                        {
+                            owner: 'SpectrumQT',
+                            repo: 'SRMI-Package'
+                        },
+                        { owner: 'SpectrumQT', repo: 'XXMI-Libs-Package' },
+                        'StarRail.exe'
+                    )
+                )
                 break
             case HoYoverseGameId.ZenlessZoneZero:
                 info = {
@@ -60,7 +78,16 @@ export class HoYoverseGame extends Game {
                     },
                     developer: 'HoYoverse'
                 }
-                loaders.push(new MigotoLoader('leotorrez', 'ZZMI-Package'))
+                loaders.push(
+                    new MigotoLoader(
+                        {
+                            owner: 'leotorrez',
+                            repo: 'ZZMI-Package'
+                        },
+                        { owner: 'SpectrumQT', repo: 'XXMI-Libs-Package' },
+                        'ZenlessZoneZero.exe'
+                    )
+                )
                 break
         }
 
