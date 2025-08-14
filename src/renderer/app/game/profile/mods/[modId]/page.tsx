@@ -4,12 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { Comment, Mod } from '@preload/types/service'
 import { getMod, getModComments } from '@renderer/api/mods'
 import { Download, LoaderCircle, SquareArrowOutUpRight } from 'lucide-react'
-import Button from '@renderer/components/ui/Button'
-import Divider from '@renderer/components/ui/Divider'
+
+import { Button } from '@renderer/components/ui/button'
 import Tabs from '@renderer/components/ui/Tabs'
 import Tab from '@renderer/components/ui/Tab'
 import ModStats from '@renderer/components/ModStats'
 import { Interweave, Node } from 'interweave'
+import { Separator } from '@renderer/components/ui/separator'
 
 export default function ModPage() {
     const { gameId, modId } = useParams()
@@ -19,7 +20,7 @@ export default function ModPage() {
 
     const transformContent = (node: HTMLElement, _children: Node[]): any => {
         if (node.tagName === 'HR') {
-            return <Divider />
+            return <Separator />
         }
     }
 
@@ -68,7 +69,7 @@ export default function ModPage() {
                                     </Button>
                                 </div>
                             </div>
-                            <Divider />
+                            <Separator />
 
                             <div className="flex gap-4">
                                 <Tabs
@@ -146,7 +147,7 @@ export default function ModPage() {
                                         </div>
                                     </div>
 
-                                    <Divider />
+                                    <Separator />
 
                                     <a
                                         className="mx-auto flex gap-1 items-center"

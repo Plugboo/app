@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { getProfiles, listGames } from '../../api/game'
 import { useNavigate, useParams } from 'react-router'
-import Button from '@renderer/components/ui/Button'
+import { Button } from '@renderer/components/ui/button'
 import CreateProfileModal from '@renderer/components/modals/CreateProfileModal'
 import { ProfileRData } from '@preload/types/profile'
 import { GameInformation } from '@preload/types/game'
@@ -52,7 +52,7 @@ export default function GamePage() {
     }
 
     return (
-        <main className="w-full p-4">
+        <main className="w-full">
             <CreateProfileModal
                 gameId={gameId}
                 open={createProfileOpen}
