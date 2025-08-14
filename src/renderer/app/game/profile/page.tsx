@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { FolderSearch2, Hammer, LoaderCircle, Play, Plus, Settings, TrashIcon } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router'
 import { startProfile, uninstallMod } from '@renderer/api/game'
-import Button from '@renderer/components/ui/Button'
+import { Button } from '@renderer/components/ui/button'
 import ProfileSettingsModal from '@renderer/components/modals/ProfileSettingsModal'
-import Input from '@renderer/components/ui/Input'
+import { Input } from '@renderer/components/ui/input'
 import { LoaderStatus } from '@preload/types/loader'
 import useProfile from '@renderer/hooks/useProfile'
 import { toast } from 'react-toastify'
 import { motion } from 'framer-motion'
+import { Separator } from '@renderer/components/ui/separator'
 
 export default function ProfilePage() {
     const { gameId, profileId } = useParams()
@@ -44,15 +45,12 @@ export default function ProfilePage() {
         })
     }
 
-    /*
-     * Render nothing when no current profile is set.
-     */
     if (profile === null || loading) {
         return null
     }
 
     return (
-        <motion.main className="w-full p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.main className="w-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             {profile && (
                 <div className="flex flex-col gap-5">
                     <ProfileSettingsModal
@@ -85,28 +83,19 @@ export default function ProfilePage() {
                                     </>
                                 )}
                             </Button>
-                            <Button
-                                className="!px-2"
-                                rounded="full"
-                                type="secondary"
-                                onClick={() => setSettingsModalOpen(true)}
-                            >
+                            <Button size="icon" variant="secondary" onClick={() => setSettingsModalOpen(true)}>
                                 <Settings />
                             </Button>
                         </div>
                     </div>
-                    <div className="w-full bg-background-800 h-[2px]" />
+
+                    <Separator />
 
                     <div className="w-full flex gap-4">
-                        <Input
-                            placeholder="Search mods..."
-                            classNames={{
-                                wrapper: 'w-full'
-                            }}
-                        />
+                        <Input placeholder="Search mods..." />
                         <Button
                             className="ml-auto shrink-0 flex gap-1 justify-center items-center"
-                            type="secondary"
+                            variant="secondary"
                             onClick={() => navigate(`/game/${gameId}/profile/${profileId}/mods`)}
                         >
                             <Plus />
@@ -126,7 +115,7 @@ export default function ProfilePage() {
                     )}
 
                     {profile.mods.length > 0 && (
-                        <div className="w-full rounded-2xl bg-background-800 min-h-16 border-2 border-background-700/80 flex flex-col">
+                        <div className="w-full rounded-2xl bg-background-800/50 min-h-16 border-2 border-background-700/80 flex flex-col">
                             {profile.mods.map((mod, index) => (
                                 <div
                                     className={`w-full h-18 flex gap-3 p-2 ${index < profile.mods.length - 1 ? 'border-b-2 border-background-900/30' : ''}`}
@@ -144,12 +133,7 @@ export default function ProfilePage() {
                                         <p className="font-normal opacity-60">{mod.author}</p>
                                     </div>
                                     <div className="ml-auto h-full flex items-center">
-                                        <Button
-                                            type="default"
-                                            rounded="full"
-                                            isIconOnly
-                                            onClick={() => onClickDelete(mod.id)}
-                                        >
+                                        <Button size="icon" onClick={() => onClickDelete(mod.id)}>
                                             <TrashIcon />
                                         </Button>
                                     </div>

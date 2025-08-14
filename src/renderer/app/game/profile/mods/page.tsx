@@ -1,16 +1,17 @@
-﻿import { Link, useParams } from 'react-router'
+﻿import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import { KeyboardEvent, MouseEvent, useEffect, useState } from 'react'
 import { Mod } from '@preload/types/service'
-import Input from '@renderer/components/ui/Input'
-import Button from '@renderer/components/ui/Button'
+import { Input } from '@renderer/components/ui/input'
+import { Button } from '@renderer/components/ui/button'
 import { Check, Download, LoaderCircle, RefreshCcw } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Select from '@renderer/components/ui/Select'
 import ModStats from '@renderer/components/ModStats'
-import Paginator from '@renderer/components/ui/Paginator'
 import { getPendingInstalls, getProfile, installMod } from '@renderer/api/game'
 import useModsSearch from '@renderer/hooks/useModsSearch'
 import { toast } from 'react-toastify'
+import { PaginationOverflow } from '@renderer/components/ui/pagination'
+import { clamp } from 'motion'
 
 type ModStatus = 'notInstalled' | 'installing' | 'installed'
 
@@ -29,22 +30,22 @@ function ModCard(props: {
 
     return (
         <motion.div
-            className="w-full h-27 bg-background-800/50 p-3 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer"
+            className="w-full h-27 bg-background-800/50 p-3 rounded-xl drop-shadow-2xl brightness-100 hover:brightness-88 transition-all duration-150 cursor-pointer relative"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.065 * props.index }}
         >
+            <div className="absolute right-0 top-0 h-full w-80 brightness-75 overflow-hidden mask-l-from-00% mask-l-to-100%">
+                <img
+                    className={`w-full h-full object-cover ${props.mod.nsfw ? 'blur-sm' : ''}`}
+                    src={props.mod.media[0].smallImage.url}
+                    alt={`${props.mod.name}'s screenshot`}
+                />
+            </div>
             <Link
                 className="w-full h-full flex gap-4 overflow-hidden"
                 to={`/game/${props.gameId}/profile/${props.profileId}/mods/${props.mod.id}`}
             >
-                <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
-                    <img
-                        className={`w-full h-full object-cover ${props.mod.nsfw ? 'blur-sm' : ''}`}
-                        src={props.mod.media[0].smallImage.url}
-                        alt={`${props.mod.name}'s screenshot`}
-                    />
-                </div>
                 <div className="flex flex-col justify-between overflow-hidden grow-0">
                     <div className="flex flex-col">
                         <div className="flex gap-2 items-center">
@@ -61,9 +62,9 @@ function ModCard(props: {
                     </div>
                     <ModStats mod={props.mod} />
                 </div>
-                <div className="ml-auto h-full flex flex-col gap-2 shrink-0">
+                <div className="ml-auto h-full flex flex-col gap-2 shrink-0 z-1">
                     <Button
-                        className="mt-auto flex gap-2"
+                        className="mt-auto flex gap-2 shadow-2xl"
                         onClick={(e) => onClickInstall(e)}
                         disabled={props.status !== 'notInstalled'}
                     >
@@ -85,6 +86,8 @@ function ModCard(props: {
 
 export default function ModsPage() {
     const { gameId, profileId } = useParams()
+    const navigate = useNavigate()
+    const location = useLocation()
 
     const [pendingInstalls, setPendingInstalls] = useState<string[]>([])
     const [installedMods, setInstalledMods] = useState<string[]>([])
@@ -102,7 +105,13 @@ export default function ModsPage() {
         }
 
         setLastInput(input)
-        searchHook.search(input, page + 1)
+
+        if (input !== lastInput) {
+            searchHook.search(input, 1)
+            setPage(0)
+        } else {
+            searchHook.search(input, page + 1)
+        }
     }
 
     const onInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -114,6 +123,14 @@ export default function ModsPage() {
     useEffect(() => {
         search(true)
     }, [sort, page])
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search)
+        const page = params.get('page')
+        if (page) {
+            setPage(Number(page))
+        }
+    }, [])
 
     useEffect(() => {
         const event = window.electron.ipc.on('game/profiles/mods/install', (modId: string, successful: boolean) => {
@@ -140,27 +157,28 @@ export default function ModsPage() {
         }
     }, [profileId])
 
+    const maxPages = () => {
+        return Math.ceil(searchHook.total / 15)
+    }
+
     return (
-        <main className="w-full h-full p-4">
-            <motion.div className="flex flex-col gap-4 pb-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <motion.main className="w-full h-full overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="flex flex-col gap-4 pb-4 h-full">
                 <div className="flex gap-2.5">
                     <Input
-                        classNames={{
-                            wrapper: 'w-full'
-                        }}
                         placeholder="Search mods..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={onInputKeyDown}
                     />
-                    <Button type="secondary" onClick={() => search(true)} disabled={searchHook.loading}>
+                    <Button onClick={() => search(true)} disabled={searchHook.loading}>
                         <RefreshCcw className={searchHook.loading ? 'animate-[spin_2s_linear_infinite_reverse]' : ''} />
                     </Button>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 h-full pb-8">
                     <div className="flex flex-col gap-3 flex-none h-[0%] w-60">
-                        <div className="flex flex-col gap-2 p-4 bg-background-800 rounded-2xl">
+                        <div className="flex flex-col gap-2 p-4 bg-background-800/50 rounded-2xl">
                             <h1 className="font-semibold text-xl">Options</h1>
                             <Select
                                 prefix="Sort by: "
@@ -186,16 +204,16 @@ export default function ModsPage() {
                         </div>
                     </div>
                     <div className="flex flex-col gap-4 w-full">
-                        <div>
-                            <Paginator
-                                page={page}
-                                maxPage={Math.round(searchHook.total / 15)}
-                                onChangePage={(newPage: number) => {
-                                    setPage(newPage)
-                                }}
-                            />
-                        </div>
-                        <div className="flex flex-col gap-3 flex-auto overflow-hidden">
+                        <PaginationOverflow
+                            currentPage={page + 1}
+                            maxPages={maxPages()}
+                            onPageChange={(newPage: number) => {
+                                const value = clamp(0, maxPages() - 1, newPage - 1)
+                                setPage(value)
+                                navigate(`/game/${gameId}/profile/${profileId}/mods?page=${value}`)
+                            }}
+                        />
+                        <div className="flex flex-col gap-3 flex-auto overflow-y-auto pb-4">
                             {searchHook.loading && (
                                 <div className="flex gap-1.5 justify-center items-center p-4 bg-background-800/20 rounded-2xl w-full h-32">
                                     <LoaderCircle className="animate-spin" />
@@ -210,7 +228,7 @@ export default function ModsPage() {
                             )}
 
                             {!searchHook.loading && searchHook.mods.length > 0 && (
-                                <div className="w-full flex flex-col gap-3 h-full">
+                                <div className="w-full flex flex-col gap-2">
                                     {searchHook.mods.map((mod: Mod, index) => (
                                         <ModCard
                                             key={mod.id}
@@ -236,7 +254,7 @@ export default function ModsPage() {
                         </div>
                     </div>
                 </div>
-            </motion.div>
-        </main>
+            </div>
+        </motion.main>
     )
 }
