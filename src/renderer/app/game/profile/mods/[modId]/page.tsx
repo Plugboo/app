@@ -47,9 +47,6 @@ export default function ModPage() {
                 {fullscreenMedia && mod && (
                     <img
                         className="z-60 rounded-xl max-w-full max-h-full object-contain bg-background-900/90"
-                        style={{
-                            aspectRatio: `${fullscreenMedia.originalImage.width / fullscreenMedia.originalImage.height}`
-                        }}
                         src={fullscreenMedia.originalImage.url}
                         alt={`${mod.name}'s screenshot`}
                     />
