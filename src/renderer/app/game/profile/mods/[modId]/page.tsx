@@ -1,7 +1,7 @@
 ﻿import { useParams } from 'react-router'
 import { motion } from 'framer-motion'
 import React, { useEffect, useState } from 'react'
-import { Comment, Mod } from '@preload/types/service'
+import { Comment, Media, Mod } from '@preload/types/service'
 import { getMod, getModComments } from '@renderer/api/mods'
 import { Download, LoaderCircle, SquareArrowOutUpRight } from 'lucide-react'
 
@@ -17,6 +17,7 @@ export default function ModPage() {
     const [loading, setLoading] = useState(true)
     const [mod, setMod] = useState<Mod | null>(null)
     const [comments, setComments] = useState<Comment[]>([])
+    const [fullscreenMedia, setFullscreenMedia] = useState<Media | null>(null)
 
     const transformContent = (node: HTMLElement, _children: Node[]): any => {
         if (node.tagName === 'HR') {
@@ -38,8 +39,24 @@ export default function ModPage() {
     }, [gameId, modId])
 
     return (
-        <main className="w-full h-full p-4 pb-4">
-            <motion.div className="flex flex-col gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <main className="w-full h-full">
+            <div
+                className={`overflow-hidden transition-all flex items-center justify-center absolute top-0 left-0 p-20 w-full h-full z-50 bg-background-900/70 backdrop-blur-lg ${fullscreenMedia ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            >
+                <div className="absolute top-0 left-0 w-full h-full" onClick={() => setFullscreenMedia(null)} />
+                {fullscreenMedia && mod && (
+                    <img
+                        className="z-60 rounded-xl max-w-full max-h-full object-contain bg-background-900/90"
+                        style={{
+                            aspectRatio: `${fullscreenMedia.originalImage.width / fullscreenMedia.originalImage.height}`
+                        }}
+                        src={fullscreenMedia.originalImage.url}
+                        alt={`${mod.name}'s screenshot`}
+                    />
+                )}
+            </div>
+
+            <motion.div className="flex flex-col gap-4 pb-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 {loading && (
                     <div className="flex gap-1.5 justify-center items-center p-4 bg-background-800/20 rounded-2xl w-full h-32">
                         <LoaderCircle className="animate-spin" />
@@ -89,6 +106,7 @@ export default function ModPage() {
                                                 <div
                                                     className="p-2 bg-background-800 rounded-2xl flex-none"
                                                     key={media.originalImage.url}
+                                                    onClick={() => setFullscreenMedia(media)}
                                                 >
                                                     <div className="overflow-hidden rounded-xl">
                                                         <img
