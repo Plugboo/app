@@ -16,6 +16,8 @@ export default function ProfilePage() {
     const navigate = useNavigate()
 
     const { profile, loading, reload } = useProfile(profileId)
+    const [search, setSearch] = useState('')
+
     const [settingsModalOpen, setSettingsModalOpen] = useState(false)
 
     const onClickStart = () => {
@@ -92,7 +94,11 @@ export default function ProfilePage() {
                     <Separator />
 
                     <div className="w-full flex gap-4">
-                        <Input placeholder="Search mods..." />
+                        <Input
+                            placeholder="Search mods..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                         <Button
                             className="ml-auto shrink-0 flex gap-1 justify-center items-center"
                             variant="secondary"
@@ -115,30 +121,32 @@ export default function ProfilePage() {
                     )}
 
                     {profile.mods.length > 0 && (
-                        <div className="w-full rounded-2xl bg-background-800/50 min-h-16 border-2 border-background-700/80 flex flex-col">
-                            {profile.mods.map((mod, index) => (
-                                <div
-                                    className={`w-full h-18 flex gap-3 p-2 ${index < profile.mods.length - 1 ? 'border-b-2 border-background-900/30' : ''}`}
-                                    key={mod.id}
-                                >
-                                    <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
-                                        <img
-                                            className="w-full h-full object-cover"
-                                            src={`profile://${profile.id}/${mod.id}/icon`}
-                                            alt={`${mod.name}'s icon`}
-                                        />
+                        <div className="w-full rounded-2xl bg-background-800/50 border-2 border-background-700/80 flex flex-col">
+                            {profile.mods
+                                .filter((v) => v.name.toLowerCase().includes(search))
+                                .map((mod, index) => (
+                                    <div
+                                        className={`w-full h-18 flex gap-3 p-2 ${index < profile.mods.length - 1 ? 'border-b-2 border-background-900/30' : ''}`}
+                                        key={mod.id}
+                                    >
+                                        <div className="h-full aspect-square overflow-hidden rounded-lg shrink-0 outline-1 outline-white/20">
+                                            <img
+                                                className="w-full h-full object-cover"
+                                                src={`profile://${profile.id}/${mod.id}/icon`}
+                                                alt={`${mod.name}'s icon`}
+                                            />
+                                        </div>
+                                        <div className="flex flex-col h-full justify-center">
+                                            <p className="font-semibold">{mod.name}</p>
+                                            <p className="font-normal opacity-60">{mod.author}</p>
+                                        </div>
+                                        <div className="ml-auto mr-2 h-full flex items-center">
+                                            <Button size="icon" onClick={() => onClickDelete(mod.id)}>
+                                                <TrashIcon />
+                                            </Button>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col h-full justify-center">
-                                        <p className="font-semibold">{mod.name}</p>
-                                        <p className="font-normal opacity-60">{mod.author}</p>
-                                    </div>
-                                    <div className="ml-auto h-full flex items-center">
-                                        <Button size="icon" onClick={() => onClickDelete(mod.id)}>
-                                            <TrashIcon />
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     )}
                 </div>
