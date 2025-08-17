@@ -15,6 +15,7 @@ import { LoaderRData, LoaderStatus } from '@preload/types/loader'
 import { v4 } from 'uuid'
 import { pathToFileURL } from 'node:url'
 import { Archive } from '@main/util/archive'
+import { hookConsole, unhookConsole } from '@main/util/logger'
 
 export class Plugboo {
     private readonly instanceLock: boolean
@@ -28,6 +29,8 @@ export class Plugboo {
     private shouldExit: boolean
 
     constructor() {
+        hookConsole()
+
         this.instanceLock = app.requestSingleInstanceLock()
         this.mainWindow = null
         this.tray = null
@@ -92,6 +95,10 @@ export class Plugboo {
             }
 
             this.mainWindow.show()
+        })
+
+        app.on('quit', () => {
+            unhookConsole()
         })
     }
 
