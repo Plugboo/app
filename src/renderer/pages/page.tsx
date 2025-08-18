@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { listGames, verifyGame } from '@renderer/api/game'
+import { GameInformationWithVerified, listGames, verifyGame } from '@renderer/api/game'
 import { GameInformation } from '@preload/types/game'
 import { useNavigate } from 'react-router'
 import SetupGameModal from '@renderer/components/modals/SetupGameModal'
 import { motion } from 'framer-motion'
+import { twJoin } from 'tailwind-merge'
 
 export default function HomePage() {
     const navigate = useNavigate()
     const [setupModalOpen, setSetupModalOpen] = useState(false)
-    const [games, setGames] = useState<GameInformation[]>([])
+    const [games, setGames] = useState<GameInformationWithVerified[]>([])
     const [context, setContext] = useState<GameInformation | null>(null)
     const setupInputRef = useRef<HTMLInputElement>(null)
 
@@ -34,7 +35,7 @@ export default function HomePage() {
     }
 
     useEffect(() => {
-        listGames().then((result: GameInformation[]) => {
+        listGames().then((result) => {
             setGames(result)
         })
     }, [])
@@ -65,7 +66,10 @@ export default function HomePage() {
                                 <div className="relative w-full h-full pointer-events-none select-none">
                                     <div className="absolute group-hover:opacity-100 opacity-0 transition-opacity duration-300 top-0 left-0 w-full h-full bg-linear-to-t from-background-900 via-background-900/35 to-background-900/0 z-2" />
                                     <img
-                                        className="w-full h-full object-cover group-hover:scale-103 transition-translate duration-300"
+                                        className={twJoin(
+                                            'w-full h-full object-cover group-hover:scale-103 transition-translate duration-300',
+                                            !game.verified && 'saturate-10 brightness-90'
+                                        )}
                                         src={game.cover}
                                         alt={`${game.name}'s banner`}
                                     />

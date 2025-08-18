@@ -2,8 +2,12 @@
 import { GameInformation } from '@preload/types/game'
 import { ProfileRData } from '@preload/types/profile'
 
+export type GameInformationWithVerified = GameInformation & {
+    verified: boolean
+}
+
 export async function listGames() {
-    return window.electron.ipc.invoke<GameInformation[]>('game/list')
+    return window.electron.ipc.invoke<GameInformationWithVerified[]>('game/list')
 }
 
 export async function verifyGame(gameId: string) {

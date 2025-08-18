@@ -307,7 +307,10 @@ export class Plugboo {
             this.mainWindow.close()
         })
         IpcManager.registerHandler('game/list', () => {
-            return GameManager.getGames().map((v) => v.info)
+            return GameManager.getGames().map((v) => ({
+                ...v.info,
+                verified: v.installPath !== null
+            }))
         })
         IpcManager.registerHandler('game/verify', (event) => {
             if (event.args.length !== 1) {
