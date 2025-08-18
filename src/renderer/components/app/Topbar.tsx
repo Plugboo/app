@@ -31,7 +31,7 @@ const WINDOW_BUTTONS = [
     }
 ]
 
-export default function TopBar() {
+export default function Topbar() {
     const router = useNavigate()
     const enabled = useTopbar()
 
@@ -52,7 +52,7 @@ export default function TopBar() {
                     </Link>
                 </div>
             </div>
-            <div className="flex gap-12 items-center h-full z-100 pr-4 app-region-nodrag">
+            <div className="flex gap-12 items-center h-full pr-4 app-region-nodrag">
                 <div className="flex gap-4 h-full items-center">
                     {buttons.map((button) => (
                         <Button
@@ -66,7 +66,7 @@ export default function TopBar() {
                         </Button>
                     ))}
                 </div>
-                <div className="flex gap-1 items-center h-full z-100 app-region-nodrag">
+                <div className="flex gap-1 items-center h-full app-region-nodrag z-100 ">
                     {enabled &&
                         WINDOW_BUTTONS.map((button) => <WindowButton onClick={button.onClick} icon={button.icon} />)}
                 </div>

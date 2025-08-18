@@ -1,5 +1,5 @@
 import { HashRouter as Router } from 'react-router'
-import TopBar from '@renderer/components/app/TopBar'
+import Topbar from '@renderer/components/app/Topbar'
 import Notifications from '@renderer/components/app/Notifications'
 import PageLayout from '@renderer/app/PageLayout'
 import Layout from '@renderer/app/Layout'
@@ -9,7 +9,7 @@ export default function App() {
     return (
         <Router>
             <Layout>
-                <TopBar />
+                <Topbar />
                 <PageLayout>
                     <Routes />
                 </PageLayout>
