@@ -9,7 +9,6 @@ import Select from '@renderer/components/ui/Select'
 import ModStats from '@renderer/components/ModStats'
 import { getPendingInstalls, getProfile, installMod } from '@renderer/api/game'
 import useModsSearch from '@renderer/hooks/useModsSearch'
-import { toast } from 'react-toastify'
 import { PaginationOverflow } from '@renderer/components/ui/pagination'
 import { clamp } from 'motion'
 
