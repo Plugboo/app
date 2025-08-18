@@ -1,12 +1,12 @@
 import { HashRouter, Route, Routes } from 'react-router'
-import TopBar from '../components/app/TopBar'
+import TopBar from '@renderer/components/app/TopBar'
 import HomePage from './page'
 import GamePage from './game/page'
 import ProfilePage from './game/profile/page'
 import ModsPage from '@renderer/app/game/profile/mods/page'
 import ModPage from '@renderer/app/game/profile/mods/[modId]/page'
-import { ToastContainer } from 'react-toastify'
 import SettingsPage from '@renderer/app/settings/page'
+import Notifications from '@renderer/components/app/Notifications'
 
 export default function App() {
     return (
@@ -26,13 +26,7 @@ export default function App() {
                     </div>
                 </div>
 
-                <ToastContainer
-                    toastClassName="!bg-background-800 !text-text-100"
-                    position="bottom-right"
-                    hideProgressBar={false}
-                    draggable
-                    pauseOnHover
-                />
+                <Notifications />
             </div>
         </HashRouter>
     )

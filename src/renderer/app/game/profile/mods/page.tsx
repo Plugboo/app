@@ -95,7 +95,7 @@ export default function ModsPage() {
     const [lastInput, setLastInput] = useState('')
     const [input, setInput] = useState('')
     const [sort, setSort] = useState<'new' | 'default' | 'updated'>('default')
-    const [page, setPage] = useState(0)
+    const [page, setPage] = useState(-1)
 
     const searchHook = useModsSearch(gameId)
 
@@ -121,27 +121,27 @@ export default function ModsPage() {
     }
 
     useEffect(() => {
+        if (page < 0) {
+            return
+        }
+
         search(true)
     }, [sort, page])
 
     useEffect(() => {
         const params = new URLSearchParams(location.search)
         const page = params.get('page')
+
         if (page) {
             setPage(Number(page))
+        } else {
+            setPage(0)
         }
     }, [])
 
     useEffect(() => {
         const event = window.electron.ipc.on('game/profiles/mods/install', (modId: string, successful: boolean) => {
-            if (!successful) {
-                toast.error(`Failed to install mod ${modId}!`)
-                return
-            }
-
-            toast.success(`Successfully installed mod ${modId}!`)
-
-            if (!installedMods.includes(modId)) {
+            if (successful && !installedMods.includes(modId)) {
                 setInstalledMods((prev) => [...prev, modId])
             }
         })
