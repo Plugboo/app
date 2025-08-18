@@ -8,7 +8,7 @@ import { Download, LoaderCircle, SquareArrowOutUpRight } from 'lucide-react'
 import { Button } from '@renderer/components/ui/button'
 import Tabs from '@renderer/components/ui/Tabs'
 import Tab from '@renderer/components/ui/Tab'
-import ModStats from '@renderer/components/ModStats'
+import ModStats from '@renderer/components/mod/ModStats'
 import { Interweave, Node } from 'interweave'
 import { Separator } from '@renderer/components/ui/separator'
 
