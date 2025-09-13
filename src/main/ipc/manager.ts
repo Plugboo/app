@@ -1,7 +1,7 @@
 import { ipcMain, IpcMainInvokeEvent } from 'electron'
 import { IpcHandlerChannel } from '@preload/ipc'
 
-type IpcHandler = (event: IpcEvent) => unknown | Promise<unknown>
+export type IpcHandlerFunc = (event: IpcEvent) => unknown | Promise<unknown>
 
 export interface IpcEvent {
     event: IpcMainInvokeEvent
@@ -9,7 +9,7 @@ export interface IpcEvent {
 }
 
 export class IpcManager {
-    private static _handlers: Map<string, IpcHandler> = new Map()
+    private static _handlers: Map<string, IpcHandlerFunc> = new Map()
 
     /**
      * Initializes the IPC manager by setting up a handler for IPC communication.
@@ -58,7 +58,7 @@ export class IpcManager {
      * @param channel - The IPC channel to associate with the handler.
      * @param handler - The function that will be invoked when the specified channel receives a request.
      */
-    public static registerHandler(channel: IpcHandlerChannel, handler: IpcHandler) {
+    public static registerHandler(channel: IpcHandlerChannel, handler: IpcHandlerFunc) {
         if (IpcManager._handlers.has(channel)) {
             throw new Error(`Channel already registered: ${channel}`)
         }

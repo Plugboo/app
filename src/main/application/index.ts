@@ -6,16 +6,30 @@ import { checkForInternet } from '@main/util/internet'
 import { Settings } from '@main/application/settings'
 import { GitHub, Release } from '@main/util/github'
 import { plugboo } from '@main/main'
-import { IpcManager } from './ipc'
+import { IpcManager } from '../ipc/manager'
 import { GameManager } from '@main/game/manager'
 import fs from 'node:fs'
-import { Profile, ProfileMod } from '@main/game/profile'
-import { ProfileRData } from '@preload/types/profile'
-import { LoaderRData, LoaderStatus } from '@preload/types/loader'
-import { v4 } from 'uuid'
+import { Profile } from '@main/game/profile'
 import { pathToFileURL } from 'node:url'
 import { Archive } from '@main/util/archive'
 import { hookConsole, unhookConsole } from '@main/util/logger'
+import { ipcListGames } from '@main/ipc/game/list'
+import { ipcVerifyGame } from '@main/ipc/game/verify'
+import { ipcSetupGame } from '@main/ipc/game/setup'
+import { ipcListLoaders } from '@main/ipc/game/loaders'
+import { ipcGetProfile } from '@main/ipc/game/profiles/get'
+import { ipcCreateProfile } from '@main/ipc/game/profiles/create'
+import { ipcListProfiles } from '@main/ipc/game/profiles/list'
+import { ipcStartProfile } from '@main/ipc/game/profiles/start'
+import { ipcInstallMod } from '@main/ipc/game/profiles/mods/install'
+import { ipcUninstallMod } from '@main/ipc/game/profiles/mods/uninstall'
+import { ipcPendingInstalls } from '@main/ipc/game/profiles/mods/pending'
+import { ipcSearchMods } from '@main/ipc/mods/search'
+import { ipcGetComments } from '@main/ipc/mods/comments'
+import { ipcGetMod } from '@main/ipc/mods/get'
+import { ipcWindowMinimize } from '@main/ipc/window/minimize'
+import { ipcWindowMaximize } from '@main/ipc/window/maximize'
+import { ipcWindowClose } from '@main/ipc/window/close'
 
 export class Plugboo {
     private readonly instanceLock: boolean
@@ -281,501 +295,27 @@ export class Plugboo {
      */
     private initIpc() {
         IpcManager.init()
-        IpcManager.registerHandler('window/minimize', () => {
-            if (this.mainWindow === null) {
-                return
-            }
 
-            this.mainWindow.minimize()
-        })
-        IpcManager.registerHandler('window/maximize', () => {
-            if (this.mainWindow === null) {
-                return
-            }
+        IpcManager.registerHandler('window/minimize', ipcWindowMinimize)
+        IpcManager.registerHandler('window/maximize', ipcWindowMaximize)
+        IpcManager.registerHandler('window/close', ipcWindowClose)
+
+        IpcManager.registerHandler('game/list', ipcListGames)
+        IpcManager.registerHandler('game/verify', ipcVerifyGame)
+        IpcManager.registerHandler('game/setup', ipcSetupGame)
+        IpcManager.registerHandler('game/profiles', ipcListProfiles)
+        IpcManager.registerHandler('game/loaders', ipcListLoaders)
+        IpcManager.registerHandler('game/profiles/create', ipcCreateProfile)
+        IpcManager.registerHandler('game/profiles/get', ipcGetProfile)
+        IpcManager.registerHandler('game/profiles/start', ipcStartProfile)
+        IpcManager.registerHandler('game/profiles/mods/install', ipcInstallMod)
+        IpcManager.registerHandler('game/profiles/mods/uninstall', ipcUninstallMod)
+        IpcManager.registerHandler('game/profiles/mods/install/list', ipcPendingInstalls)
+
+        IpcManager.registerHandler('mods/search', ipcSearchMods)
+        IpcManager.registerHandler('mods/get', ipcGetMod)
+        IpcManager.registerHandler('mods/comments', ipcGetComments)
 
-            if (this.mainWindow.isMaximized()) {
-                this.mainWindow.unmaximize()
-            } else {
-                this.mainWindow.maximize()
-            }
-        })
-        IpcManager.registerHandler('window/close', () => {
-            if (this.mainWindow === null) {
-                return
-            }
-
-            this.mainWindow.close()
-        })
-        IpcManager.registerHandler('game/list', () => {
-            return GameManager.getGames().map((v) => ({
-                ...v.info,
-                verified: v.installPath !== null
-            }))
-        })
-        IpcManager.registerHandler('game/verify', (event) => {
-            if (event.args.length !== 1) {
-                return
-            }
-
-            const gameId = event.args[0]
-            if (typeof gameId !== 'string') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            if (game.installPath === null) {
-                return {
-                    success: false,
-                    reason: 'GAME_NOT_INITIALIZED',
-                    path: game.searchInstallation()
-                }
-            }
-
-            return {
-                success: true
-            }
-        })
-        IpcManager.registerHandler('game/setup', async (event) => {
-            if (event.args.length !== 2) {
-                return
-            }
-
-            const gameId = event.args[0]
-            const path = event.args[1]
-
-            if (typeof gameId !== 'string' || typeof path !== 'string') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return {
-                    success: false,
-                    reason: 'GAME_NOT_FOUND'
-                }
-            }
-
-            if (game.installPath !== null) {
-                return {
-                    success: false,
-                    reason: 'GAME_ALREADY_INITIALIZED'
-                }
-            }
-
-            if (!game.validatePath(path)) {
-                return {
-                    success: false,
-                    reason: 'INVALID_PATH'
-                }
-            }
-
-            game.installPath = path
-            await this.setConfigEntry(`games.${game.info.id}.installPath`, path)
-
-            return {
-                success: true
-            }
-        })
-        IpcManager.registerHandler('game/profiles', async (event) => {
-            if (event.args.length !== 1) {
-                return
-            }
-
-            const gameId = event.args[0]
-
-            if (typeof gameId !== 'string') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            return game.profiles.map((v) => {
-                const data: ProfileRData = {
-                    id: v.id,
-                    gameId: v.gameId,
-                    name: v.name,
-                    mods: [],
-                    loaderStatus: v.isLoaderInstalled ? LoaderStatus.READY : LoaderStatus.NOT_INSTALLED
-                }
-                return data
-            })
-        })
-        IpcManager.registerHandler('game/loaders', async (event) => {
-            if (event.args.length !== 1) {
-                return
-            }
-
-            const gameId = event.args[0]
-
-            if (typeof gameId !== 'string') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            for (const loader of game.loaders) {
-                await loader.fetchVersions()
-            }
-
-            return game.loaders.map((loader) => {
-                const data: LoaderRData = {
-                    id: loader.id,
-                    name: loader.name,
-                    versions: loader.versions.map((version) => version.version)
-                }
-                return data
-            })
-        })
-        IpcManager.registerHandler('game/profiles/create', async (event) => {
-            if (event.args.length !== 4) {
-                return
-            }
-
-            const gameId = event.args[0]
-            const name = event.args[1]
-            const loaderId = event.args[2]
-            const loaderVersion = event.args[3]
-
-            if (
-                typeof gameId !== 'string' ||
-                typeof name !== 'string' ||
-                typeof loaderId !== 'string' ||
-                typeof loaderVersion !== 'string'
-            ) {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return {
-                    success: false,
-                    reason: 'GAME_NOT_FOUND'
-                }
-            }
-
-            const loader = game.loaders.find((v) => v.id === loaderId)
-            if (loader === null) {
-                return {
-                    success: false,
-                    reason: 'LOADER_NOT_FOUND'
-                }
-            }
-
-            const version = loader.versions.find((v) => v.version === loaderVersion)
-            if (version === null) {
-                return {
-                    success: false,
-                    reason: 'VERSION_NOT_FOUND'
-                }
-            }
-
-            if (name.trim().length === 0) {
-                return {
-                    success: false,
-                    reason: 'NAME_CANNOT_BE_EMPTY'
-                }
-            }
-
-            const profile = new Profile(v4(), gameId)
-            profile.name = name
-            profile.loader = {
-                loaderId: loaderId,
-                version: version
-            }
-            profile.writeToDisk()
-            game.profiles.push(profile)
-            console.log('[Application] Created new profile: ' + profile.name)
-
-            loader
-                .installVersion(profile)
-                .then(() => {
-                    profile.isLoaderInstalled = true
-                    console.log('[Application] Installed profile version: ' + profile.name)
-                })
-                .catch((exception) => {
-                    console.error('[Application] Failed to install profile version: ' + profile.name)
-                    console.error(exception)
-                })
-
-            return {
-                success: true
-            }
-        })
-        IpcManager.registerHandler('game/profiles/get', async (event) => {
-            if (event.args.length !== 1) {
-                return
-            }
-
-            const profileId = event.args[0]
-            if (typeof profileId !== 'string') {
-                return
-            }
-
-            const profile = GameManager.getProfile(profileId)
-            if (profile === null) {
-                return null
-            }
-
-            const data: ProfileRData = {
-                id: profile.id,
-                gameId: profile.gameId,
-                name: profile.name,
-                mods: profile.mods.map((mod) => ({
-                    id: mod.id,
-                    name: mod.name,
-                    author: mod.author,
-                    version: mod.version,
-                    enabled: mod.isEnabled
-                })),
-                loaderStatus: profile.isLoaderInstalled ? LoaderStatus.READY : LoaderStatus.NOT_INSTALLED
-            }
-
-            return data
-        })
-        IpcManager.registerHandler('game/profiles/start', async (event) => {
-            if (event.args.length !== 1) {
-                return
-            }
-
-            const profileId = event.args[0]
-            if (typeof profileId !== 'string') {
-                return
-            }
-
-            const profile = GameManager.getProfile(profileId)
-            if (profile === null) {
-                return
-            }
-
-            if (profile.loader === null) {
-                return
-            }
-
-            const game = GameManager.getGame(profile.gameId)
-            if (game === null) {
-                return
-            }
-
-            const loader = game.loaders.find((v) => v.id === profile.loader.loaderId)
-            if (loader === null) {
-                return
-            }
-
-            await loader.startProcess(profile)
-        })
-        IpcManager.registerHandler('game/profiles/mods/install', async (event) => {
-            if (event.args.length !== 3) {
-                return
-            }
-
-            const profileId = event.args[0]
-            const serviceId = event.args[1]
-            const modId = event.args[2]
-
-            if (typeof profileId !== 'string' || typeof serviceId !== 'string' || typeof modId !== 'string') {
-                return
-            }
-
-            const profile = GameManager.getProfile(profileId)
-            if (profile === null) {
-                return
-            }
-
-            const game = GameManager.getGame(profile.gameId)
-            if (game === null) {
-                return
-            }
-
-            const service = game.services.find((v) => v.id === serviceId)
-            if (service === undefined) {
-                return
-            }
-
-            if (service.pendingInstalls.includes(modId)) {
-                return
-            }
-
-            const loader = game.loaders.find((v) => v.id === profile.loader.loaderId)
-            if (loader === undefined) {
-                return
-            }
-
-            const mod = await service.getMod(modId)
-            if (mod === null) {
-                return
-            }
-
-            console.log(`[Application] Installing mod '${mod.name}' (${mod.id})...`)
-
-            service.pendingInstalls.push(mod.id)
-            loader
-                .installMod(profile, mod, mod.files[0])
-                .then(async () => {
-                    const modInstance = new ProfileMod(mod.id, profile.id, mod.name, mod.version, mod.author.name)
-                    await modInstance.downloadIcon(mod.media[0].originalImage.url)
-                    profile.mods.push(modInstance)
-                    plugboo.sendEventToMain('game/profiles/mods/install', modId, true)
-                })
-                .catch((exception) => {
-                    console.error(`[Application] Failed to install mod '${mod.name}' (${mod.id})`)
-                    console.error(exception)
-                })
-                .finally(() => {
-                    service.pendingInstalls.splice(service.pendingInstalls.indexOf(mod.id), 1)
-                })
-        })
-        IpcManager.registerHandler('game/profiles/mods/uninstall', async (event) => {
-            if (event.args.length !== 2) {
-                return
-            }
-
-            const profileId = event.args[0]
-            const modId = event.args[1]
-
-            if (typeof profileId !== 'string' || typeof modId !== 'string') {
-                return
-            }
-
-            const profile = GameManager.getProfile(profileId)
-            if (profile === null) {
-                return false
-            }
-
-            const mod = profile.mods.find((v) => v.id === modId)
-            if (mod === undefined) {
-                return false
-            }
-
-            try {
-                mod.deleteFromDisk()
-                profile.mods.splice(profile.mods.indexOf(mod), 1)
-                return true
-            } catch (exception) {
-                console.error(`[Application] Failed to uninstall mod '${mod.name}' (${mod.id})`)
-                console.error(exception)
-                return false
-            }
-        })
-        IpcManager.registerHandler('game/profiles/mods/install/list', async (event) => {
-            if (event.args.length !== 2) {
-                return
-            }
-
-            const profileId = event.args[0]
-            const serviceId = event.args[1]
-
-            if (typeof profileId !== 'string' || typeof serviceId !== 'string') {
-                return
-            }
-
-            const profile = GameManager.getProfile(profileId)
-            if (profile === null) {
-                return
-            }
-
-            const game = GameManager.getGame(profile.gameId)
-            if (game === null) {
-                return
-            }
-
-            const service = game.services.find((v) => v.id === serviceId)
-            if (service === undefined) {
-                return
-            }
-
-            return service.pendingInstalls
-        })
-        IpcManager.registerHandler('mods/search', async (event) => {
-            if (event.args.length !== 3) {
-                return
-            }
-
-            const gameId = event.args[0]
-            const serviceId = event.args[1]
-            const options = event.args[2]
-
-            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof options !== 'object') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            const service = game.services.find((v) => v.id === serviceId)
-            if (service === undefined) {
-                return
-            }
-
-            return await service.searchMods(options)
-        })
-        IpcManager.registerHandler('mods/get', async (event) => {
-            if (event.args.length !== 3) {
-                return
-            }
-
-            const gameId = event.args[0]
-            const serviceId = event.args[1]
-            const modId = event.args[2]
-
-            if (typeof gameId !== 'string' || typeof serviceId !== 'string' || typeof modId !== 'string') {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            const service = game.services.find((v) => v.id === serviceId)
-            if (service === undefined) {
-                return
-            }
-
-            return await service.getMod(modId)
-        })
-        IpcManager.registerHandler('mods/comments', async (event) => {
-            if (event.args.length !== 4) {
-                return
-            }
-
-            const gameId = event.args[0]
-            const serviceId = event.args[1]
-            const modId = event.args[2]
-            const options = event.args[3]
-
-            if (
-                typeof gameId !== 'string' ||
-                typeof serviceId !== 'string' ||
-                typeof modId !== 'string' ||
-                typeof options !== 'object'
-            ) {
-                return
-            }
-
-            const game = GameManager.getGame(gameId)
-            if (game === null) {
-                return
-            }
-
-            const service = game.services.find((v) => v.id === serviceId)
-            if (service === undefined) {
-                return
-            }
-
-            return await service.getComments(modId, options)
-        })
         IpcManager.registerHandler('app/titlebar', () => {
             return this.settings.window.titleBar
         })
@@ -967,6 +507,10 @@ export class Plugboo {
         } catch (exception) {
             return null
         }
+    }
+
+    public getMainWindow(): BrowserWindow | null {
+        return this.mainWindow
     }
 }
 
