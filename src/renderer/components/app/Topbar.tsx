@@ -2,7 +2,7 @@ import { Maximize, Minus, Settings, X } from 'lucide-react'
 import { closeWindow, maximizeWindow, minimizeWindow } from '../../api/window'
 import { ReactNode } from 'react'
 import useTopbar from '@renderer/hooks/useTopbar'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { Button } from '@renderer/components/ui/button'
 
 function WindowButton(props: { onClick: () => void; icon: ReactNode }) {
@@ -44,12 +44,15 @@ export default function Topbar() {
 
     return (
         <div className="w-screen h-14 shrink-0 app-region-drag pointer-events-auto flex items-center justify-between bg-background-default/60">
-            <div className="pl-4 flex gap-38 app-region-nodrag">
+            <div className="pl-4 h-full flex items-center gap-10 app-region-nodrag">
                 <h1 className="text-primary-500 font-bold text-xl">Plugboo</h1>
-                <div className="flex gap-8">
-                    <Link className="cursor-pointer" to="/">
-                        Library
-                    </Link>
+                <div className="flex gap-1">
+                    <Button className="font-semibold text-lg" size="icon" variant="ghost" onClick={() => router(-1)}>
+                        {'<'}
+                    </Button>
+                    <Button className="font-semibold text-lg" size="icon" variant="ghost" onClick={() => router(1)}>
+                        {'>'}
+                    </Button>
                 </div>
             </div>
             <div className="flex gap-12 items-center h-full pr-4 app-region-nodrag">
