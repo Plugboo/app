@@ -4,6 +4,7 @@ import { IpcChannels } from "@common/ipc/channel";
 import { Nullable } from "@common/util/type";
 import { ProfileManager } from "@main/profile/manager";
 import { Providers } from "@main/provider/providers";
+import { GameProperties } from "@main/game/properties";
 
 export class Application
 {
@@ -37,6 +38,16 @@ export class Application
      */
     public async init()
     {
+        Application.handleIpc("game.list", () =>
+        {
+            return GameProperties.entries().map((game) => ({
+                id: game.id,
+                name: game.name,
+                executableFile: game.executableFile,
+                requiredFiles: game.requiredFiles
+            }));
+        });
+
         Application.handleIpc("provider.list", (args) =>
         {
             return Providers.entries()

@@ -2,18 +2,20 @@ export class GameProperties
 {
     private static readonly ENTRIES: GameProperties[] = [];
 
-    public static readonly STAR_RAIL = new GameProperties("STAR_RAIL", "StarRail.exe", [
+    public static readonly STAR_RAIL = new GameProperties("STAR_RAIL", "Honkai: Star Rail", "StarRail.exe", [
         "HoYoKProtect.sys",
         "mhypbase.dll",
         "StarRail_Data/"
     ]);
-    public static readonly ZENLESS_ZONE_ZERO = new GameProperties("ZENLESS_ZONE_ZERO", "ZenlessZoneZero.exe", [
-        "HoYoKProtect.sys",
-        "mhypbase.dll",
-        "ZenlessZoneZero_Data/"
-    ]);
+    public static readonly ZENLESS_ZONE_ZERO = new GameProperties(
+        "ZENLESS_ZONE_ZERO",
+        "Zenless Zone Zero",
+        "ZenlessZoneZero.exe",
+        ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"]
+    );
 
     public readonly id: string;
+    public readonly name: string;
     public readonly executableFile: string;
 
     /**
@@ -21,9 +23,10 @@ export class GameProperties
      */
     public readonly requiredFiles: ReadonlyArray<string>;
 
-    private constructor(id: string, executableFile: string, requiredFiles: string[])
+    private constructor(id: string, name: string, executableFile: string, requiredFiles: string[])
     {
         this.id = id;
+        this.name = name;
         this.executableFile = executableFile;
         this.requiredFiles = requiredFiles;
 

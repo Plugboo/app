@@ -1,3 +1,4 @@
+import { GamePropertiesDTO } from "@common/dto/game";
 import { ProviderDTO } from "@common/dto/provider";
 
 type Channel<TParams, TReturn> = {
@@ -6,6 +7,7 @@ type Channel<TParams, TReturn> = {
 };
 
 export type IpcChannels = {
+    "game.list": Channel<{}, ReadonlyArray<Readonly<GamePropertiesDTO>>>;
     "provider.list": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO>>>;
     "provider.searchMods": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO.ModDTO>>>;
 };
