@@ -13,7 +13,9 @@
     "resolveJsonModule": true,
     "paths": {
       "@common/*": ["src/common/*"],
-      "@main/*": ["src/main/*"]
-    }
+      "@main/*": ["src/main/*"],
+      "@renderer/*": ["src/renderer/*"]
+    },
+    "jsx": "react-jsx"
   }
 }
