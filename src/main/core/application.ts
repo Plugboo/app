@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from "electron";
-import { Nullable } from "@common/util/type";
 import path from "node:path";
+import { Nullable } from "@common/util/type";
+import { ProfileManager } from "@main/profile/manager";
 
 export class Application
 {
@@ -34,6 +35,8 @@ export class Application
      */
     public async init()
     {
+        ProfileManager.load();
+
         await this.createMainWindow();
     }
 
@@ -66,6 +69,11 @@ export class Application
             await this.mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
         }
     }
+
+    /**
+     * Retrieves the application data path.
+     */
+    public static getAppDataPath = (): string => path.resolve(app.getPath("appData"), app.getName());
 }
 
 export const application = new Application();
