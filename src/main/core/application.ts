@@ -37,7 +37,7 @@ export class Application
      */
     public async init()
     {
-        Application.handleIpc("listProviders", (args) =>
+        Application.handleIpc("provider.list", (args) =>
         {
             return Providers.entries()
                 .filter((v) => v.supportedGames.find((g) => g.id === args.gameId) !== undefined)
@@ -45,6 +45,28 @@ export class Application
                     id: p.id,
                     name: p.name
                 }));
+        });
+
+        Application.handleIpc("provider.searchMods", async (args) =>
+        {
+            const provider = Providers.entries().find(
+                (v) => v.supportedGames.find((g) => g.id === args.gameId) !== undefined
+            );
+
+            if (provider === undefined)
+            {
+                return [];
+            }
+
+            const response = await provider.searchMods(args.gameId);
+            return response.mods.map((m) => ({
+                id: m.id,
+                name: m.name,
+                likeCount: m.likeCount,
+                viewCount: m.viewCount,
+                createdAt: m.createdAt,
+                updatedAt: m.updatedAt
+            }));
         });
 
         ProfileManager.load();
