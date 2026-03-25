@@ -79,6 +79,7 @@ export class GameBananaProvider extends Provider
     {
         super(
             "GAME_BANANA",
+            "GameBanana",
             GameBananaProvider.SUPPORTED_GAMES.map((game) => game.properties)
         );
     }

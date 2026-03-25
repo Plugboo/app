@@ -2,14 +2,14 @@ import { GameProperties } from "@main/game/properties";
 
 export class Provider
 {
-    private static readonly ENTRIES: Provider[] = [];
-
     public readonly id: string;
+    public readonly name: string;
     public readonly supportedGames: ReadonlyArray<Readonly<GameProperties>>;
 
-    protected constructor(id: string, supportedGames: GameProperties[])
+    protected constructor(id: string, name: string, supportedGames: GameProperties[])
     {
         this.id = id;
+        this.name = name;
         this.supportedGames = supportedGames;
     }
 
@@ -23,14 +23,6 @@ export class Provider
     public async searchMods(id: string, options: Provider.SearchOptions = {}): Promise<Provider.SearchResponse>
     {
         throw new Error("Not implemented");
-    }
-
-    /**
-     * Retrieves all providers.
-     */
-    public static entries(): Readonly<Provider>[]
-    {
-        return Provider.ENTRIES;
     }
 }
 

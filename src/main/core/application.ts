@@ -1,7 +1,9 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
+import { IpcChannels } from "@common/ipc/channel";
 import { Nullable } from "@common/util/type";
 import { ProfileManager } from "@main/profile/manager";
+import { Providers } from "@main/provider/providers";
 
 export class Application
 {
@@ -35,6 +37,16 @@ export class Application
      */
     public async init()
     {
+        Application.handleIpc("listProviders", (args) =>
+        {
+            return Providers.entries()
+                .filter((v) => v.supportedGames.find((g) => g.id === args.gameId) !== undefined)
+                .map((p) => ({
+                    id: p.id,
+                    name: p.name
+                }));
+        });
+
         ProfileManager.load();
 
         await this.createMainWindow();
@@ -74,6 +86,20 @@ export class Application
      * Retrieves the application data path.
      */
     public static getAppDataPath = (): string => path.resolve(app.getPath("appData"), app.getName());
+
+    /**
+     * Handles an IPC channel.
+     */
+    private static handleIpc<C extends keyof IpcChannels>(
+        channel: C,
+        callback: (args: IpcChannels[C]["params"]) => IpcChannels[C]["return"] | Promise<IpcChannels[C]["return"]>
+    )
+    {
+        ipcMain.handle(channel, async (_, args) =>
+        {
+            return callback(args);
+        });
+    }
 }
 
 export const application = new Application();
