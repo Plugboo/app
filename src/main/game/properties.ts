@@ -4,7 +4,9 @@ export class GameProperties
 
     public static readonly STAR_RAIL = new GameProperties(
         "STAR_RAIL",
-        "Honkai: Star Rail",
+        {
+            name: "Honkai: Star Rail"
+        },
         {
             executableFile: "StarRail.exe",
             requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"]
@@ -17,7 +19,9 @@ export class GameProperties
     );
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties(
         "ZENLESS_ZONE_ZERO",
-        "Zenless Zone Zero",
+        {
+            name: "Zenless Zone Zero"
+        },
         {
             executableFile: "ZenlessZoneZero.exe",
             requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"]
@@ -30,19 +34,19 @@ export class GameProperties
     );
 
     public readonly id: string;
-    public readonly name: string;
+    public readonly details: Readonly<GameProperties.Details>;
     public readonly installation: Readonly<GameProperties.Installation>;
     public readonly assets: Readonly<GameProperties.Assets>;
 
     private constructor(
         id: string,
-        name: string,
+        details: GameProperties.Details,
         installation: GameProperties.Installation,
         assets: GameProperties.Assets
     )
     {
         this.id = id;
-        this.name = name;
+        this.details = details;
         this.installation = installation;
         this.assets = assets;
 
@@ -60,6 +64,11 @@ export class GameProperties
 
 export declare namespace GameProperties
 {
+    export interface Details
+    {
+        name: string;
+    }
+
     export interface Installation
     {
         executableFile: string;

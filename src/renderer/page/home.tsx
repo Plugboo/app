@@ -29,7 +29,7 @@ function GameCard({ game }: { game: GamePropertiesDTO })
                 <img
                     className="h-full w-full group-hover:scale-103 transition-transform duration-200"
                     src={`resources/game/${game.id.toLowerCase()}/${game.assets.grid}`}
-                    alt={game.name}
+                    alt={game.details.name}
                 />
             </div>
             <div
@@ -39,16 +39,16 @@ function GameCard({ game }: { game: GamePropertiesDTO })
                     <img
                         className="absolute top-0 w-auto h-full blur-lg scale-140 -z-1"
                         src={`resources/game/${game.id.toLowerCase()}/${game.assets.hero}`}
-                        alt={game.name}
+                        alt={game.details.name}
                     />
                     <div className="bg-gray-800/50">
                         <div className="p-3 ">
-                            <h3>{game.name}</h3>
+                            <h3>{game.details.name}</h3>
                         </div>
                         <img
                             className="w-full h-32 object-cover"
                             src={`resources/game/${game.id.toLowerCase()}/${game.assets.hero}`}
-                            alt={game.name}
+                            alt={game.details.name}
                         />
                         <div className="p-3 font-light text-[15px] space-y-1">
                             <div className="-space-y-0.5">
