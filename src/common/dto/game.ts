@@ -17,5 +17,6 @@ export declare namespace GamePropertiesDTO
         icon: string;
         grid: string;
         hero: string;
+        logo: string;
     }
 }

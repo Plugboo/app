@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { GamePropertiesDTO } from "@common/dto/game";
 import { invokeIpc } from "@renderer/ipc";
+import { useNavigate } from "react-router";
+import { ResourcesUtil } from "@renderer/util/resources";
 
 interface GameCardProps
 {
@@ -13,6 +15,8 @@ function GameCard(props: GameCardProps)
 
     const [hovered, setHovered] = useState(false);
     const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
+
+    const navigate = useNavigate();
 
     const onMouseEnter = () =>
     {
@@ -30,12 +34,32 @@ function GameCard(props: GameCardProps)
         setDelayHandler(null);
     };
 
+    const onNavigate = () =>
+    {
+        invokeIpc("game.get", { id: game.id }).then((game) =>
+        {
+            if (game === null)
+            {
+                return;
+            }
+
+            navigate("/game/overview", {
+                state: {
+                    game: game
+                }
+            });
+        });
+    };
+
     return (
         <div className="relative group" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-            <div className="h-70 aspect-2/3 w-auto overflow-hidden drop-shadow-black drop-shadow-xl cursor-pointer group-hover:scale-102 transition-transform duration-200 border border-black">
+            <div
+                className="h-70 aspect-2/3 w-auto overflow-hidden drop-shadow-black drop-shadow-xl cursor-pointer group-hover:scale-102 transition-transform duration-200 border border-black"
+                onClick={onNavigate}
+            >
                 <img
                     className="h-full w-full group-hover:scale-103 transition-transform duration-200"
-                    src={`resources/game/${game.id.toLowerCase()}/${game.assets.grid}`}
+                    src={ResourcesUtil.linkGameAsset(game.id, game.assets.grid)}
                     alt={game.details.name}
                 />
             </div>
@@ -45,7 +69,7 @@ function GameCard(props: GameCardProps)
                 <div className="bg-gray-800 ml-4 -mt-0.5 z-10 relative overflow-hidden text-shadow-md/50 border border-black">
                     <img
                         className="absolute top-0 w-auto h-full blur-lg scale-140 -z-1"
-                        src={`resources/game/${game.id.toLowerCase()}/${game.assets.hero}`}
+                        src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
                         alt={game.details.name}
                     />
                     <div className="bg-gray-800/50">
@@ -54,7 +78,7 @@ function GameCard(props: GameCardProps)
                         </div>
                         <img
                             className="w-full h-32 object-cover"
-                            src={`resources/game/${game.id.toLowerCase()}/${game.assets.hero}`}
+                            src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
                             alt={game.details.name}
                         />
                         <div className="p-3 font-light text-[15px] space-y-1">

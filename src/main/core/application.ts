@@ -1,10 +1,10 @@
-import {app, BrowserWindow, ipcMain} from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
-import {IpcChannels} from "@common/ipc/channel";
-import {Nullable} from "@common/util/type";
-import {ProfileManager} from "@main/profile/manager";
-import {Providers} from "@main/provider/providers";
-import {GameProperties} from "@main/game/properties";
+import { IpcChannels } from "@common/ipc/channel";
+import { Nullable } from "@common/util/type";
+import { ProfileManager } from "@main/profile/manager";
+import { Providers } from "@main/provider/providers";
+import { GameProperties } from "@main/game/properties";
 
 export class Application
 {
@@ -48,9 +48,29 @@ export class Application
                 assets: {
                     icon: game.assets.icon,
                     grid: game.assets.grid,
-                    hero: game.assets.hero
+                    hero: game.assets.hero,
+                    logo: game.assets.logo
                 }
             }));
+        });
+
+        Application.handleIpc("game.get", (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.id);
+            return game !== undefined
+                ? {
+                      id: game.id,
+                      details: {
+                          name: game.details.name
+                      },
+                      assets: {
+                          icon: game.assets.icon,
+                          grid: game.assets.grid,
+                          hero: game.assets.hero,
+                          logo: game.assets.logo
+                      }
+                  }
+                : null;
         });
 
         Application.handleIpc("provider.list", (args) =>

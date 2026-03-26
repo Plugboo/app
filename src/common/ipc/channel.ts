@@ -8,6 +8,7 @@ type Channel<TParams, TReturn> = {
 
 export type IpcChannels = {
     "game.list": Channel<{}, ReadonlyArray<Readonly<GamePropertiesDTO>>>;
+    "game.get": Channel<{ id: string }, Readonly<GamePropertiesDTO>>;
     "provider.list": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO>>>;
     "provider.searchMods": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO.ModDTO>>>;
 };

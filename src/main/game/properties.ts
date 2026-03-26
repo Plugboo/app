@@ -14,7 +14,8 @@ export class GameProperties
         {
             icon: "ec01a34f7fc3b03448cc52f2a89d52e8.png",
             grid: "14219e4acfc4c50d323a47c2a6994299.png",
-            hero: "33a4e204a72d69ec3786ff1cd02e7a66.png"
+            hero: "33a4e204a72d69ec3786ff1cd02e7a66.png",
+            logo: "804bfd285116c91c935176b2b199894d.png"
         }
     );
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties(
@@ -29,7 +30,8 @@ export class GameProperties
         {
             icon: "048617ceb68b40a45847078db347ba59.png",
             grid: "bf1e25110516b753b33dcc6d3266d71c.png",
-            hero: "912c3958f7545cc891334c5f671c7555.png"
+            hero: "912c3958f7545cc891334c5f671c7555.png",
+            logo: "6636876050dcade8ec8e3023b1afe9bc.png"
         }
     );
 
@@ -80,5 +82,6 @@ export declare namespace GameProperties
         icon: string;
         grid: string;
         hero: string;
+        logo: string;
     }
 }
