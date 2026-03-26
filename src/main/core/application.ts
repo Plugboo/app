@@ -44,7 +44,11 @@ export class Application
                 id: game.id,
                 name: game.name,
                 executableFile: game.executableFile,
-                requiredFiles: game.requiredFiles
+                requiredFiles: game.requiredFiles,
+                assets: {
+                    icon: game.assets.icon,
+                    banner: game.assets.banner
+                }
             }));
         });
 

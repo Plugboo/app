@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { invokeIpc } from "@renderer/ipc";
 import { GamePropertiesDTO } from "@common/dto/game";
+import { invokeIpc } from "@renderer/ipc";
 
 export function HomePage()
 {
@@ -15,9 +15,17 @@ export function HomePage()
         <main>
             <p>Home</p>
 
-            {games.map((game) => (
-                <p key={game.id}>{game.name}</p>
-            ))}
+            <div className="flex gap-4">
+                {games.map((game) => (
+                    <div className="h-100" key={game.id}>
+                        <img
+                            className="h-full"
+                            src={`resources/game/${game.id.toLowerCase()}/${game.assets.banner}`}
+                            alt={game.name}
+                        />
+                    </div>
+                ))}
+            </div>
         </main>
     );
 }
