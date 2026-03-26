@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { GamePropertiesDTO } from "@common/dto/game";
 import { invokeIpc } from "@renderer/ipc";
 
-function GameCard({ game }: { game: GamePropertiesDTO })
+interface GameCardProps
 {
+    game: GamePropertiesDTO;
+}
+
+function GameCard(props: GameCardProps)
+{
+    const { game } = props;
+
     const [hovered, setHovered] = useState(false);
     const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
 
@@ -67,7 +74,7 @@ function GameCard({ game }: { game: GamePropertiesDTO })
     );
 }
 
-export function HomePage()
+export default function HomePage()
 {
     const [games, setGames] = useState<ReadonlyArray<Readonly<GamePropertiesDTO>>>([]);
 
