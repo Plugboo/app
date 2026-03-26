@@ -1,10 +1,10 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import {app, BrowserWindow, ipcMain} from "electron";
 import path from "node:path";
-import { IpcChannels } from "@common/ipc/channel";
-import { Nullable } from "@common/util/type";
-import { ProfileManager } from "@main/profile/manager";
-import { Providers } from "@main/provider/providers";
-import { GameProperties } from "@main/game/properties";
+import {IpcChannels} from "@common/ipc/channel";
+import {Nullable} from "@common/util/type";
+import {ProfileManager} from "@main/profile/manager";
+import {Providers} from "@main/provider/providers";
+import {GameProperties} from "@main/game/properties";
 
 export class Application
 {
@@ -47,7 +47,8 @@ export class Application
                 requiredFiles: game.requiredFiles,
                 assets: {
                     icon: game.assets.icon,
-                    banner: game.assets.banner
+                    grid: game.assets.grid,
+                    hero: game.assets.hero
                 }
             }));
         });

@@ -12,6 +12,7 @@ export declare namespace GamePropertiesDTO
     export interface AssetsDTO
     {
         icon: string;
-        banner: string;
+        grid: string;
+        hero: string;
     }
 }
