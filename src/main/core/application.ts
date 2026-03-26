@@ -43,8 +43,8 @@ export class Application
             return GameProperties.entries().map((game) => ({
                 id: game.id,
                 name: game.name,
-                executableFile: game.executableFile,
-                requiredFiles: game.requiredFiles,
+                executableFile: game.installation.executableFile,
+                requiredFiles: game.installation.requiredFiles,
                 assets: {
                     icon: game.assets.icon,
                     grid: game.assets.grid,

@@ -5,8 +5,10 @@ export class GameProperties
     public static readonly STAR_RAIL = new GameProperties(
         "STAR_RAIL",
         "Honkai: Star Rail",
-        "StarRail.exe",
-        ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"],
+        {
+            executableFile: "StarRail.exe",
+            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"]
+        },
         {
             icon: "ec01a34f7fc3b03448cc52f2a89d52e8.png",
             grid: "14219e4acfc4c50d323a47c2a6994299.png",
@@ -16,8 +18,10 @@ export class GameProperties
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties(
         "ZENLESS_ZONE_ZERO",
         "Zenless Zone Zero",
-        "ZenlessZoneZero.exe",
-        ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"],
+        {
+            executableFile: "ZenlessZoneZero.exe",
+            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"]
+        },
         {
             icon: "048617ceb68b40a45847078db347ba59.png",
             grid: "bf1e25110516b753b33dcc6d3266d71c.png",
@@ -27,26 +31,19 @@ export class GameProperties
 
     public readonly id: string;
     public readonly name: string;
-    public readonly executableFile: string;
-
-    /**
-     * Files that are required to be present in the game directory to be a valid installation of the game.
-     */
-    public readonly requiredFiles: ReadonlyArray<string>;
+    public readonly installation: Readonly<GameProperties.Installation>;
     public readonly assets: Readonly<GameProperties.Assets>;
 
     private constructor(
         id: string,
         name: string,
-        executableFile: string,
-        requiredFiles: string[],
+        installation: GameProperties.Installation,
         assets: GameProperties.Assets
     )
     {
         this.id = id;
         this.name = name;
-        this.executableFile = executableFile;
-        this.requiredFiles = requiredFiles;
+        this.installation = installation;
         this.assets = assets;
 
         GameProperties.ENTRIES.push(this);
@@ -63,6 +60,12 @@ export class GameProperties
 
 export declare namespace GameProperties
 {
+    export interface Installation
+    {
+        executableFile: string;
+        requiredFiles: ReadonlyArray<string>;
+    }
+
     export interface Assets
     {
         icon: string;
