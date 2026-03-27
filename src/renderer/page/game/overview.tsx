@@ -86,21 +86,27 @@ export default function GameOverviewPage()
     }
 
     return (
-        <main>
-            <div className="w-full h-90 relative">
+        <main className="relative">
+            <div className="top-0 left-0 bottom-0 right-0 overflow-hidden absolute -z-1">
                 <img
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-120 object-cover object-top"
                     src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
                     alt={game.details.name}
                 />
-
+                <img
+                    className="w-full object-fit opacity-15 scale-125 blur-lg"
+                    src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
+                    alt={game.details.name}
+                />
+            </div>
+            <div className="w-full h-90 relative">
                 <img
                     className="absolute bottom-10 left-10 max-w-70 max-h-70 drop-shadow-lg drop-shadow-black"
                     src={ResourcesUtil.linkGameAsset(game.id, game.assets.logo)}
                     alt={game.details.name}
                 />
             </div>
-            <div className="px-6 pb-4 space-y-2">
+            <div className="px-6 pb-4 space-y-2 backdrop-blur-md bg-(--background-color)/40 border-t border-mauve-700/80">
                 <div className="flex gap-8 py-4">
                     {installed && <Button>Create Profile</Button>}
                     {!installed && <Button>Locate Installation</Button>}
@@ -124,6 +130,7 @@ export default function GameOverviewPage()
                     <div>
                         {content && (
                             <div className="flex flex-col gap-4">
+                                <p className="text-lg font-medium">ACTIVE BANNERS</p>
                                 {content.banners.map((banner) => (
                                     <div
                                         key={banner.imageUrl}
