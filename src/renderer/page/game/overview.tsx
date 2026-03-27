@@ -86,7 +86,7 @@ export default function GameOverviewPage()
                 />
             </div>
             <div className="px-6 pb-4 space-y-2">
-                <div className="flex gap-8 py-3">
+                <div className="flex gap-8 py-4">
                     {installed && <Button>Create Profile</Button>}
                     {!installed && <Button>Locate Installation</Button>}
 
