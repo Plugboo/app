@@ -5,6 +5,8 @@ import { Nullable } from "@common/util/type";
 import { ProfileManager } from "@main/profile/manager";
 import { Providers } from "@main/provider/providers";
 import { GameProperties } from "@main/game/properties";
+import { GameDeveloper } from "@main/game/developer";
+import { HoYoverseLauncherAPI } from "@main/util/hoyoverse/launcher";
 
 export class Application
 {
@@ -71,6 +73,66 @@ export class Application
                       }
                   }
                 : null;
+        });
+
+        Application.handleIpc("game.content.get", async (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.id);
+
+            if (game === undefined)
+            {
+                return null;
+            }
+
+            switch (game.details.developer)
+            {
+                case GameDeveloper.HOYOVERSE:
+                {
+                    const gamesResponse = await HoYoverseLauncherAPI.getGames();
+
+                    if (gamesResponse.isErr())
+                    {
+                        return null;
+                    }
+
+                    const hoYoGame = gamesResponse.value.find((g) => g.displayName === game.details.name);
+
+                    if (hoYoGame === undefined)
+                    {
+                        return null;
+                    }
+
+                    const contentResponse = await HoYoverseLauncherAPI.getContent(hoYoGame.id);
+
+                    if (contentResponse.isErr())
+                    {
+                        return null;
+                    }
+
+                    const content = contentResponse.value;
+
+                    return {
+                        banners: content.banners.map((b) => ({
+                            imageUrl: b.imageUrl,
+                            link: b.link
+                        })),
+                        posts: content.posts.map((p) => ({
+                            title: p.title,
+                            type: p.type,
+                            date: p.date,
+                            link: p.link
+                        })),
+                        socialMedia: content.socialMedia.map((s) => ({
+                            iconUrl: s.iconUrl,
+                            link: s.link
+                        }))
+                    };
+                }
+                default:
+                {
+                    return null;
+                }
+            }
         });
 
         Application.handleIpc("provider.list", (args) =>

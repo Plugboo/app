@@ -1,3 +1,5 @@
+import { GameDeveloper } from "@main/game/developer";
+
 export class GameProperties
 {
     private static readonly ENTRIES: GameProperties[] = [];
@@ -5,7 +7,8 @@ export class GameProperties
     public static readonly STAR_RAIL = new GameProperties(
         "STAR_RAIL",
         {
-            name: "Honkai: Star Rail"
+            name: "Honkai Star Rail",
+            developer: GameDeveloper.HOYOVERSE
         },
         {
             executableFile: "StarRail.exe",
@@ -21,7 +24,8 @@ export class GameProperties
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties(
         "ZENLESS_ZONE_ZERO",
         {
-            name: "Zenless Zone Zero"
+            name: "Zenless Zone Zero",
+            developer: GameDeveloper.HOYOVERSE
         },
         {
             executableFile: "ZenlessZoneZero.exe",
@@ -69,6 +73,7 @@ export declare namespace GameProperties
     export interface Details
     {
         name: string;
+        developer: GameDeveloper;
     }
 
     export interface Installation
