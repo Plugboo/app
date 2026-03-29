@@ -1,4 +1,5 @@
 import { app, BrowserWindow, ipcMain } from "electron";
+import { screen } from "electron/main";
 import path from "node:path";
 import { IpcChannels } from "@common/ipc/channel";
 import { Nullable } from "@common/util/type";
@@ -182,13 +183,25 @@ export class Application
             return;
         }
 
+        const display = screen.getPrimaryDisplay();
+        const workArea = display.workAreaSize;
+
+        const width = Math.min(1376, workArea.width);
+        const height = Math.min(774, workArea.height);
+
         this.mainWindow = new BrowserWindow({
-            width: 800,
-            height: 600,
+            width: width,
+            height: height,
+            show: false,
             webPreferences: {
                 preload: path.join(__dirname, "preload.js")
             }
         });
+
+        if (width == workArea.width || height == workArea.height)
+        {
+            this.mainWindow.maximize();
+        }
 
         if (this.devMode)
         {
@@ -200,6 +213,8 @@ export class Application
         {
             await this.mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
         }
+
+        this.mainWindow.show();
     }
 
     /**
