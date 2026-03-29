@@ -207,7 +207,10 @@ export class Application
         {
             await this.mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
 
-            this.mainWindow.webContents.openDevTools();
+            this.mainWindow.webContents.openDevTools({
+                mode: "undocked",
+                activate: false
+            });
         }
         else
         {
