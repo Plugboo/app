@@ -1,5 +1,6 @@
 import { IpcChannels } from "@common/ipc/channel";
 import { Nullable } from "@common/util/type";
+import { Settings } from "@main/core/settings";
 import { GameDeveloper } from "@main/game/developer";
 import { GameProperties } from "@main/game/properties";
 import { ProfileManager } from "@main/profile/manager";
@@ -86,9 +87,26 @@ export class Application
             }
 
             const installationPath = game.locateInstallation();
-            console.log("Found installation path:", installationPath);
 
-            return installationPath !== null;
+            if (installationPath === null)
+            {
+                return false;
+            }
+
+            const settings = Settings.data.games[game.id];
+
+            if (settings === undefined)
+            {
+                Settings.data.games[game.id] = { installation_path: installationPath };
+            }
+            else
+            {
+                settings.installation_path = installationPath;
+            }
+
+            Settings.save();
+
+            return true;
         });
 
         Application.handleIpc("game.content.get", async (args) =>
@@ -183,6 +201,7 @@ export class Application
             }));
         });
 
+        Settings.load();
         ProfileManager.load();
 
         await this.createMainWindow();
