@@ -17,13 +17,27 @@ export function Card(props: Props)
     );
 }
 
-export function ClickableCard(props: Props)
+export function HighlightableCard(props: Props)
 {
     return (
         <Card
             {...props}
             className={cn(
-                "cursor-pointer hover:scale-101 hover:bg-background-800/70 transition-transform duration-150",
+                "hover:bg-background-800/70 transition-transform duration-150",
+                props.className
+            )}
+        />
+    );
+}
+
+
+export function ClickableCard(props: Props)
+{
+    return (
+        <HighlightableCard
+            {...props}
+            className={cn(
+                "cursor-pointer hover:scale-101",
                 props.className
             )}
         />
