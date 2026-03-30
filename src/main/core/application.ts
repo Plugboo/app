@@ -209,7 +209,7 @@ export class Application
         Application.handleIpc("provider.list", (args) =>
         {
             return Providers.entries()
-                .filter((v) => v.supportedGames.find((g) => g.id === args.gameId) !== undefined)
+                .filter((v) => v.supportedGames.some((g) => g.id === args.gameId))
                 .map((p) => ({
                     id: p.id,
                     name: p.name
@@ -218,9 +218,7 @@ export class Application
 
         Application.handleIpc("provider.searchMods", async (args) =>
         {
-            const provider = Providers.entries().find(
-                (v) => v.supportedGames.find((g) => g.id === args.gameId) !== undefined
-            );
+            const provider = Providers.entries().find((v) => v.supportedGames.some((g) => g.id === args.gameId));
 
             if (provider === undefined)
             {
