@@ -217,6 +217,7 @@ export class Application
             await this.mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
         }
 
+        this.mainWindow.setMenu(null);
         this.mainWindow.show();
     }
 
