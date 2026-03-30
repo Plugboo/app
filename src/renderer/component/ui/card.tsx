@@ -21,8 +21,11 @@ export function ClickableCard(props: Props)
 {
     return (
         <Card
-            className="cursor-pointer hover:scale-101 hover:bg-background-800/70 transition-transform duration-150"
             {...props}
+            className={cn(
+                "cursor-pointer hover:scale-101 hover:bg-background-800/70 transition-transform duration-150",
+                props.className
+            )}
         />
     );
 }
