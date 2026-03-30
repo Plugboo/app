@@ -47,15 +47,15 @@ export abstract class HoYoPlay
             const raw = match[0];
             const installation = JSON.parse(raw) as Internal.GameData.Installation;
 
-            if (
-                installations.find(
-                    (i) =>
-                        (i.path === installation.installPath ||
-                            (i.path === null && installation.installPath.length === 0)) &&
-                        i.biz === installation.gameBiz &&
-                        i.edition === installation.packageName
-                ) !== undefined
-            )
+            const normalizedInstallPath = installation.installPath.length > 0 ? installation.installPath : null;
+            const alreadyExists = installations.some(
+                (existingInstallation) =>
+                    existingInstallation.biz === installation.gameBiz &&
+                    existingInstallation.edition === installation.packageName &&
+                    existingInstallation.path === normalizedInstallPath
+            );
+
+            if (alreadyExists)
             {
                 continue;
             }
