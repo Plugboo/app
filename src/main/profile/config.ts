@@ -1,5 +1,5 @@
-import { err, ok, Result } from "neverthrow";
 import { Profile } from "@main/profile/index";
+import { err, ok, Result } from "neverthrow";
 
 export namespace ProfileConfig
 {
@@ -35,7 +35,6 @@ export namespace ProfileConfig
             if (typeof type === "string" && typeof value !== type)
             {
                 invalidKeys.push(key);
-                continue;
             }
         }
 

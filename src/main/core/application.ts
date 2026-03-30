@@ -1,13 +1,13 @@
+import { IpcChannels } from "@common/ipc/channel";
+import { Nullable } from "@common/util/type";
+import { GameDeveloper } from "@main/game/developer";
+import { GameProperties } from "@main/game/properties";
+import { ProfileManager } from "@main/profile/manager";
+import { Providers } from "@main/provider/providers";
+import { HoYoverseLauncherAPI } from "@main/util/hoyoverse/launcher";
 import { app, BrowserWindow, ipcMain } from "electron";
 import { screen } from "electron/main";
 import path from "node:path";
-import { IpcChannels } from "@common/ipc/channel";
-import { Nullable } from "@common/util/type";
-import { ProfileManager } from "@main/profile/manager";
-import { Providers } from "@main/provider/providers";
-import { GameProperties } from "@main/game/properties";
-import { GameDeveloper } from "@main/game/developer";
-import { HoYoverseLauncherAPI } from "@main/util/hoyoverse/launcher";
 
 export class Application
 {

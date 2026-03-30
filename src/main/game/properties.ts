@@ -1,8 +1,8 @@
-import { GameDeveloper } from "@main/game/developer";
 import { Nullable } from "@common/util/type";
-import path from "node:path";
-import fs from "node:fs";
+import { GameDeveloper } from "@main/game/developer";
 import { InstallationLocators } from "@main/game/locators";
+import fs from "node:fs";
+import path from "node:path";
 
 export class GameProperties
 {

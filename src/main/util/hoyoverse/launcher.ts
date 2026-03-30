@@ -1,6 +1,6 @@
-import { err, ok, Result } from "neverthrow";
 import { safePromise } from "@common/util/promise";
 import { URLUtils } from "@main/util/url";
+import { err, ok, Result } from "neverthrow";
 
 namespace REST
 {

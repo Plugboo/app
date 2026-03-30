@@ -1,6 +1,6 @@
+import { Provider } from "./index";
 import { safePromise } from "@common/util/promise";
 import { GameProperties } from "@main/game/properties";
-import { Provider } from "./index";
 import { URLUtils } from "@main/util/url";
 
 namespace REST

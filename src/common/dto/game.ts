@@ -1,4 +1,5 @@
-export namespace GameContentDTO {
+export namespace GameContentDTO
+{
     export interface Banner
     {
         imageUrl: string;

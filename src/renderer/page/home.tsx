@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { GamePropertiesDTO } from "@common/dto/game";
 import { invokeIpc } from "@renderer/ipc";
-import { useNavigate } from "react-router";
 import { ResourcesUtil } from "@renderer/util/resources";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 interface GameCardProps
 {

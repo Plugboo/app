@@ -1,6 +1,5 @@
-import { contextBridge, ipcRenderer } from "electron";
-
 import { IpcChannels } from "@common/ipc/channel";
+import { contextBridge, ipcRenderer } from "electron";
 
 const ipc = {
     async invoke<C extends keyof IpcChannels>(

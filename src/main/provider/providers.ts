@@ -1,5 +1,5 @@
-import { GameBananaProvider } from "@main/provider/gamebanana";
 import { Provider } from ".";
+import { GameBananaProvider } from "@main/provider/gamebanana";
 
 export abstract class Providers
 {

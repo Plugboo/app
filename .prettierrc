@@ -20,7 +20,9 @@
     }
   ],
   "plugins": [
-    "prettier-plugin-brace-style"
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-brace-style",
+    "prettier-plugin-merge"
   ],
   "braceStyle": "allman"
 }

@@ -1,10 +1,10 @@
-import { useLocation } from "react-router";
 import { GamePropertiesDTO } from "@common/dto/game";
-import { ResourcesUtil } from "@renderer/util/resources";
-import Button from "@renderer/component/ui/button";
-import { useEffect, useState } from "react";
 import { IpcChannels } from "@common/ipc/channel";
+import Button from "@renderer/component/ui/button";
 import { invokeIpc } from "@renderer/ipc";
+import { ResourcesUtil } from "@renderer/util/resources";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
 function ProfileCard()
 {

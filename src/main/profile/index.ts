@@ -1,8 +1,8 @@
+import { GameProperties } from "@main/game/properties";
+import { ProfileConfig } from "@main/profile/config";
+import { ProfileManager } from "@main/profile/manager";
 import fs from "node:fs";
 import path from "node:path";
-import { GameProperties } from "@main/game/properties";
-import { ProfileManager } from "@main/profile/manager";
-import { ProfileConfig } from "@main/profile/config";
 
 export class Profile
 {
@@ -37,7 +37,10 @@ export class Profile
         }
 
         const profilePath = path.join(diskPath, "profile.json");
-        fs.writeFileSync(profilePath, JSON.stringify(ProfileConfig.create(this, ProfileConfig.NEWEST_VERSION), null, 4));
+        fs.writeFileSync(
+            profilePath,
+            JSON.stringify(ProfileConfig.create(this, ProfileConfig.NEWEST_VERSION), null, 4)
+        );
     }
 
     /**

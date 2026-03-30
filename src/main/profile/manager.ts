@@ -1,11 +1,11 @@
-import fs from "node:fs";
-import path from "node:path";
-import { v4 as uuidv4 } from "uuid";
 import { Nullable } from "@common/util/type";
 import { Application } from "@main/core/application";
 import { GameProperties } from "@main/game/properties";
 import { Profile } from "@main/profile";
 import { ProfileConfig } from "@main/profile/config";
+import fs from "node:fs";
+import path from "node:path";
+import { v4 as uuidv4 } from "uuid";
 
 export abstract class ProfileManager
 {

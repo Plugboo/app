@@ -1,9 +1,8 @@
+import "@renderer/index.css";
+import GameOverviewPage from "@renderer/page/game/overview";
+import HomePage from "@renderer/page/home";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Route, Routes } from "react-router";
-import "@renderer/index.css";
-
-import HomePage from "@renderer/page/home";
-import GameOverviewPage from "@renderer/page/game/overview";
 
 createRoot(document.getElementById("root")).render(
     <HashRouter>

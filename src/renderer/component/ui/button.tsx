@@ -1,6 +1,6 @@
-import * as React from "react";
 import { Button as BaseButton } from "@base-ui/react/button";
 import { cn } from "@renderer/util/tailwind";
+import * as React from "react";
 
 interface Props extends BaseButton.Props
 {

@@ -1,3 +1,4 @@
-export enum GameDeveloper {
-    HOYOVERSE = "HoYoverse",
+export enum GameDeveloper
+{
+    HOYOVERSE = "HoYoverse"
 }

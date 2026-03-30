@@ -1,7 +1,7 @@
+import { Nullable } from "@common/util/type";
 import { app } from "electron";
 import fs from "node:fs";
 import path from "node:path";
-import { Nullable } from "@common/util/type";
 
 namespace Internal
 {
