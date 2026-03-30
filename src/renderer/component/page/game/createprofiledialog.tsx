@@ -1,4 +1,5 @@
 import { Select } from "@base-ui/react";
+import { ProfileDTO } from "@common/dto/profile";
 import Button from "@renderer/component/ui/button";
 import { Dialog } from "@renderer/component/ui/dialog";
 import { Input } from "@renderer/component/ui/input";
@@ -17,6 +18,7 @@ interface Props
     gameId: string;
     open: boolean;
     setOpen: (state: boolean) => void;
+    onCreate?: (profile: ProfileDTO) => void;
     loaders: Loader[];
 }
 
@@ -37,9 +39,10 @@ export function CreateProfileDialog(props: Props)
             modLoaderId: ""
         }).then((result) =>
         {
-            if (result)
+            if (result !== null)
             {
                 props.setOpen(false);
+                props.onCreate?.(result);
             }
         });
     };

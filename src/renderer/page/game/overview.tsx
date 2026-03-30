@@ -107,6 +107,10 @@ export default function GameOverviewPage()
                 gameId={game.id}
                 open={createProfileOpen}
                 setOpen={setCreateProfileOpen}
+                onCreate={(profile) =>
+                {
+                    setProfiles((prev) => [...prev, profile]);
+                }}
                 loaders={[
                     {
                         label: "Migoto",

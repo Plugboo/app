@@ -21,7 +21,10 @@ export type IpcChannels = {
             socialMedia: ReadonlyArray<Readonly<GameContentDTO.SocialMedia>>;
         } | null>
     >;
-    "game.profile.create": Channel<{ gameId: string; name: string; modLoaderId: string }, boolean>;
+    "game.profile.create": Channel<
+        { gameId: string; name: string; modLoaderId: string },
+        Nullable<Readonly<ProfileDTO>>
+    >;
     "game.profile.list": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProfileDTO>>>;
     "provider.list": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO>>>;
     "provider.searchMods": Channel<{ gameId: string }, ReadonlyArray<Readonly<ProviderDTO.ModDTO>>>;

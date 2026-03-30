@@ -212,13 +212,17 @@ export class Application
 
             if (game === undefined)
             {
-                return false;
+                return null;
             }
 
             const profile = ProfileManager.create(game, args.name);
             profile.save();
 
-            return true;
+            return {
+                id: profile.id,
+                name: profile.name,
+                gameId: profile.gameId
+            };
         });
 
         Application.handleIpc("game.profile.list", (args) =>
