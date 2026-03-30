@@ -76,6 +76,28 @@ export class Application
                 : null;
         });
 
+        Application.handleIpc("game.installation.locate", (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.id);
+
+            if (game === undefined)
+            {
+                return false;
+            }
+
+            for (const locator of game.installation.locators)
+            {
+                const result = locator();
+
+                if (result !== null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
         Application.handleIpc("game.content.get", async (args) =>
         {
             const game = GameProperties.entries().find((game) => game.id === args.id);

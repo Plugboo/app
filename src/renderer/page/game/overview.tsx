@@ -34,6 +34,7 @@ export default function GameOverviewPage()
     const { game } = state as PageState;
 
     const [content, setContent] = useState<IpcChannels["game.content.get"]["return"]>(null);
+    const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
 
     /**
      * Temporary.
@@ -69,6 +70,19 @@ export default function GameOverviewPage()
             name: "Test"
         }
     ];
+
+    const onClickLocate = () =>
+    {
+        setButtonsDisabled(true);
+        setTimeout(() =>
+        {
+            invokeIpc("game.installation.locate", { id: game.id }).then((result) =>
+            {
+                console.log(result);
+                setButtonsDisabled(false);
+            });
+        }, 1000);
+    };
 
     useEffect(() =>
     {
@@ -108,8 +122,12 @@ export default function GameOverviewPage()
             </div>
             <div className="px-6 pb-4 space-y-2 backdrop-blur-md bg-(--background-color)/40 border-t border-mauve-700/80">
                 <div className="flex gap-8 py-4">
-                    {installed && <Button>Create Profile</Button>}
-                    {!installed && <Button>Locate Installation</Button>}
+                    {installed && <Button disabled={buttonsDisabled}>Create Profile</Button>}
+                    {!installed && (
+                        <Button disabled={buttonsDisabled} onClick={onClickLocate}>
+                            Locate Installation
+                        </Button>
+                    )}
 
                     <div className="text-[15px] -space-y-0.5">
                         <p>LAST PLAYED</p>

@@ -1,4 +1,6 @@
 import { GameDeveloper } from "@main/game/developer";
+import { HoYoPlay } from "@main/util/hoyoverse/play";
+import { Nullable } from "@common/util/type";
 
 export class GameProperties
 {
@@ -12,7 +14,15 @@ export class GameProperties
         },
         {
             executableFile: "StarRail.exe",
-            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"]
+            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"],
+            locators: [
+                () =>
+                {
+                    const installations = HoYoPlay.getGameInstallations();
+                    const foundInstallation = installations.find((i) => i.path !== null && i.biz === "hkrpg_global");
+                    return foundInstallation.path ?? null;
+                }
+            ]
         },
         {
             icon: "ec01a34f7fc3b03448cc52f2a89d52e8.png",
@@ -29,7 +39,15 @@ export class GameProperties
         },
         {
             executableFile: "ZenlessZoneZero.exe",
-            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"]
+            requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"],
+            locators: [
+                () =>
+                {
+                    const installations = HoYoPlay.getGameInstallations();
+                    const foundInstallation = installations.find((i) => i.path !== null && i.biz === "nap_global");
+                    return foundInstallation.path ?? null;
+                }
+            ]
         },
         {
             icon: "048617ceb68b40a45847078db347ba59.png",
@@ -76,10 +94,13 @@ export declare namespace GameProperties
         developer: GameDeveloper;
     }
 
+    export type InstallationLocator = () => Nullable<string>;
+
     export interface Installation
     {
         executableFile: string;
         requiredFiles: ReadonlyArray<string>;
+        locators: ReadonlyArray<InstallationLocator>;
     }
 
     export interface Assets
