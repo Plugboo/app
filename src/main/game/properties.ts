@@ -1,6 +1,8 @@
 import { GameDeveloper } from "@main/game/developer";
 import { HoYoPlay } from "@main/util/hoyoverse/play";
 import { Nullable } from "@common/util/type";
+import path from "node:path";
+import fs from "node:fs";
 
 export class GameProperties
 {
@@ -75,6 +77,23 @@ export class GameProperties
         this.assets = assets;
 
         GameProperties.ENTRIES.push(this);
+    }
+
+    /**
+     * Locates the installation of the game.
+     */
+    public locateInstallation()
+    {
+        const requiredFiles = [...this.installation.requiredFiles, this.installation.executableFile];
+
+        return (
+            this.installation.locators
+                .map((locator) => locator())
+                .filter(Boolean)
+                .find((installationPath) =>
+                    requiredFiles.every((file) => fs.existsSync(path.join(installationPath, file)))
+                ) ?? null
+        );
     }
 
     /**

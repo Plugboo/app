@@ -85,17 +85,10 @@ export class Application
                 return false;
             }
 
-            for (const locator of game.installation.locators)
-            {
-                const result = locator();
+            const installationPath = game.locateInstallation();
+            console.log("Found installation path:", installationPath);
 
-                if (result !== null)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return installationPath !== null;
         });
 
         Application.handleIpc("game.content.get", async (args) =>
