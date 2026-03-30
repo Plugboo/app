@@ -1,5 +1,6 @@
 import "@renderer/index.css";
 import GameOverviewPage from "@renderer/page/game/overview";
+import ProfilePage from "@renderer/page/game/profile";
 import HomePage from "@renderer/page/home";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Route, Routes } from "react-router";
@@ -16,6 +17,7 @@ createRoot(root).render(
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/game/overview" element={<GameOverviewPage />} />
+            <Route path="/game/profile" element={<ProfilePage />} />
         </Routes>
     </HashRouter>
 );

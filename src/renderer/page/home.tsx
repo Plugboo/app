@@ -11,12 +11,13 @@ interface GameCardProps
 
 function GameCard(props: GameCardProps)
 {
+    const navigate = useNavigate();
     const { game } = props;
 
     const [hovered, setHovered] = useState(false);
     const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
 
-    const navigate = useNavigate();
+    /* ================================== */
 
     const onMouseEnter = () =>
     {
@@ -50,6 +51,8 @@ function GameCard(props: GameCardProps)
             });
         });
     };
+
+    /* ================================== */
 
     return (
         <div className="relative group" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>

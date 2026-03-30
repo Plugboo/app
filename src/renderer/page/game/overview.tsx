@@ -1,4 +1,5 @@
 import { GamePropertiesDTO } from "@common/dto/game";
+import { ProfileDTO } from "@common/dto/profile";
 import { IpcChannels } from "@common/ipc/channel";
 import { CreateProfileDialog } from "@renderer/component/page/game/createprofiledialog";
 import { ProfileCard } from "@renderer/component/page/game/profilecard";
@@ -7,7 +8,7 @@ import { invokeIpc } from "@renderer/ipc";
 import { ResourcesUtil } from "@renderer/util/resources";
 import { FolderSearch2, LoaderCircle, PackagePlus } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { match } from "ts-pattern";
 
 enum Status
@@ -24,6 +25,7 @@ interface PageState
 
 export default function GameOverviewPage()
 {
+    const navigate = useNavigate();
     const { state } = useLocation();
     const { game } = state as PageState;
 
@@ -53,6 +55,16 @@ export default function GameOverviewPage()
                 setStatus(result ? Status.INSTALLED : Status.NOT_INSTALLED);
             });
         }, 1000);
+    };
+
+    const onClickProfile = (profile: ProfileDTO) =>
+    {
+        navigate("/game/profile", {
+            state: {
+                game: game,
+                profile: profile
+            }
+        });
     };
 
     /* ================================== */
@@ -161,7 +173,7 @@ export default function GameOverviewPage()
                 <div className="flex gap-12">
                     <div className="w-full flex flex-col gap-4">
                         {profiles.map((profile) => (
-                            <ProfileCard key={profile.id} profile={profile} />
+                            <ProfileCard key={profile.id} profile={profile} onClick={() => onClickProfile(profile)} />
                         ))}
                     </div>
                     <div>

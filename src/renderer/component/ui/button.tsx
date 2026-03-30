@@ -4,13 +4,15 @@ import * as React from "react";
 
 interface Props extends BaseButton.Props
 {
-    variant?: "primary" | "ghost";
+    variant?: "primary" | "secondary" | "ghost";
 }
 
 // @ts-ignore TS2344
 const VARIANT_STYLES: Record<Props["variant"], string> = {
     primary:
         "bg-primary border-primary-400 border text-text-100 hover:data-disabled:bg-primary-600 hover:bg-primary-400 active:data-disabled:bg-primary-600 active:bg-primary-300 data-disabled:text-text-300 data-disabled:bg-primary-600",
+    secondary:
+        "bg-secondary border-secondary-500 border text-text-200 hover:data-disabled:bg-secondary-600 hover:bg-secondary-500 active:data-disabled:bg-secondary-600 active:bg-secondary-300 data-disabled:text-text-300 data-disabled:bg-secondary-600",
     ghost: "bg-transparent text-white hover:text-gray-900"
 };
 
