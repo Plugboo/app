@@ -1,8 +1,8 @@
 import { GameDeveloper } from "@main/game/developer";
-import { HoYoPlay } from "@main/util/hoyoverse/play";
 import { Nullable } from "@common/util/type";
 import path from "node:path";
 import fs from "node:fs";
+import { InstallationLocators } from "@main/game/locators";
 
 export class GameProperties
 {
@@ -17,14 +17,7 @@ export class GameProperties
         installation: {
             executableFile: "StarRail.exe",
             requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "StarRail_Data/"],
-            locators: [
-                () =>
-                {
-                    const installations = HoYoPlay.getGameInstallations();
-                    const foundInstallation = installations.find((i) => i.path !== null && i.biz === "hkrpg_global");
-                    return foundInstallation.path ?? null;
-                }
-            ]
+            locators: [() => InstallationLocators.HOYOPLAY("hkrpg_global")]
         },
         assets: {
             icon: "ec01a34f7fc3b03448cc52f2a89d52e8.png",
@@ -33,7 +26,7 @@ export class GameProperties
             logo: "804bfd285116c91c935176b2b199894d.png"
         }
     });
-    
+
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties({
         id: "ZENLESS_ZONE_ZERO",
         details: {
@@ -43,14 +36,7 @@ export class GameProperties
         installation: {
             executableFile: "ZenlessZoneZero.exe",
             requiredFiles: ["HoYoKProtect.sys", "mhypbase.dll", "ZenlessZoneZero_Data/"],
-            locators: [
-                () =>
-                {
-                    const installations = HoYoPlay.getGameInstallations();
-                    const foundInstallation = installations.find((i) => i.path !== null && i.biz === "nap_global");
-                    return foundInstallation.path ?? null;
-                }
-            ]
+            locators: [() => InstallationLocators.HOYOPLAY("nap_global")]
         },
         assets: {
             icon: "048617ceb68b40a45847078db347ba59.png",
