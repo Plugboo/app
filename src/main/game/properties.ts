@@ -1,6 +1,8 @@
 import { Nullable } from "@common/util/type";
 import { GameDeveloper } from "@main/game/developer";
 import { InstallationLocators } from "@main/game/locators";
+import { ModLoader } from "@main/modloader";
+import { MigotoModLoader } from "@main/modloader/migoto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -24,7 +26,13 @@ export class GameProperties
             grid: "14219e4acfc4c50d323a47c2a6994299.png",
             hero: "33a4e204a72d69ec3786ff1cd02e7a66.png",
             logo: "804bfd285116c91c935176b2b199894d.png"
-        }
+        },
+        loaders: [
+            new MigotoModLoader({
+                owner: "SpectrumQT",
+                repo: "SRMI-TEST"
+            })
+        ]
     });
 
     public static readonly ZENLESS_ZONE_ZERO = new GameProperties({
@@ -43,25 +51,34 @@ export class GameProperties
             grid: "bf1e25110516b753b33dcc6d3266d71c.png",
             hero: "912c3958f7545cc891334c5f671c7555.png",
             logo: "6636876050dcade8ec8e3023b1afe9bc.png"
-        }
+        },
+        loaders: [
+            new MigotoModLoader({
+                owner: "leotorrez",
+                repo: "ZZMI-Package"
+            })
+        ]
     });
 
     public readonly id: string;
     public readonly details: Readonly<GameProperties.Details>;
     public readonly installation: Readonly<GameProperties.Installation>;
     public readonly assets: Readonly<GameProperties.Assets>;
+    public readonly loaders: ReadonlyArray<ModLoader>;
 
     private constructor(data: {
         id: string;
         details: GameProperties.Details;
         installation: GameProperties.Installation;
         assets: GameProperties.Assets;
+        loaders: ReadonlyArray<ModLoader>;
     })
     {
         this.id = data.id;
         this.details = data.details;
         this.installation = data.installation;
         this.assets = data.assets;
+        this.loaders = data.loaders;
 
         GameProperties.ENTRIES.push(this);
     }
