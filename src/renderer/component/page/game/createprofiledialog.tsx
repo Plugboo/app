@@ -26,6 +26,11 @@ export function CreateProfileDialog(props: Props)
 
     const onClickCreate = () =>
     {
+        if (nameRef.current === null)
+        {
+            return;
+        }
+
         invokeIpc("game.profile.create", {
             gameId: props.gameId,
             name: nameRef.current.value,
