@@ -115,13 +115,20 @@ export default function GameOverviewPage()
                 ]}
             />
             <div className="top-0 left-0 bottom-0 right-0 overflow-hidden absolute -z-1">
+                <div className="relative w-full h-120">
+                    <img
+                        className="max-w-370 w-full h-full object-cover mx-auto"
+                        src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
+                        alt={game.details.name}
+                    />
+                    <img
+                        className="w-full h-full object-cover absolute top-0 left-0 -z-1 blur-sm"
+                        src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
+                        alt={game.details.name}
+                    />
+                </div>
                 <img
-                    className="w-full h-120 object-cover object-top"
-                    src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
-                    alt={game.details.name}
-                />
-                <img
-                    className="w-full h-full object-cover opacity-10 scale-125 blur-lg"
+                    className="w-full h-full object-cover opacity-5 scale-125 blur-lg"
                     src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
                     alt={game.details.name}
                 />
@@ -133,7 +140,7 @@ export default function GameOverviewPage()
                     alt={game.details.name}
                 />
             </div>
-            <div className="px-6 pb-4 space-y-2 backdrop-blur-md bg-background/40 border-t border-border">
+            <div className="px-6 pb-4 space-y-2 backdrop-blur-sm bg-background/70 border-t border-border overflow-hidden">
                 <div className="flex gap-8 py-4">
                     {renderStatusActionButton()}
 
