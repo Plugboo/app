@@ -100,7 +100,18 @@ export class Application
                 return false;
             }
 
-            return game.verifyInstallation(installationPath);
+            const status = game.verifyInstallation(installationPath);
+
+            /*
+             * If the installation is not valid, remove the path from the settings.
+             */
+            if (!status)
+            {
+                settings.installation_path = null;
+                Settings.save();
+            }
+
+            return status;
         });
 
         Application.handleIpc("game.installation.locate", (args) =>

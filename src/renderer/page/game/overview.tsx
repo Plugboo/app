@@ -78,7 +78,7 @@ export default function GameOverviewPage()
         {
             invokeIpc("game.installation.locate", { id: game.id }).then((result) =>
             {
-                console.log(result);
+                setInstalled(result);
                 setButtonsDisabled(false);
             });
         }, 1000);
