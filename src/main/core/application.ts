@@ -77,6 +77,25 @@ export class Application
                 : null;
         });
 
+        Application.handleIpc("game.installation.verify", (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.id);
+
+            if (game === undefined)
+            {
+                return false;
+            }
+
+            const settings = Settings.data.games[game.id];
+
+            if (settings === undefined)
+            {
+                return false;
+            }
+
+            return settings.installation_path !== null;
+        });
+
         Application.handleIpc("game.installation.locate", (args) =>
         {
             const game = GameProperties.entries().find((game) => game.id === args.id);

@@ -34,12 +34,12 @@ export default function GameOverviewPage()
     const { game } = state as PageState;
 
     const [content, setContent] = useState<IpcChannels["game.content.get"]["return"]>(null);
-    const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(false);
+    const [buttonsDisabled, setButtonsDisabled] = useState<boolean>(true);
+    const [installed, setInstalled] = useState<boolean>(false);
 
     /**
      * Temporary.
      */
-    const installed = false;
     const profiles = [
         {
             id: "1",
@@ -91,6 +91,14 @@ export default function GameOverviewPage()
             return;
         }
 
+        setInstalled(false);
+
+        invokeIpc("game.installation.verify", { id: game.id }).then((result) =>
+        {
+            setInstalled(result);
+            setButtonsDisabled(false);
+        });
+
         invokeIpc("game.content.get", { id: game.id }).then(setContent);
     }, [game]);
 
@@ -100,7 +108,7 @@ export default function GameOverviewPage()
     }
 
     return (
-        <main className="relative">
+        <main className="relative min-h-screen">
             <div className="top-0 left-0 bottom-0 right-0 overflow-hidden absolute -z-1">
                 <img
                     className="w-full h-120 object-cover object-top"
@@ -108,7 +116,7 @@ export default function GameOverviewPage()
                     alt={game.details.name}
                 />
                 <img
-                    className="w-full object-fit opacity-15 scale-125 blur-lg"
+                    className="w-full h-full object-cover opacity-10 scale-125 blur-lg"
                     src={ResourcesUtil.linkGameAsset(game.id, game.assets.hero)}
                     alt={game.details.name}
                 />

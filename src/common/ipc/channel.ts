@@ -9,6 +9,7 @@ type Channel<TParams, TReturn> = {
 export type IpcChannels = {
     "game.list": Channel<{}, ReadonlyArray<Readonly<GamePropertiesDTO>>>;
     "game.get": Channel<{ id: string }, Readonly<GamePropertiesDTO>>;
+    "game.installation.verify": Channel<{ id: string }, boolean>;
     "game.installation.locate": Channel<{ id: string }, boolean>;
     "game.content.get": Channel<
         { id: string },
