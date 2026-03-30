@@ -9,7 +9,7 @@ import { useLocation } from "react-router";
 function ProfileCard()
 {
     return (
-        <div className="flex gap-4 w-full p-4 bg-gray-800/30 border border-mauve-700/60 drop-shadow-lg drop-shadow-black">
+        <div className="flex gap-4 w-full p-4 bg-background-900/70 border border-border drop-shadow-lg drop-shadow-black">
             <img
                 className="h-12"
                 src={ResourcesUtil.linkGameAsset("ZENLESS_ZONE_ZERO", "048617ceb68b40a45847078db347ba59.png")}
@@ -128,7 +128,7 @@ export default function GameOverviewPage()
                     alt={game.details.name}
                 />
             </div>
-            <div className="px-6 pb-4 space-y-2 backdrop-blur-md bg-(--background-color)/40 border-t border-mauve-700/80">
+            <div className="px-6 pb-4 space-y-2 backdrop-blur-md bg-background/40 border-t border-border">
                 <div className="flex gap-8 py-4">
                     {installed && <Button disabled={buttonsDisabled}>Create Profile</Button>}
                     {!installed && (
@@ -160,7 +160,7 @@ export default function GameOverviewPage()
                                 {content.banners.map((banner) => (
                                     <div
                                         key={banner.imageUrl}
-                                        className="h-50 p-3 aspect-video bg-gray-800/30 border border-mauve-700/60 drop-shadow-lg drop-shadow-black"
+                                        className="h-50 p-3 aspect-video bg-background-900/70 border border-border drop-shadow-lg drop-shadow-black"
                                     >
                                         <img
                                             className="w-full h-full object-cover"
