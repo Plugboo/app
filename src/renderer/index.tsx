@@ -4,7 +4,14 @@ import HomePage from "@renderer/page/home";
 import { createRoot } from "react-dom/client";
 import { HashRouter, Route, Routes } from "react-router";
 
-createRoot(document.getElementById("root")).render(
+const root = document.getElementById("root");
+
+if (root === null)
+{
+    throw new Error("Root element not found");
+}
+
+createRoot(root).render(
     <HashRouter>
         <Routes>
             <Route path="/" element={<HomePage />} />

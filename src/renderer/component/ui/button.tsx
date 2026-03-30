@@ -7,8 +7,10 @@ interface Props extends BaseButton.Props
     variant?: "primary" | "ghost";
 }
 
+// @ts-ignore TS2344
 const VARIANT_STYLES: Record<Props["variant"], string> = {
-    primary: "bg-primary border-primary-400 border text-text hover:data-disabled:bg-primary-600 hover:bg-primary-400 active:data-disabled:bg-primary-600 active:bg-primary-300 data-disabled:text-text-300 data-disabled:bg-primary-600",
+    primary:
+        "bg-primary border-primary-400 border text-text-100 hover:data-disabled:bg-primary-600 hover:bg-primary-400 active:data-disabled:bg-primary-600 active:bg-primary-300 data-disabled:text-text-300 data-disabled:bg-primary-600",
     ghost: "bg-transparent text-white hover:text-gray-900"
 };
 
@@ -19,8 +21,9 @@ export default function Button(props: Props)
     return (
         <BaseButton
             className={cn(
-                "flex items-center transition-colors duration-250 cursor-pointer justify-center h-10 px-3.5 m-0 outline-0 font-inherit text-base font-medium leading-6 select-none active:shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] active:data-disabled:shadow-none focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1",
-                variantStyle
+                "flex items-center transition-colors duration-250 cursor-pointer data-disabled:cursor-not-allowed justify-center h-10 px-3.5 m-0 outline-0 font-inherit text-base font-medium leading-6 select-none active:shadow-[inset_0_1px_3px_rgba(0,0,0,0.1)] active:data-disabled:shadow-none focus-visible:outline-2 focus-visible:outline-blue-800 focus-visible:-outline-offset-1",
+                variantStyle,
+                props.className
             )}
             disabled={props.disabled}
             onClick={props.onClick}

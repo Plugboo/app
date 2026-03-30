@@ -206,6 +206,39 @@ export class Application
             }
         });
 
+        Application.handleIpc("game.profile.create", (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.gameId);
+
+            if (game === undefined)
+            {
+                return false;
+            }
+
+            const profile = ProfileManager.create(game, args.name);
+            profile.save();
+
+            return true;
+        });
+
+        Application.handleIpc("game.profile.list", (args) =>
+        {
+            const game = GameProperties.entries().find((game) => game.id === args.gameId);
+
+            if (game === undefined)
+            {
+                return [];
+            }
+
+            return ProfileManager.entries
+                .filter((v) => v.gameId === args.gameId)
+                .map((p) => ({
+                    id: p.id,
+                    name: p.name,
+                    gameId: p.gameId
+                }));
+        });
+
         Application.handleIpc("provider.list", (args) =>
         {
             return Providers.entries()
