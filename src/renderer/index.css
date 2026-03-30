@@ -69,6 +69,8 @@
     --text-muted: var(--text-400);
     --text-muted-foreground: var(--text-500);
     --border: #3E3743;
+
+    color-scheme: dark;
 }
 
 @theme {
