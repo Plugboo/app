@@ -71,16 +71,21 @@ export class GameProperties
      */
     public locateInstallation()
     {
-        const requiredFiles = [...this.installation.requiredFiles, this.installation.executableFile];
-
         return (
             this.installation.locators
                 .map((locator) => locator())
                 .filter(Boolean)
-                .find((installationPath) =>
-                    requiredFiles.every((file) => fs.existsSync(path.join(installationPath, file)))
-                ) ?? null
+                .find((installationPath) => this.verifyInstallation(installationPath)) ?? null
         );
+    }
+
+    /**
+     * Verifies if the installation at the specified path contains all required files.
+     */
+    public verifyInstallation(installationPath: string): boolean
+    {
+        const requiredFiles = [...this.installation.requiredFiles, this.installation.executableFile];
+        return requiredFiles.every((file) => fs.existsSync(path.join(installationPath, file)));
     }
 
     /**

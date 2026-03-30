@@ -93,7 +93,14 @@ export class Application
                 return false;
             }
 
-            return settings.installation_path !== null;
+            const installationPath = settings.installation_path;
+
+            if (installationPath === null)
+            {
+                return false;
+            }
+
+            return game.verifyInstallation(installationPath);
         });
 
         Application.handleIpc("game.installation.locate", (args) =>
